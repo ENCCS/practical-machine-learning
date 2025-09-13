@@ -1,0 +1,17 @@
+name: practical_machine_learning
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - numpy
+  - pandas
+  - scipy
+  - matplotlib
+  - seaborn
+  - scikit-learn
+  - keras
+  - tensorflow
+  - pytorch
+  - umap-learn
+  - jupyter
+  - jupyterlab
