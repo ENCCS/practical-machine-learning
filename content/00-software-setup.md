@@ -25,7 +25,7 @@ $ conda --version
 
 With Conda installed, run the command below to install all required packages and depenencies
 ```console
-$ conda env create --yes -f --file=
+$ conda env create --yes -f https://raw.githubusercontent.com/ENCCS/practical-machine-learning/main/content/env/environment.yml
 ```
 
 This will create a new environment called ``practical_machine_learning``, which can be activated with 
