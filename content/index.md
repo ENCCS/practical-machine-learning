@@ -1,7 +1,7 @@
 # Practical Machine Learning
 
 
-Machine Learning (ML) is a rapidly growing field within artificial intelligence (AI) that focuses on building systems capable of learning from data. Instead of being explicitly programmed with detailed rules, the ML models identify patterns and make predictions or decisions based on historical data. This approach has revolutionized many industries, including healthcare, finance, marketing, and technology, enabling applications like personalized recommendations, fraud detection, and speech recognition. As the volume of data continues to grow, understanding ML concepts and techniques becomes increasingly important for anyone interested in working with data or building intelligent systems.
+Machine learning (ML) is a rapidly growing field within artificial intelligence (AI) that focuses on building systems capable of learning from data. Instead of being explicitly programmed with detailed rules, the ML models identify patterns and make predictions or decisions based on historical data. This approach has revolutionized many industries, including healthcare, finance, marketing, and technology, enabling applications like personalized recommendations, fraud detection, and speech recognition. As the volume of data continues to grow, understanding ML concepts and techniques becomes increasingly important for anyone interested in working with data or building intelligent systems.
 
 This course provides a comprehensive introduction to the fundamental principles and techniques of ML. We will cover essential topics such as supervised learning, unsupervised learning, and model evaluation, as well as the basics of data preprocessing and feature selection. The participants will learn how to design and implement basic ML models using tools and frameworks commonly used in the industry. Through a combination of theory, practical exercises, and real-world examples, the participants will gain a solid foundation in ML, preparing them for further study or practical application in various domains.
 
@@ -10,9 +10,9 @@ By the end of the course, the participants will understand how the ML models are
 
 
 :::{prereq}
-- Familiarity with Python basics (loops, functions, lists, dictionaries) and libraries like NumPy, Pandas, and Matplotlib/Seaborn
-- Understanding vectors, matrices, matrix operations (multiplication, transpose, inverse), and eigenvalues
-- (Optional but useful): Derivatives, gradients, and optimization (especially for understanding gradient descent)
+- Familiarity with Python basics (loops, functions, lists, dictionaries) and libraries like NumPy, Pandas, and Matplotlib/Seaborn.
+- Understanding vectors, matrices, matrix operations (multiplication, transpose, inverse), and eigenvalues.
+- (Optional but useful): Derivatives, gradients, and optimization (especially for understanding gradient descent).
 :::
 
 

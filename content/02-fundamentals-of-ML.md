@@ -5,7 +5,7 @@
 :::{objectives}
 - Describe the representative types of machine learning (supervised, unsupervised, semi-supervised, reinforcement learning).
 - Explain the general workflow of a machine learning project.
-- Introduce representative ML libraries and discuss their pros and cons.
+- Introduce representative machine learning libraries and discuss their pros and cons.
 :::
 
 
@@ -20,7 +20,7 @@
 ## Types of Machine Learning
 
 
-ML can be broadly categorized into three main types depending on how the models learn from input data and the nature of the input data they process.
+Machine learning (ML) can be broadly categorized into three main types depending on how the models learn from input data and the nature of the input data they process.
 
 :::{figure} ./images/2-ML-three-types.png
 :align: center
@@ -69,12 +69,12 @@ Representative examples of reinforcement learning in real-word problems: game-pl
 ### Other subtypes
 
 
-In addition to supervised and unsupervised learning, there are other important paradigms in machine learning.
+In addition to supervised and unsupervised learning, there are other important paradigms in ML.
 - **Semi-supervised learning** bridges the gap between supervised and unsupervised learning by using a small amount of labeled data together with a large amount of unlabeled data, helping models learn more effectively when labeling is expensive or time-consuming (*e.g.*, medical image analysis).
 - **Self-supervised learning** is a form of unsupervised learning where the model generates its own labels from the data -- typically for pretraining models on tasks like image or language understanding, enabling them to learn robust representations without explicit labels (*e.g.*, predicting the next word in a sentence, and filling in missing image patches)
 - **Transfer learning** involves applying knowledge from a pretrained model, trained on a large, general dataset, to a new, related task, significantly reducing training time and data requirements (*e.g.*, fine-tuning a speech recognition model for a new dialect).
 
-These techniques expand the capabilities and versatility of machine learning across data-limited or computationally constrained environments.
+These techniques expand the capabilities and versatility of ML across data-limited or computationally constrained environments.
 
 
 
@@ -85,7 +85,7 @@ These techniques expand the capabilities and versatility of machine learning acr
 ### What is a workflow for ML?
 
 
-A machine learning workflow is a structured approach for developing, training, evaluating, and deploying machine learning models. It typically involves several key phases, including data collection, preprocessing, model training and evaluation, and finally, deployment to production.
+A ML workflow is a structured approach for developing, training, evaluating, and deploying ML models. It typically involves several key phases, including data collection, preprocessing, model training and evaluation, and finally, deployment to production.
 
 Here is a graphical representation of ML workflow, and a concise overview of the key steps are described below.
 
@@ -100,16 +100,16 @@ Here is a graphical representation of ML workflow, and a concise overview of the
 
 
 **Problem Definition** is the first and most critical phase of any ML project. It sets the direction, scope, and goals for the entire project.
-- we should understand the problem domain: what is the real-world problem we are trying to solve? are we predicting, classifying, or grouping data? (*e.g.*, predict house prices, detect spam emails, cluster customers)
-- we should determine if ML is the appropriate solution for the problem
-- we then should identify the expected outputs: what will the ML model produce? (*e.g.*, a number, a label, or a probability)
-- we define the type of ML task (*e.g.*, classification and regression tasks for supervised learning, clustering, dimensionality reduction for unsupervised learning, and decision-making tasks for reinforcement learning)
+- We should understand the problem domain: what is the real-world problem we are trying to solve? are we predicting, classifying, or grouping data? (*e.g.*, predict house prices, detect spam emails, cluster customers).
+- We should determine if ML is the appropriate solution for the problem.
+- We then should identify the expected outputs: what will the ML model produce? (*e.g.*, a number, a label, or a probability).
+- We define the type of ML task (*e.g.*, classification and regression tasks for supervised learning, clustering, dimensionality reduction for unsupervised learning, and decision-making tasks for reinforcement learning).
 
 
 **Project Setup** is to set up the programming/development environment for the project.
-- hardware requirements (CPU, SSD, GPU, cloud platforms, *etc.*)
-- software requirements (programming languages and libraries, ML/DL frameworks, and development tools, IDEs, Git/Docker, *etc.)
-- project structure: organize your project for clarity and scalability
+- Hardware requirements (CPU, SSD, GPU, cloud platforms, *etc.*).
+- Software requirements (programming languages and libraries, ML (DL) frameworks, and development tools, IDEs, Git/Docker, *etc.).
+- Project structure: organize the project for clarity and scalability.
 
 A typical ML project structure looks like this:
 ```
@@ -135,11 +135,11 @@ A typical ML project structure looks like this:
 
 
 In ML, data collection and preprocessing are crucial steps that significantly affect the performance of a model. High-quality, well-processed data leads to better predictions, while poor data can result in unreliable models.
-- **data collection**: Gather the necessary data from various sources (*e.g.*, databases, APIs (twitter, linkedin, *etc.*), or manual collection), and ensure that data is representative and sufficient for the problem.
-- **data preprocessing**: Clean and prepare data by handling missing values (drop, impute, or predict), removing duplicates or irrelevant data, fixing inconsistencies (*e.g.*, "USA" vs. "United States"), normalizing/scaling features, encoding categorical variables, and addressing outliers, and other data quality issues.
-- **exploratory data analysis** (EDA): Analyze data to uncover distributions, correlations, patterns, anomalies, and insights using visualizations and statistical methods. This helps in feature selection and understanding data distribution.
-- **feature engineering**: Create or select relevant features to improve model performance. This may involve dimensionality reduction (*e.g.*, PCA (principal component analysis)) or creating new features based on domain knowledge.
-- **data splitting**: Divide the dataset into training, validation, and test sets (*e.g.*, 70-15-15 split) to evaluate model performance and prevent overfitting.
+- **Data collection**: Gather the necessary data from various sources (*e.g.*, databases, APIs (twitter, linkedin, *etc.*), or manual collection), and ensure that data is representative and sufficient for the problem.
+- **Data preprocessing**: Clean and prepare data by handling missing values (drop, impute, or predict), removing duplicates or irrelevant data, fixing inconsistencies (*e.g.*, "USA" vs. "United States"), normalizing/scaling features, encoding categorical variables, and addressing outliers, and other data quality issues.
+- **Exploratory data analysis** (EDA): Analyze data to uncover distributions, correlations, patterns, anomalies, and insights using visualizations and statistical methods. This helps in feature selection and understanding data distribution.
+- **Feature engineering**: Create or select relevant features to improve model performance. This may involve dimensionality reduction (*e.g.*, PCA (principal component analysis)) or creating new features based on domain knowledge.
+- **Data splitting**: Divide the dataset into training, validation, and test sets (*e.g.*, 70-15-15 split) to evaluate model performance and prevent overfitting.
 
 
 
@@ -153,7 +153,7 @@ Model Selection and Training refer to the process of choosing an appropriate mod
 ### Model evaluation and assessment
 
 
-Model evaluation and assessment in machine learning refers to the process of measuring and analyzing a model's performance to determine its effectiveness in solving a specific task. It involves using metrics and techniques to quantify how well the model generalizes to unseen data, identifies patterns, and meets desired objectives, typically using a test dataset separate from the training data.
+Model evaluation and assessment in ML refers to the process of measuring and analyzing a model's performance to determine its effectiveness in solving a specific task. It involves using metrics and techniques to quantify how well the model generalizes to unseen data, identifies patterns, and meets desired objectives, typically using a test dataset separate from the training data.
 
 Below are common evaluation metrics by task types:
 
@@ -167,13 +167,13 @@ Below are common evaluation metrics by task types:
 
 
 Here are representative techniques and processes for the assessment:
-- **train-validation-test split**: Divide data into training (model learning), validation (hyperparameter tuning), and test (final evaluation) sets to prevent overfitting.
-- **cross-validation**: Use k-fold cross-validation to assess model stability across multiple data subsets.
-- **confusion matrix**: For classification, visualize true positives, false negatives, etc.
-- **learning curves**: Plot training *vs.* validation performance to diagnose underfitting or overfitting.
-- **comparison with baselines**: Comparing model performance against simple baselines (*e.g.*, random guessing, linear models) to ensure meaningful improvement.
-- **robustness testing**: Evaluate performance under noisy, adversarial, or out-of-distribution data.
-- **fairness and bias analysis**: Assess model predictions for fairness across groups (*e.g.*, demographics).
+- **Train-validation-test split**: Divide data into training (model learning), validation (hyperparameter tuning), and test (final evaluation) sets to prevent overfitting.
+- **Cross-validation**: Use k-fold cross-validation to assess model stability across multiple data subsets.
+- **Confusion matrix**: For classification, visualize true positives, false negatives, *etc.*
+- **Learning curves**: Plot training *vs.* validation performance to diagnose underfitting or overfitting.
+- **Comparison with baselines**: Comparing model performance against simple baselines (*e.g.*, random guessing, linear models) to ensure meaningful improvement.
+- **Robustness testing**: Evaluate performance under noisy, adversarial, or out-of-distribution data.
+- **Fairness and bias analysis**: Assess model predictions for fairness across groups (*e.g.*, demographics).
 
 
 
@@ -189,10 +189,10 @@ The goal of this process is to find the best combination of hyperparameters that
 ### Model deployment, monitoring, and improvement
 
 
-Model deployment, monitoring, and improvement refer to the processes involved in taking a trained machine learning model from development to production, ensuring it performs effectively in real-world applications, and continuously enhancing its performance.
-- **model deployment** indicates an integration of a trained model into a production environment (APIs or cloud platforms) where it can make predictions or decisions on new, unseen data.
+Model deployment, monitoring, and improvement refer to the processes involved in taking a trained ML model from development to production, ensuring it performs effectively in real-world applications, and continuously enhancing its performance.
+- **Model deployment** indicates an integration of a trained model into a production environment (APIs or cloud platforms) where it can make predictions or decisions on new, unseen data.
 - Once deployed, the model’s performance must be continuously tracked to ensure it remains accurate and reliable over time, which is termed as **model monitoring**.
-- As the models degrade over time, so continuous improvement is necessary. **model improvement** involves updating or retraining the model to maintain or enhance its performance based on monitoring insights or new data.
+- As the models degrade over time, so continuous improvement is necessary. **Model improvement** involves updating or retraining the model to maintain or enhance its performance based on monitoring insights or new data.
 
 
 
@@ -217,7 +217,7 @@ Model deployment, monitoring, and improvement refer to the processes involved in
 ### TensorFlow
 
 
-Developed by Google, **TensorFlow** is a powerful open-source library primarily for DL but versatile enough for a broad range of ML tasks. It provides a flexible ecosystem for building complex models, including neural networks for computer vision, natural language processing, and time series analysis. TensorFlow supports distributed computing across CPUs, GPUs, and TPUs, making it suitable for both research and production at scale. Its robust features, such as TensorBoard for visualization, TensorFlow Serving for model deployment, and TensorFlow Lite for mobile inference, make it a comprehensive framework for end-to-end machine learning development. TensorFlow’s high-level Keras API simplifies model building, while its low-level operations provide flexibility for advanced research. TensorFlow is well-suited for tasks like image recognition, natural language processing (NLP), and reinforcement learning, though its complexity can pose a steeper learning curve for beginners compared to alternatives like PyTorch. 
+Developed by Google, **TensorFlow** is a powerful open-source library primarily for DL but versatile enough for a broad range of ML tasks. It provides a flexible ecosystem for building complex models, including neural networks for computer vision, natural language processing, and time series analysis. TensorFlow supports distributed computing across CPUs, GPUs, and TPUs, making it suitable for both research and production at scale. Its robust features, such as TensorBoard for visualization, TensorFlow Serving for model deployment, and TensorFlow Lite for mobile inference, make it a comprehensive framework for end-to-end ML development. TensorFlow’s high-level Keras API simplifies model building, while its low-level operations provide flexibility for advanced research. TensorFlow is well-suited for tasks like image recognition, natural language processing (NLP), and reinforcement learning, though its complexity can pose a steeper learning curve for beginners compared to alternatives like PyTorch. 
 
 
 
@@ -261,7 +261,7 @@ A summary of best features and key strengths of these libraries are summarized b
 
 | Library | Best Feature | Key Strength |
 | :-----: | :----------: | :----------: |
-| Scikit-Learn | Simple and consistent API <br>for classical ML tasks  <br>(classification, regression, clustering) <br>and small/medium datasets | Seamless integration with NumPy/Pandas <br>and extensive documentation for ease-of-use with <br>wide algorithm support |
+| Scikit-Learn | Simple and consistent API <br>for classical machine learning tasks  <br>(classification, regression, clustering) <br>and small/medium datasets | Seamless integration with NumPy/Pandas <br>and extensive documentation for ease-of-use with <br>wide algorithm support |
 | PyTorch | Dynamic computation graph (define-by-run) <br>for flexible model building and debugging | Flexible, intuitive framework with strong adoption <br>for academic research in DL tasks |
 | TensorFlow | Scalability with GPU/TPU acceleration <br>for complex deep learning models | Excellent ecosystem (Keras, TF Hub, TF-Agents) <br>for production-scale applications |
 | Keras | High-level, user-friendly API <br>for rapid prototyping | Simplifies construction of DL models, making it beginner-friendly <br>and efficient with TensorFlow compatibility <br>for quick model development |
@@ -273,6 +273,9 @@ A summary of best features and key strengths of these libraries are summarized b
 
 
 :::{keypoints}
-- 
+- Representative types of machine learning include supervised learning, unsupervised learning, semi-supervised, reinforcement learning, and the other subtypes.
+Supervised and unsupervised learnings with specific tasks will be covered in this workshop.
+- The general workflow of a machine learning project include identification of problems, data collection, data preprocessing and processing, training and evaluating model performance, and fine-tuning model hyperparameters, and finally depolyment.
+- Representative machine learning libraries include Scikit-learn, Keras, TensorFlow, PyTorch, *etc.*.
 :::
 

@@ -3,9 +3,9 @@
 
 
 :::{objectives}
-- Provide a general overview of ML.
-- Explain the relationship between AI, ML, and DL.
-- Explore representative real-world applications of ML.
+- Provide a general overview of machine learning.
+- Explain the relationship between artificial intelligence, machine learning, and deep learning.
+- Explore representative real-world applications of machine learning.
 :::
 
 
@@ -36,11 +36,11 @@ In conventional programming, the programmer explicitly codes the logic (rules) t
 ## Relation with Artificial Intelligence and Deep Learning
 
 
-Artificial Intelligence (AI) is the broadest field, encompassing any technique that enables computers to mimic human intelligence, such as reasoning, problem-solving, perception, and decision-making. AI includes a wide range of approaches, from rule-based systems (like expert systems) to modern data-driven methods. It aims to create systems that can perform tasks that typically require human intelligence, such as playing chess, recognizing images, or understanding language.
+Artificial intelligence (AI) is the broadest field, encompassing any technique that enables computers to mimic human intelligence, such as reasoning, problem-solving, perception, and decision-making. AI includes a wide range of approaches, from rule-based systems (like expert systems) to modern data-driven methods. It aims to create systems that can perform tasks that typically require human intelligence, such as playing chess, recognizing images, or understanding language.
 
-ML is a subset of AI that focuses on algorithms and models that learn patterns from data to make predictions or decisions without being explicitly programmed. ML is one of the primary ways to achieve AI. It enables systems to improve performance over time by learning from experience (data) rather than relying solely on hardcoded rules. ML includes various techniques like supervised learning (*e.g.*, regression, classification), unsupervised learning (*e.g.*, clustering, dimensionality reduction), and reinforcement learning.
+ML is a subset of AI that focuses on algorithms and models that learn patterns from data to make predictions or decisions **without being explicitly programmed**. ML is one of the primary ways to achieve AI. It enables systems to improve performance over time by learning from experience (data) rather than relying solely on hardcoded rules. ML includes various techniques like supervised learning (*e.g.*, regression, classification), unsupervised learning (*e.g.*, clustering, dimensionality reduction), and reinforcement learning.
 
-Deep Learning (DL) is a specialized subset of ML that uses neural networks with many layers (hence "deep") to model complex patterns in large datasets. DL is a subset of ML, and it leverages artificial neural networks inspired by the human brain to tackle tasks like image recognition, speech processing, and natural language understanding. DL excels in handling unstructured data (*e.g.*, images, audio, text) and requires significant computational power and large datasets for training.
+Deep learning (DL) is a specialized subset of ML, and it leverages artificial neural networks inspired by the human brain to tackle tasks like image recognition, speech processing, and natural language understanding. DL excels in handling unstructured data (*e.g.*, images, audio, text) and requires significant computational power and large datasets for training.
 
 :::{figure} ./images/1-relationship-AI-ML-DL.png
 :align: center
@@ -85,6 +85,7 @@ Below are key categories of problems that can be applied using ML.
 
 
 
+
 ### Problems can't be solve with ML
 
 
@@ -101,9 +102,17 @@ Below are key categories of problems that cannot be solved with ML due to inhere
 ### Problems can be, but shouldn't be solved with ML
 
 
-There are many problems where ML (or DL) could technically be applied, but shouldn’t be -- either because of the simplicity of the problem or due to ethical, practical, or societal concerns.
+There are many problems where ML (DL) could technically be applied, but shouldn’t be -- either because of the simplicity of the problem or due to ethical, practical, or societal concerns.
 - Tasks for modelling well defined systems, where the equations governing them are known and understood.
 - Problems at high-stakes domains with unacceptable error rates: ML can predict outcomes in fields like medical diagnosis or aviation safety, but even small errors can lead to catastrophic consequences. Over-reliance on ML without human oversight risks lives when models fail in edge cases.
 - Privacy-sensitive applications: ML can analyze personal data (*e.g.*, health records, browsing habits) to predict behaviors, but using it for invasive profiling, surveillance, or targeted manipulation (*e.g.*, hyper-personalized propaganda) raises serious privacy and autonomy concerns.
 - Reinforcing harmful social norms: ML can optimize systems like targeted advertising or content recommendation, but doing so can amplify harmful behaviors (*e.g.*, echo chambers, misinformation, or addiction to social media) if not carefully regulated.
 
+
+
+:::{keypoints}
+- Machine learning focuses on building systems that can learn patterns from data **without being explicitly programmed**.
+- The relationship between artificial intelligence, machine learning, and deep learning.
+- The importance of machine learning in daily work and lives.
+- Examples of real-world problems that can, cannot, or can but shouldn't, be solved using machine learning.
+:::
