@@ -165,7 +165,7 @@ Why to use tensors in ML/DL (advantages of Tensor)?
 
 :::{exercise} Tensor Creation and Operations
 
-[HERE](./jupyter-notebooks/3-Tensor.ipynb) we provide a tutorial about Tensor including
+In [Jupyter Notebook](./jupyter-notebooks/3-Tensor.ipynb) we provide a tutorial about Tensor including
 - Tensor creation
 - Tensor's properties (`shape`, `dtype`, `ndim`)
 - Tensor operations

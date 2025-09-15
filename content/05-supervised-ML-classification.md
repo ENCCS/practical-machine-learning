@@ -38,7 +38,7 @@ By comparing the results, we aim to identify which model provides the most accur
 In the previous episode, [Episode 4: Data Preparation for Machine Learning](./04-data-preparation-for-ML.md), we discussed data preparation steps, including handling missing values, detecting outliers, and encoding categorical variables.
 
 In this episode, we will revisit these steps, with particular emphasis on encoding categorical variables. For the classification task, we will treat the categorical variable ``species`` as the label (target variable) and use the remaining columns as features to predict the penguins species.
-To achieve this, we transform the categorical features ``island`` and ``sex``, as well as the ``species`` label, into numerical format.
+To achieve this, we transform the categorical features ``island`` and ``sex``, as well as the ``species`` label, into numerical format (code examples are availalbe in the [Jupyter Notebook](./jupyter-notebooks/5-ML-Classifion.ipynb)).
 
 ```python
 from sklearn.preprocessing import LabelEncoder

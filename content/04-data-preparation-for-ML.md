@@ -76,7 +76,7 @@ These data were collected from 2007 - 2009 by Dr. Kristen Gorman with the [Palme
 ## Importing Dataset
 
 
-Seaborn provides the Penguins dataset through its built-in data-loading functions. We can access it using ``sns.load_dataset('penguin')`` and then have a quick look at the data:
+Seaborn provides the Penguins dataset through its built-in data-loading functions. We can access it using ``sns.load_dataset('penguin')`` and then have a quick look at the data (code examples are availalbe in the [Jupyter Notebook](./jupyter-notebooks/4-Data-Preprocessing.ipynb)):
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
@@ -200,10 +200,11 @@ penguins_test['BMG_median'] = penguins_test.body_mass_g.fillna(body_mass_g_media
 
 :::{exercise}
 
-How to mutate the missing values with ``mean`` or ``median`` values in place for all numerical values.
+How to mutate the missing values with ``mean`` or ``median`` values in place for all numerical values (code examples are availalbe in the [Jupyter Notebook](./jupyter-notebooks/4-Data-Preprocessing.ipynb)).
 - for one numerical feature like ``bill_length_mm``?
 - for all numerical features in the Penguins dataset?
 :::
+
 :::{solution}
 - 1. using the following script
 	```python
@@ -316,7 +317,7 @@ There are four main techniques for handling outliers in a dataset:
 
 Instead of using the IQR method, the upper and lower thresholds for detecting outliers can also be calculated with the mean-std deviation approach.
 
-In this exercise, you will
+In this exercise (code examples are availalbe in the [Jupyter Notebook](./jupyter-notebooks/4-Data-Preprocessing.ipynb)), you will
 - Compute the ``mean`` and ``std`` of the ``body_mass_g`` feature.
 - Calculate the upper and lower limits for outlier detection using the formulas.
 	:::{math}
