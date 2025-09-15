@@ -81,6 +81,21 @@ You should see output similar to the figure below. The exact package versions ma
 
 If the code runs without errors, it means the packages are correctly installed and your programming environment is ready for use. If you encounter an error (*e.g.*, ``ModuleNotFoundError``), it indicates that a package may not have been installed properly. In that case, please double-check your programming environment setup or bring the issue to the on-boarding session for assistance.
 
+::::{warning}
+If you encounter an error like the one shown in the figure below, it usually means PyTorch is trying to load a DLL (such as fbgemm.dll), but one of its dependencies is missing or incompatible. The most common causes are a missing Microsoft Visual C++ runtime or a mismatch between the installed PyTorch build and your Python/OS environment.
+:::{figure} ./env/pytorch_error.png
+:align: center
+:width: 80%
+:::
+
+To verify, you can open another Jupyter notebook and test PyTorch again. You should see output similar to the example below.
+
+:::{figure} ./env/pytorch_another_test.png
+:align: center
+:width: 80%
+:::
+::::
+
 
 :::{note}
 
