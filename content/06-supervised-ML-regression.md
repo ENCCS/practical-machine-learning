@@ -564,7 +564,7 @@ Code examples are availalbe in the [Jupyter Notebook](./jupyter-notebooks/6-ML-R
 :::{seealso}
 - [Hyperparameter optimization](https://en.wikipedia.org/wiki/Hyperparameter_optimization)
 - [Grid search](https://drbeane.github.io/python_dsci/pages/grid_search.html)
-- [Introduction To Cross-Validation in Machine Learning](https://thatdatatho.com/detailed-introduction-cross-validation-machine-learning/)
+- [Introduction to Cross-Validation in Machine Learning](https://thatdatatho.com/detailed-introduction-cross-validation-machine-learning/)
 :::
 
 
