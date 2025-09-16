@@ -426,7 +426,7 @@ For the Penguins dataset, SVR can potentially outperform Linear Regression if th
 
 ::::{exercise} **Tuning hyperparameter**
 
-In this exercise (code examples are availalbe in the [Jupyter Notebook](./jupyter-notebooks/6-ML-Regression.ipynb)), we will use **grid search** combined with **cross-validation** to find the optimal hyperparameters for the SVR model (code example is available in the Jupyter Notebook). We will:
+In this exercise (code examples are availalbe in the [Jupyter Notebook](./jupyter-notebooks/6-ML-Regression.ipynb), we will use **grid search** combined with **cross-validation** to find the optimal hyperparameters for the SVR model (code example is available in the Jupyter Notebook). We will:
 - Compare RMSE and R² values to evaluate predictive performance.
 - Plot predictive curves to visually assess how well the model fits the data.
 
