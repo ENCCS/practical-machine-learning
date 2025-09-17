@@ -1,0 +1,780 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "0f8d00c9-72e4-4712-b360-bcf0f3c64c5b",
+   "metadata": {},
+   "source": [
+    "# Data Preparation using the Palmer Penguins Dataset"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "e821f099-db79-4eb6-ab50-b48fff6da012",
+   "metadata": {},
+   "source": [
+    "The Palmer Penguins Dataset is a popular dataset used in data science and machine learning education. The data was gathered between 2007 and 2009 by Dr. Kristen Gorman as part of the Palmer Station Long Term Ecological Research (LTER) Program. It contains measurements for 344 penguins from three species -- Adelie, Chinstrap, and Gentoo -- collected from three islands (Biscoe, Dream, and Torgersen) in the Palmer Archipelago, Antarctica."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "639c59d5-0913-4a23-b982-0fa6f3821dbc",
+   "metadata": {},
+   "source": [
+    "<center><img src=\"https://enccs.github.io/deep-learning-intro/_images/palmer_penguins.png\" width=\"640\"></center>"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "f4e6f75a-4ef9-4c3c-a09e-4e7e146cfe0e",
+   "metadata": {},
+   "source": [
+    "The physical attributes measured for penguins are flipper length, beak length, beak width, body mass, and sex."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "a140d268-9201-4e96-a3e8-f153698e6dc9",
+   "metadata": {},
+   "source": [
+    "<center><img src=\"https://enccs.github.io/deep-learning-intro/_images/culmen_depth.png\" width=480\"></center>"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "71dbbbee-d16b-4adc-a04f-a24548233472",
+   "metadata": {},
+   "source": [
+    "## 1. Loading Dataset"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "0c279c46-0b43-4745-a73c-9382fd0062ee",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import numpy as np\n",
+    "import pandas as pd\n",
+    "import matplotlib.pyplot as plt\n",
+    "import seaborn as sns"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "71579b91-8266-4d31-83b4-13176da80c51",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# penguins = pd.read_csv(\"./penguins_dataset.csv\")\n",
+    "\n",
+    "# URL of the Penguins dataset (CSV file)\n",
+    "# url = \"https://raw.githubusercontent.com/mwaskom/seaborn-data/master/penguins.csv\"\n",
+    "# penguins = pd.read_csv(url)\n",
+    "\n",
+    "penguins = sns.load_dataset('penguins')\n",
+    "penguins"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "2d7cebb2-424a-4cf7-90cd-1e07a68449ce",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "penguins.info()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "1883202f-5285-4543-a5d4-5efa586b06fa",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "penguins.describe()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "608a3953-1f26-4cd0-97dd-566b82296802",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "sns.pairplot(penguins, hue=\"sex\", height=2.0)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "67d65f6d-a6dd-435e-a8f8-341313f2f7cb",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "sns.pairplot(penguins, hue=\"island\", height=2.0)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "959c59ba-3ca8-4bf2-8c82-8aa58f396176",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "sns.pairplot(penguins[[\"species\", \"bill_length_mm\", \"bill_depth_mm\", \"flipper_length_mm\", \"body_mass_g\"]], hue=\"species\", height=2.0)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "3750928c-7b7a-4b28-b8fc-c7afc8df52a8",
+   "metadata": {},
+   "source": [
+    "## 2. Handling Missing Values"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "897052b7-4a33-4f63-89e3-e5dddef1b659",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "penguins_test = pd.concat([penguins.head(5), penguins.tail(5)])\n",
+    "penguins_test.style.highlight_null(color = 'red')"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "6d7dc18f-f2d8-470a-886c-13c08fa2463b",
+   "metadata": {},
+   "source": [
+    "### 2.1 Handling missing numerical data"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "35fd7978-782c-4cee-870a-38d6e56ed7bc",
+   "metadata": {},
+   "source": [
+    "**Mean or Median Imputation**"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "a34fbe82-40f4-4494-b2e8-d143dad375c2",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# calculate `mean` and `median` of body_mass data\n",
+    "\n",
+    "body_mass_g_mean = penguins_test.body_mass_g.mean()\n",
+    "body_mass_g_median = penguins_test.body_mass_g.median()\n",
+    "print(f\"  mean value of body_mass_g is {body_mass_g_mean}\")\n",
+    "print(f\"median value of body_mass_g is {body_mass_g_median}\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "2e7521a0-a9e5-4926-a081-f5f259eb5e27",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "penguins_test['BMG_mean'] = penguins_test.body_mass_g.fillna(body_mass_g_mean)\n",
+    "penguins_test['BMG_median'] = penguins_test.body_mass_g.fillna(body_mass_g_median)\n",
+    "penguins_test.style.highlight_null(color = 'green')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "7cf105fb-5747-4d93-9485-86c33c5c4dc8",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "plt.figure(figsize=(8, 6))\n",
+    "\n",
+    "penguins_test['body_mass_g'].plot(kind='kde', color='tab:green', label=\"body_mass_g\")\n",
+    "penguins_test['BMG_mean'].plot(kind='kde', color='tab:orange', label=\"BMG_mean\")\n",
+    "penguins_test['BMG_median'].plot(kind='kde', color='tab:blue', label=\"BMG_median\")\n",
+    "\n",
+    "plt.legend(loc='best')\n",
+    "plt.tight_layout()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "472f95b7-42c3-4f78-995f-87e018c19287",
+   "metadata": {},
+   "source": [
+    "**End of Distribution Imputation**\n",
+    "\n",
+    "- Sometimes one would want to replace missing data with values at the tail of distribution of variable.\n",
+    "- Advantage is that it is quick and captures importance of missing values (if one suspects missing data is valuable).\n",
+    "- EoD's extreme value means the mean value with 3rd stander deviation, `(mean + (3*std))`)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "7465df7c-acb8-40e8-b3a2-42e9b4e7951e",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "eod_value = penguins_test['body_mass_g'].mean() + 3 * penguins_test['body_mass_g'].std()\n",
+    "eod_value"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "9409ab3d-c8c1-44e5-8610-324b16143e97",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "penguins_test['BMG_eod'] = penguins_test.body_mass_g.fillna(eod_value)\n",
+    "penguins_test.style.highlight_null(color = 'green')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "c2c2e848-f9a5-4d40-b852-1e1bf9e95e27",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "plt.figure(figsize=(8, 6))\n",
+    "\n",
+    "penguins_test['body_mass_g'].plot(kind='kde', color='tab:green', label=\"body_mass_g\")\n",
+    "penguins_test['BMG_mean'].plot(kind='kde', color='tab:orange', label=\"BMG_mean\")\n",
+    "penguins_test['BMG_median'].plot(kind='kde', color='tab:blue', label=\"BMG_median\")\n",
+    "penguins_test['BMG_eod'].plot(kind='kde', color='tab:red', label=\"BMG_eod\")\n",
+    "\n",
+    "plt.legend(loc='best')\n",
+    "plt.tight_layout()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "ab1553b9-cf42-441e-b9e8-52f7b8ca2e0c",
+   "metadata": {},
+   "source": [
+    "### 2.2 Handling missing categorical data"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "e4bf1eee-0f26-4238-a0b6-7dbff8ae4cbf",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "penguins_test.style.highlight_null(color = 'red')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "ec0303b1-173b-441e-8cf0-854084bcce10",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Frequent Category Imputation (mode imputation): replace missing values with the most frequent category\n",
+    "\n",
+    "plt.figure(figsize=(8, 6))\n",
+    "\n",
+    "penguins_test.sex.value_counts().sort_values(ascending=False).plot.bar()\n",
+    "\n",
+    "plt.xlabel('Sex')\n",
+    "plt.ylabel('Number of Penguins')\n",
+    "\n",
+    "plt.tight_layout()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "536c0bf3-e993-40d5-872b-cc3b16c0b392",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "print(\"mode for sex feature: \\n\", penguins_test.sex.mode())"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "5c16380e-7429-4a4b-948c-aba3c819f1d7",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "print(\"Before mode imputation: \\n\", penguins_test['sex'], '\\n')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "3241a199-d08d-4a8c-a9bf-88a51011ab63",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "penguins_test_sex_mode = penguins_test['sex'].fillna(penguins_test.sex.mode()[0])\n",
+    "print(\"After mode imputation: \\n\", penguins_test_sex_mode)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "a99c1e01-f293-47c3-bd28-0a182637f292",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "plt.figure(figsize=(8, 6))\n",
+    "\n",
+    "dataset = []\n",
+    "female = []\n",
+    "male = []\n",
+    "\n",
+    "dataset.append(\"Raw data\")\n",
+    "female.append(penguins_test.sex.value_counts()[\"Female\"])\n",
+    "male.append(penguins_test.sex.value_counts()[\"Male\"])\n",
+    "\n",
+    "dataset.append(\"Frequent Category Imputation\")\n",
+    "female.append(penguins_test_sex_mode.value_counts()[\"Female\"])\n",
+    "male.append(penguins_test_sex_mode.value_counts()[\"Male\"])\n",
+    "\n",
+    "x_axis = np.arange(len(dataset))\n",
+    "\n",
+    "plt.bar(x_axis - 0.2, female, width=0.4, label = 'Female')\n",
+    "plt.bar(x_axis + 0.2, male, width=0.4, label = 'Male')\n",
+    "\n",
+    "# plt.xticks(x_axis, team)\n",
+    "\n",
+    "plt.xlabel('Sex')\n",
+    "plt.ylabel('Number of Penguins')\n",
+    "\n",
+    "plt.tight_layout()\n",
+    "plt.legend()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "59974757-8c8e-45c0-ac29-a915877131f8",
+   "metadata": {},
+   "source": [
+    "**Constant Value Imputation**"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "8011a268-d10c-497a-9657-201903184c94",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Constant Value Imputation\n",
+    "\n",
+    "penguins_test_sex_missing = penguins_test['sex'].fillna(\"Missing\")\n",
+    "print(penguins_test_sex_missing)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "1cd45cc8-6faa-4b26-ba3d-14955f79924a",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "plt.figure(figsize=(8, 6))\n",
+    "\n",
+    "penguins_test_sex_missing.value_counts().sort_values(ascending=False).plot.bar()\n",
+    "\n",
+    "plt.xlabel('Sex')\n",
+    "plt.ylabel('Number of Penguins')\n",
+    "\n",
+    "plt.tight_layout()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "7c682fc0-b90c-406d-8e2a-2c7ad8961e5a",
+   "metadata": {},
+   "source": [
+    "### 2.3 Remove missing values"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "eddb8e37-c5a9-43d2-9758-82c87d70f25c",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "penguins_test.style.highlight_null(color = 'red')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "fe2a8884-9106-43cf-b5f2-6fd3471f7b5c",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "penguins_test_remove = penguins_test.dropna() # axis=1\n",
+    "penguins_test_remove.style.highlight_null(color = 'red')"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "6dbdd32f-3f18-416d-8831-7e544b96ea68",
+   "metadata": {},
+   "source": [
+    "## 3. Handling Outliers"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "b2d89d89-1728-4dd2-b206-f866e3fef60c",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "eod_value = penguins['body_mass_g'].mean() + 3 * penguins_test['body_mass_g'].std()\n",
+    "print(f\"EoD value = {eod_value}\")\n",
+    "\n",
+    "penguins_test_BMG_outlier = penguins[[\"species\", \"bill_length_mm\", \"body_mass_g\"]]\n",
+    "\n",
+    "penguins_test_BMG_outlier.loc[:, \"body_mass_g\"] = penguins_test_BMG_outlier[\"body_mass_g\"].fillna(eod_value)\n",
+    "penguins_test_BMG_outlier"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "49d907e8-4224-495b-8cbc-2dd8b9e31a47",
+   "metadata": {},
+   "source": [
+    "### 3.1 How to define outlier?"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "eca39d7a-f0ba-4310-8c41-96a5fde14b3e",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "plt.figure(figsize=(8, 6))\n",
+    "\n",
+    "sns.swarmplot(y=penguins_test_BMG_outlier[\"species\"], x=penguins_test_BMG_outlier[\"body_mass_g\"],\n",
+    "              color=\"lightgreen\", marker=\"o\", size=4)\n",
+    "\n",
+    "sns.boxplot(y=penguins_test_BMG_outlier[\"species\"], x=penguins_test_BMG_outlier[\"body_mass_g\"], \n",
+    "            palette=\"coolwarm\", notch=True, linewidth=2, width=0.5, \n",
+    "            hue=penguins_test_BMG_outlier.species, legend=False)\n",
+    "\n",
+    "plt.xlabel(\"Body mass (g)\", fontsize=14)\n",
+    "plt.ylabel(\"Species\", fontsize=14)\n",
+    "plt.tick_params(axis='x', labelsize=12)\n",
+    "plt.tick_params(axis='y', labelsize=12)\n",
+    "\n",
+    "plt.tight_layout()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "7dfcbbe8-d12e-4eab-b0d3-8c38792873f8",
+   "metadata": {},
+   "source": [
+    "### 3.2 The Inter quartile range (IQR) method"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "3df8e7db-86f2-4653-9607-0e51d321abac",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "penguins_test_BMG_outlier.describe()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "bffc537d-16ee-49d3-bf56-902b63912ee9",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "print(f\"25% quantile = {penguins_test_BMG_outlier['body_mass_g'].quantile(0.25)}\")\n",
+    "print(f\"75% quantile = {penguins_test_BMG_outlier['body_mass_g'].quantile(0.75)}\\n\")\n",
+    "\n",
+    "IQR = penguins_test_BMG_outlier[\"body_mass_g\"].quantile(0.75) - penguins_test_BMG_outlier[\"body_mass_g\"].quantile(0.25)\n",
+    "lower_bmg_limit = penguins_test_BMG_outlier[\"body_mass_g\"].quantile(0.25) - (1.5 * IQR)\n",
+    "upper_bmg_limit = penguins_test_BMG_outlier[\"body_mass_g\"].quantile(0.75) + (1.5 * IQR)\n",
+    "\n",
+    "print(f\"lower limt of IQR = {lower_bmg_limit} and upper limit of IQR = {upper_bmg_limit}\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "10d46e70-cbd7-4d48-a5ce-5f1370fef323",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "penguins_test_BMG_outlier[penguins_test_BMG_outlier[\"body_mass_g\"] > upper_bmg_limit]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "f9727123-ecf2-411b-9272-94c6789f5e6e",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "penguins_test_BMG_outlier[penguins_test_BMG_outlier[\"body_mass_g\"] < lower_bmg_limit]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "94bdb7e9-1096-4621-aefc-b253c4f9ff82",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "penguins_test_BMG_outlier_remove_IQR = penguins_test_BMG_outlier[penguins_test_BMG_outlier[\"body_mass_g\"] < upper_bmg_limit]\n",
+    "penguins_test_BMG_outlier_remove_IQR"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "3ab8a117-c6cf-4dc5-8850-f1541c827c5d",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "plt.figure(figsize=(8, 6))\n",
+    "\n",
+    "sns.swarmplot(y=penguins_test_BMG_outlier_remove_IQR[\"species\"], x=penguins_test_BMG_outlier_remove_IQR[\"body_mass_g\"], color=\"lightgreen\", marker=\"o\", size=4)\n",
+    "\n",
+    "sns.boxplot(y=penguins_test_BMG_outlier_remove_IQR[\"species\"], x=penguins_test_BMG_outlier_remove_IQR[\"body_mass_g\"], \n",
+    "            palette=\"coolwarm\", notch=True, linewidth=2, width=0.5, \n",
+    "            hue=penguins_test_BMG_outlier_remove_IQR.species, legend=False)\n",
+    "\n",
+    "plt.tight_layout()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "0760f0a2-a0e7-4c13-8151-887856bd79b7",
+   "metadata": {},
+   "source": [
+    "### 3.3 The mean-standard deviation method"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "49a6df46-c71f-40cc-9827-871a8b20c000",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "eod_value = penguins['body_mass_g'].mean() + 3 * penguins_test['body_mass_g'].std()\n",
+    "print(f\"EoD value = {eod_value}\")\n",
+    "\n",
+    "penguins_test_BMG_outlier = penguins[[\"species\", \"bill_length_mm\", \"body_mass_g\"]]\n",
+    "\n",
+    "penguins_test_BMG_outlier.loc[:, \"body_mass_g\"] = penguins_test_BMG_outlier[\"body_mass_g\"].fillna(eod_value)\n",
+    "penguins_test_BMG_outlier"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "9096cd65-0d3c-4f9a-ab43-64a702b812e0",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "mean = penguins_test_BMG_outlier[\"body_mass_g\"].mean()\n",
+    "std = penguins_test_BMG_outlier[\"body_mass_g\"].std()\n",
+    "print(f\"mean = {mean}, std = {std}\", '\\n')\n",
+    "\n",
+    "lower_bmg_limit = mean - (3.0 * std)\n",
+    "upper_bmg_limit = mean + (3.0 * std)\n",
+    "\n",
+    "print(f\"lower limt of mean-std = {lower_bmg_limit} and upper limit of mean-std = {upper_bmg_limit}\")\n",
+    "# lower limt of IQR = 1703.125 and upper limit of IQR = 6628.125"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "8ee02132-b5b8-470d-8126-34fb5f1c031b",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "penguins_test_BMG_outlier[penguins_test_BMG_outlier[\"body_mass_g\"] > upper_bmg_limit]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "77b9ae59-1cd8-45e1-95fb-b48daed1ec94",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "penguins_test_BMG_outlier[penguins_test_BMG_outlier[\"body_mass_g\"] < lower_bmg_limit]\n",
+    "\n",
+    "test = penguins_test_BMG_outlier"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "44bd67e2-888b-4604-9e59-e46860079845",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "penguins_test_BMG_outlier.loc[penguins_test_BMG_outlier[\"body_mass_g\"] < lower_bmg_limit, \"body_mass_g\"] = mean\n",
+    "penguins_test_BMG_outlier.loc[penguins_test_BMG_outlier[\"body_mass_g\"] > upper_bmg_limit, \"body_mass_g\"] = mean\n",
+    "penguins_test_BMG_outlier"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "4dceaa3a-a84e-4716-9b90-c9a744006eb5",
+   "metadata": {},
+   "source": [
+    "## 4. Encoding Categorical Variables"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "15a12308-976a-4f62-8f37-36fb29a38b5f",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "penguins_sex = penguins[[\"species\", \"island\", \"sex\"]].head(10)\n",
+    "penguins_sex"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "51527736-0701-4658-a28a-34134e760c5a",
+   "metadata": {},
+   "source": [
+    "### 4.1 One hot encoding (OHE)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "7a69830b-05b5-41b7-be44-e1b7db7ffd96",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from sklearn.preprocessing import OneHotEncoder\n",
+    "\n",
+    "encoder = OneHotEncoder(sparse_output=False)  # `sparse_output=False` to get a dense array\n",
+    "encoded = encoder.fit_transform(penguins_sex[['sex']])\n",
+    "\n",
+    "encoded = pd.DataFrame(encoded, columns=[\"Female\", \"Male\", \"NaN\"])\n",
+    "\n",
+    "penguins_sex_onehotencoding = pd.concat([penguins_sex, encoded], axis=1)\n",
+    "penguins_sex_onehotencoding"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "1965e127-b284-4ff4-9f7b-444df5f343e1",
+   "metadata": {},
+   "source": [
+    "### 4.2 Label encoding"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "77785da5-3782-4a42-94ec-ce44b033caff",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "penguins_sex"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "663e5919-733e-4866-93a8-f190803e076e",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from sklearn.preprocessing import LabelEncoder\n",
+    "\n",
+    "encoder = LabelEncoder()\n",
+    "encoded = encoder.fit_transform(penguins_sex['sex'])\n",
+    "encoded = pd.DataFrame(encoded, columns=[\"sex_LE\"])\n",
+    "\n",
+    "penguins_sex_labelencoding = pd.concat([penguins_sex, encoded], axis=1)\n",
+    "penguins_sex_labelencoding"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "d9a4887f-c02f-4942-81e0-8eb647f0cd87",
+   "metadata": {},
+   "source": [
+    "### 4.3 The get_dummies() function in Pandas"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "38610e1a-94e9-4186-8049-8694ed3eb2fc",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "penguins_sex"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "409b6334-dc7c-41d4-bd9a-4659a490567c",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "dummy_encoded = pd.get_dummies(penguins_sex['sex']).astype(np.int8)\n",
+    "penguins_sex_dummyencoding = pd.concat([penguins_sex, dummy_encoded], axis=1)\n",
+    "penguins_sex_dummyencoding"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.10.13"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}

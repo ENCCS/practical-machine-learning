@@ -1,0 +1,909 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Supervised Learning (I): Classification &mdash; Practical Machine Learning  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_lesson.css?v=e9df6548" />
+      <link rel="stylesheet" type="text/css" href="../_static/term_role_formatting.css?v=4194e21c" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_rtd_theme_ext_color_contrast.css?v=8e8ea19f" />
+      <link rel="stylesheet" type="text/css" href="../_static/overrides.css?v=c88db32d" />
+
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=187304be"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=35a8b989"></script>
+      <script src="../_static/minipres.js?v=a0d29692"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex/" />
+    <link rel="search" title="Search" href="../search/" />
+    <link rel="next" title="Supervised Learning (II): Regression" href="../06-supervised-ML-regression/" />
+    <link rel="prev" title="Data Preparation for Machine Learning" href="../04-data-preparation-for-ML/" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../" class="icon icon-home">
+            Practical Machine Learning
+              <img src="../_static/ENCCS.jpg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search/" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Software setup</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../00-software-setup/">Setting Up Programming Environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Lesson episodes</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../01-intro-to-ML/">Introduction to Machine Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../02-fundamentals-of-ML/">Fundamentals of Machine Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../03-scientific-data-for-ML/">Scientific Data for Machine Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../04-data-preparation-for-ML/">Data Preparation for Machine Learning</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Supervised Learning (I): Classification</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#classification">Classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data-preparation">Data Preparation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data-processing">Data Processing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#data-splitting">Data splitting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#feature-scaling">Feature scaling</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#training-model-evaluating-model-performance">Training Model &amp; Evaluating Model Performance</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#k-nearest-neighbors-knn">k-Nearest Neighbors (KNN)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#logistic-regression">Logistic Regression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#naive-bayes">Naive Bayes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#support-vector-machine-svm">Support Vector Machine (SVM)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#decision-tree">Decision Tree</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#optional-random-forest">(Optional) Random Forest</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#optional-gradient-boosting">(Optional) Gradient Boosting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multi-layer-perceptron">Multi-Layer Perceptron</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#optional-deep-neural-networks">(Optional) Deep Neural Networks</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#comparison-of-trained-models">Comparison of Trained Models</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../06-supervised-ML-regression/">Supervised Learning (II): Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../07-unsupervised-ML-clustering/">Unsupervised Learning (I): Clustering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../08-unsupervised-ML-dimensionality-reduction/">Unsupervised Learning (II): Dimensionality Reduction</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quick-reference/">Quick Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guide/">Instructor’s guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://enccs.se/lessons/">All lessons</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://enccs.se/">ENCCS</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../">Practical Machine Learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Supervised Learning (I): Classification</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/ENCCS/practical-machine-learning/blob/main/content/05-supervised-ML-classification.md" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="supervised-learning-i-classification">
+<h1>Supervised Learning (I): Classification<a class="headerlink" href="#supervised-learning-i-classification" title="Link to this heading"></a></h1>
+<div class="admonition-objectives objectives admonition" id="objectives-0">
+<p class="admonition-title">Objectives</p>
+<ul class="simple">
+<li><p>Describe the basic concepts of classification tasks, including inputs (features), outputs (labels), and common algorithms.</p></li>
+<li><p>Preprocess data in the Penguins dataset by handling missing values, managing outliers, and encoding categorical features.</p></li>
+<li><p>Perform classification tasks using representative algorithms (<em>e.g.</em>, k-NN, Logistic Regression, Naive Bayes, Support Vector Machine, Decision Tree, Random Forest, Gradient Boosting, Multi-Layer Perceptron, and Neural Networks).</p></li>
+<li><p>Evaluate model performance with metrics such as accuracy, precision, recall, F1-score, and confusion matrices.</p></li>
+</ul>
+</div>
+<div class="admonition-instructor-note instructor-note admonition" id="instructor-note-0">
+<p class="admonition-title">Instructor note</p>
+<ul class="simple">
+<li><p>40 min teaching/demonstration</p></li>
+<li><p>40 min exercises</p></li>
+</ul>
+</div>
+<section id="classification">
+<h2>Classification<a class="headerlink" href="#classification" title="Link to this heading"></a></h2>
+<p>Classification is a supervised ML task in which a model predicts discrete class labels based on input features. It involves training the model on labeled data so that it can assign new and unseen data to predefined categories or classes by learning patterns from the training dataset.</p>
+<p>In binary classification, the model predicts one of two classes, such as spam or not spam for emails. Multiclass classification extends this to multiple categories, like classifying images as cats, dogs, or birds.</p>
+<p>Common algorithms for classification tasks include k-Nearest Neighbors (KNN), Logistic Regression, Naive Bayes, Support Vector Machine (SVM), Decision Trees, Random Forests, Gradient Boosting, and Neural Networks.</p>
+<p>In this episode we will perform supervised classification to categorize penguins into three species — Adelie, Chinstrap, and Gentoo — based on their physical measurements (flipper length, body mass, <em>etc.</em>). We will build and train multiple classifier models, and then evaluate their performance using metrics such as accuracy, precision, recall, and F1 score.
+By comparing the results, we aim to identify which model provides the most accurate and reliable classification for this task.</p>
+</section>
+<section id="data-preparation">
+<h2>Data Preparation<a class="headerlink" href="#data-preparation" title="Link to this heading"></a></h2>
+<p>In the previous episode, <a class="reference internal" href="../04-data-preparation-for-ML/"><span class="std std-doc">Episode 4: Data Preparation for Machine Learning</span></a>, we discussed data preparation steps, including handling missing values, detecting outliers, and encoding categorical variables.</p>
+<p>In this episode, we will revisit these steps, with particular emphasis on encoding categorical variables. For the classification task, we will treat the categorical variable <code class="docutils literal notranslate"><span class="pre">species</span></code> as the label (target variable) and use the remaining columns as features to predict the penguins species.
+To achieve this, we transform the categorical features <code class="docutils literal notranslate"><span class="pre">island</span></code> and <code class="docutils literal notranslate"><span class="pre">sex</span></code>, as well as the <code class="docutils literal notranslate"><span class="pre">species</span></code> label, into numerical format (code examples are availalbe in the <a class="reference internal" href="../jupyter-notebooks/5-ML-Classifion/"><span class="std std-doc">Jupyter Notebook</span></a>).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">LabelEncoder</span>
+<span class="n">encoder</span> <span class="o">=</span> <span class="n">LabelEncoder</span><span class="p">()</span>
+
+<span class="n">penguins</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">load_dataset</span><span class="p">(</span><span class="s1">&#39;penguins&#39;</span><span class="p">)</span>
+<span class="n">penguins_classification</span> <span class="o">=</span> <span class="n">penguins</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+
+<span class="c1"># encode `species` column with 0=Adelie, 1=Chinstrap, and 2=Gentoo</span>
+<span class="n">penguins_classification</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="s1">&#39;species&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">encoder</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">penguins_classification</span><span class="p">[</span><span class="s1">&#39;species&#39;</span><span class="p">])</span>
+
+<span class="c1"># encode `island` column with 0=Biscoe, 1=Dream and 2=Torgersen</span>
+<span class="n">penguins_classification</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="s1">&#39;island&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">encoder</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">penguins_classification</span><span class="p">[</span><span class="s1">&#39;island&#39;</span><span class="p">])</span>
+
+<span class="c1"># encode `sex` column with 0=Female, and 1=Male</span>
+<span class="n">penguins_classification</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="s1">&#39;sex&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">encoder</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">penguins_classification</span><span class="p">[</span><span class="s1">&#39;sex&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<div class="admonition-discussion discussion important admonition" id="discussion-0">
+<p class="admonition-title">Discussion</p>
+<ul class="simple">
+<li><p>why to use <code class="docutils literal notranslate"><span class="pre">species</span></code>?</p></li>
+<li><p>why not to use the other categorical variables (<code class="docutils literal notranslate"><span class="pre">island</span></code> and <code class="docutils literal notranslate"><span class="pre">sex</span></code>)?</p></li>
+</ul>
+</div>
+</section>
+<section id="data-processing">
+<h2>Data Processing<a class="headerlink" href="#data-processing" title="Link to this heading"></a></h2>
+<p>In this episode, data processing will focus on two essential steps: <strong>data splitting</strong> and <strong>feature scaling</strong></p>
+<section id="data-splitting">
+<h3>Data splitting<a class="headerlink" href="#data-splitting" title="Link to this heading"></a></h3>
+<p>Data splitting involves two important substeps: splitting into features and labels, and splitting into training and testing sets.</p>
+<p>The first substep is to split the dataset into features and labels. Features (also called predictors or independent variables) are the input values used to make predictions, while labels (or target variables) represent the output the model is trying to predict.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">X</span> <span class="o">=</span> <span class="n">penguins_classification</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;species&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">penguins_classification</span><span class="p">[</span><span class="s1">&#39;species&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;int&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The second substep is to divide the Penguins dataset into training and testing sets. The training set is used to fit and train the models, allowing it to learn patterns and relationships from the data, and the testing set, on the other hand, is reserved for evaluating the model’s performance on unseen data.</p>
+<p>A common split is 80% for training and 20% for testing, which provides enough data for training while still retaining a meaningful set for testing.
+This step is typically performed using the <code class="docutils literal notranslate"><span class="pre">train_test_split</span></code> function from <code class="docutils literal notranslate"><span class="pre">sklearn.model_selection</span></code>, where setting a fixed <code class="docutils literal notranslate"><span class="pre">random_state</span></code> ensures reproducibility of the results.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_test_split</span>
+
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of examples for training is </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span><span class="si">}</span><span class="s2"> and test is </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="feature-scaling">
+<h3>Feature scaling<a class="headerlink" href="#feature-scaling" title="Link to this heading"></a></h3>
+<p>Feature scaling is to standardize or normalize the range of independent variables (features) in a dataset.
+In many datasets, features can have different units or scales. For example, in the Penguins dataset, body mass is measured in grams and can range in the thousands, while flipper length is measured in millimeters and typically ranges in the hundreds. These differences in scale can unintentionally bias ML algorithms, making features with larger values dominate the learning process, leading to biased and inaccurate models.</p>
+<p>Scaling transforms these features to a common, limited range, such as [0, 1] or a distribution with a mean of 0 and a standard deviation of 1, without distorting the differences in the ranges of values or losing information.
+This is particularly important for algorithms that rely on distance calculations, such as k-Nearest Neighbors (k-NN), Support Vector Machines (SVM), and clustering methods. Similarly, gradient-based optimization methods (used in neural networks and logistic regression) converge faster and more reliably when input features are scaled.
+Without scaling, the algorithm might oscillate inefficiently or struggle to find the optimal solution. Furthermore, it helps ensure that regularization penalties are applied uniformly across all coefficients, preventing the model from unfairly penalizing features with smaller natural ranges.</p>
+<p>Two of the most common methods for feature scaling are <strong>Normalization</strong> (Min-Max Scaling) and <strong>Standardization</strong> (Z-score Normalization).</p>
+<ul>
+<li><p>Normalization (Min-Max Scaling)</p>
+<ul>
+<li><p>This technique rescales the features to a fixed range, typically [0, 1].</p></li>
+<li><p>It is calculated by subtracting the minimum value of the feature and then dividing by the range (max - min), and its formula is</p>
+<div class="math notranslate nohighlight">
+\[X\_scaled = \frac{(X - X\_min)}{(X\_max - X\_min)}\]</div>
+</li>
+<li><p>This method is useful when the distribution is not Gaussian or when the algorithm requires input values bounded within a specific range (<em>e.g.</em>, neural networks often use activation functions that expect inputs in the [0,1] range).</p></li>
+</ul>
+</li>
+<li><p>Standardization (Z-score Normalization)</p>
+<ul>
+<li><p>This technique transforms the data to have a mean of 0 and a standard deviation of 1.</p></li>
+<li><p>It is calculated by subtracting the mean value (μ) of the feature and then dividing by the standard deviation (σ), and its formula is</p>
+<div class="math notranslate nohighlight">
+\[X\_scaled = \frac{X - \mu}{\sigma}.\]</div>
+</li>
+<li><p>Standardization is less affected by outliers than Min-Max scaling and is often the preferred choice for algorithms that assume data is centered (like SVM and PCA).</p></li>
+</ul>
+</li>
+</ul>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/5-feature-scaling.png"><img alt="../_images/5-feature-scaling.png" src="../_images/5-feature-scaling.png" style="width: 95%;" />
+</a>
+</figure>
+<p>In practice, these transformations are easily applied using libraries like scikit-learn with the <code class="docutils literal notranslate"><span class="pre">MinMaxScaler</span></code> and <code class="docutils literal notranslate"><span class="pre">StandardScaler</span></code> classes, which efficiently learn the parameters (<code class="docutils literal notranslate"><span class="pre">mean</span></code>, <code class="docutils literal notranslate"><span class="pre">min</span></code>, <code class="docutils literal notranslate"><span class="pre">max</span></code>) from the training data and apply them consistently to avoid data leakage.</p>
+<p>In this episode, we will apply feature standardization to both the training and testing sets. The implementation can be easily achieved using <code class="docutils literal notranslate"><span class="pre">StandardScaler</span></code> from <code class="docutils literal notranslate"><span class="pre">sklearn.preprocessing</span></code>, as shown in the code below.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">StandardScaler</span>
+
+<span class="n">scaler</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span>
+
+<span class="n">X_train_scaled</span> <span class="o">=</span> <span class="n">scaler</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+<span class="n">X_test_scaled</span> <span class="o">=</span> <span class="n">scaler</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="training-model-evaluating-model-performance">
+<h2>Training Model &amp; Evaluating Model Performance<a class="headerlink" href="#training-model-evaluating-model-performance" title="Link to this heading"></a></h2>
+<p>After preparing the Penguins dataset by handling missing values, encoding categorical variables, and splitting it into features/labels and training/testing sets, the next step is to apply classification algorithms.
+In this episode, we will experiment with k-Nearest Neighbors (KNN), Naive Bayes, Decision Trees, Random Forests, and Neural Networks to predict penguins species based on their physical measurements. Each of these algorithms offers a distinct approach to pattern recognition and generalization. By applying them to the same prepared dataset, we can make a fair and meaningful comparison of their predictive performance.</p>
+<p>The workflow for training and evaluating a classification model generally follows these steps:</p>
+<ul class="simple">
+<li><p>Choose a model class and import it, <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">sklearn.neighbors</span> <span class="pre">import</span> <span class="pre">XXX</span></code>.</p></li>
+<li><p>Set model hyperparameters by instantiating the class with desired values, <code class="docutils literal notranslate"><span class="pre">xxx_model</span> <span class="pre">=</span> <span class="pre">XXX(&lt;...</span> <span class="pre">hyperparameters</span> <span class="pre">...&gt;)</span></code>.</p></li>
+<li><p>Train the model on the preprocessed training data using the <code class="docutils literal notranslate"><span class="pre">.fit()</span></code> method, <code class="docutils literal notranslate"><span class="pre">xxx_model.fit(X_train_scaled,</span> <span class="pre">y_train)</span></code>.</p></li>
+<li><p>Make predictions on the testing data with the <code class="docutils literal notranslate"><span class="pre">.predict()</span></code> method, <code class="docutils literal notranslate"><span class="pre">y_pred_xxx</span> <span class="pre">=</span> <span class="pre">xxx_model.predict(X_test_scaled)</span></code>.</p></li>
+<li><p>Evaluate model performance using appropriate metrics, <code class="docutils literal notranslate"><span class="pre">score_xxx</span> <span class="pre">=</span> <span class="pre">accuracy_score(y_test,</span> <span class="pre">y_pred_xxx)</span></code>.</p></li>
+<li><p>Visualize the results, for example by plotting a confusion matrix or other diagnostic charts to better understand model performance.</p></li>
+</ul>
+<section id="k-nearest-neighbors-knn">
+<h3>k-Nearest Neighbors (KNN)<a class="headerlink" href="#k-nearest-neighbors-knn" title="Link to this heading"></a></h3>
+<p>One intuitive and widely used method for classification is the k-Nearest Neighbors (KNN) algorithm. KNN is a non-parametric, instance-based approach that predicts a sample’s label by considering the majority class of its <em>k</em> closest neighbors in the training set. Unlike many other algorithms, <strong>KNN does not require a traditional training phase</strong>; instead, <strong>it stores the entire dataset and performs the necessary computations at prediction step</strong>. This makes it a lazy learner — simple to implement but potentially expensive during inference, especially with large datasets.</p>
+<p>Below is an example illustrating how KNN determines the class of a new query point. Given a query point, KNN first calculates the distance between this point and all points in the training set. It then identifies the <em>k</em> closest points, and the class that appears most frequently among these neighbors is assigned as the predicted label for the query point. The choice of <em>k</em> plays a crucial role in performance: a small <em>k</em> can make the model overly sensitive to noise, while a large <em>k</em> may oversmooth the decision boundaries and obscure important local patterns.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/5-knn-example.png"><img alt="../_images/5-knn-example.png" src="../_images/5-knn-example.png" style="width: 90%;" />
+</a>
+</figure>
+<p>Let’s create a KNN model. Here, we set <code class="docutils literal notranslate"><span class="pre">k</span> <span class="pre">=</span> <span class="pre">3</span></code>, meaning that the algorithm will consider the 3 nearest neighbors to determine the class of a data point. We then train the model on the training set using the <code class="docutils literal notranslate"><span class="pre">.fit()</span></code> method.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.neighbors</span><span class="w"> </span><span class="kn">import</span> <span class="n">KNeighborsClassifier</span>
+
+<span class="n">knn_model</span> <span class="o">=</span> <span class="n">KNeighborsClassifier</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">knn_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train_scaled</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>After fitting the model to the training dataset, we use the trained KNN model to predict the species on the testing set and evaluate its performance.</p>
+<p>For classification tasks, metrics such as accuracy, precision, recall, and the F1-score provide a comprehensive assessment of model performance:</p>
+<ul class="simple">
+<li><p><strong>Accuracy</strong> measures the proportion of correctly classified instances across all species (Adelie, Chinstrap, Gentoo). It provides an overall sense of how often the model is correct but can be misleading when the dataset is imbalanced.</p></li>
+<li><p><strong>Precision</strong> quantifies the proportion of correct positive predictions for each species, while <strong>recall</strong> measures the proportion of actual positives that are correctly identified.</p></li>
+<li><p><strong>F1-score</strong> is the harmonic mean of precision and recall, offering a balanced metric for each class. It is particularly useful when dealing with imbalanced class distributions, as it accounts for both false positives and false negatives.</p></li>
+</ul>
+<div class="dropdown callout admonition" id="callout-0">
+<p class="admonition-title">Relations among different matrics</p>
+<p>In classification tasks, model predictions can be compared against the true labels to assess performance. This comparison is often summarized using four key concepts: True Positive (TP), True Negative (TN), False Positive (FP), and False Negative (FN).</p>
+<p>Suppose we focus on identifying Adelie penguins as the positive class.</p>
+<ul class="simple">
+<li><p>A True Positive occurs when the model correctly predicts a penguin as Adelie and it truly belongs to that species.</p></li>
+<li><p>A True Negative happens when the model correctly identifies a penguin as not Adelie (<em>i.e.</em>, Chinstrap or Gentoo).</p></li>
+<li><p>A False Positive arises when the model incorrectly predicts a penguin as Adelie when it is actually another species.</p></li>
+<li><p>A False Negative occurs when an Adelie penguin is mistakenly predicted as Chinstrap or Gentoo.</p></li>
+</ul>
+<p>These four outcomes form the basis of performance metrics such as accuracy, precision, recall, and F1-score, which help evaluate how well the model distinguishes between species.</p>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># predict on testing data</span>
+<span class="n">y_pred_knn</span> <span class="o">=</span> <span class="n">knn_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test_scaled</span><span class="p">)</span>
+
+<span class="c1"># evaluate model performance</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">classification_report</span><span class="p">,</span> <span class="n">accuracy_score</span>
+
+<span class="n">score_knn</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred_knn</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Accuracy for k-Nearest Neighbors:&quot;</span><span class="p">,</span> <span class="n">score_knn</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Classification Report:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">classification_report</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred_knn</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>In classification tasks, a <strong>confusion matrix</strong> is a powerful tool for evaluating model performance by comparing predicted labels with true labels. For a multiclass problem like the Penguins dataset, the confusion matrix is an <strong>N x N</strong> matrix, where N represents the number of target classes (here, <strong>N=3</strong> for the three penguins species).
+Each cell <em>(i, j)</em> shows the number of instances where the true class was <em>i</em> and the model predicted class <em>j</em>. Diagonal elements correspond to correct predictions, while off-diagonal elements indicate misclassifications. This visualization provides an intuitive overview of how often the model predicts correctly and where it tends to make errors.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">confusion_matrix</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">plot_confusion_matrix</span><span class="p">(</span><span class="n">conf_matrix</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">fig_name</span><span class="p">):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">conf_matrix</span><span class="p">,</span> <span class="n">annot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;OrRd&#39;</span><span class="p">,</span>
+                <span class="n">xticklabels</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Adelie&quot;</span><span class="p">,</span> <span class="s2">&quot;Chinstrap&quot;</span><span class="p">,</span> <span class="s2">&quot;Gentoo&quot;</span><span class="p">],</span>
+                <span class="n">yticklabels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Adelie&#39;</span><span class="p">,</span> <span class="s1">&#39;Chinstrap&#39;</span><span class="p">,</span> <span class="s1">&#39;Gentoo&#39;</span><span class="p">],</span> <span class="n">cbar</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Predicted Label&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;True Label&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">fig_name</span><span class="p">)</span>
+
+
+<span class="n">cm_knn</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred_knn</span><span class="p">)</span>
+
+<span class="n">plot_confusion_matrix</span><span class="p">(</span><span class="n">cm_knn</span><span class="p">,</span> <span class="s2">&quot;Confusion Matrix using KNN algorithm&quot;</span><span class="p">,</span> <span class="s2">&quot;5-confusion-matrix-knn.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<figure class="align-center" id="id1">
+<a class="reference internal image-reference" href="../_images/5-confusion-matrix-knn.png"><img alt="../_images/5-confusion-matrix-knn.png" src="../_images/5-confusion-matrix-knn.png" style="width: 75%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">The first row: there are 28 Adelie penguins in the test data, and all these penguins are identified as Adelie (valid). The second row: there are 20 Chinstrap pengunis in the test data, with 2 identified as Adelie (invalid), and 18 identified as Chinstrap (valid). The third row: there are 19 Gentoo penguins in the test data, and all these penguins are identified as Gentoo (valid).</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The choice of <code class="docutils literal notranslate"><span class="pre">k</span></code> can greatly affect the accuracy of KNN. Always try multiple <code class="docutils literal notranslate"><span class="pre">k</span></code> values and compare their performance. For the Penguins dataset, test different k values (<em>e.g.</em>, 3, 5, 7, 9, …) to find the optimal k that gives the best classification results (accuracy score).</p>
+</div>
+</section>
+<section id="logistic-regression">
+<h3>Logistic Regression<a class="headerlink" href="#logistic-regression" title="Link to this heading"></a></h3>
+<p><strong>Logistic Regression</strong> is a fundamental classification algorithm to predict categorical outcomes. Despite its name, logistic regression is not a regression algorithm but a classification method that predicts the <strong>probability</strong> of an instance belonging to a particular class.</p>
+<p>For binary classification, it uses the logistic (<strong>sigmoid</strong>) function to map a linear combination of input features to a probability between 0 and 1, which is then thresholded (typically at 0.5) to assign a class.</p>
+<p>For multiclass classification, logistic regression can be extended using approaches such as one-vs-rest (OvR) or softmax regression.</p>
+<ul class="simple">
+<li><p>In OvR, a separate binary classifier is trained for each species, treating that species as the positive class (blue area) and all other species as the negative class (red area).</p></li>
+<li><p>Softmax regression generalizes the logistic function to compute probabilities across all classes simultaneously, assigning each instance to the class with the highest predicted probability.</p></li>
+</ul>
+<figure class="align-center" id="id2">
+<a class="reference internal image-reference" href="../_images/5-logistic-regression-example.png"><img alt="../_images/5-logistic-regression-example.png" src="../_images/5-logistic-regression-example.png" style="width: 95%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">(Upper left) the sigmoid function; (upper middle) the softmax regression process: three input features to the softmax regression model resulting in three output vectors where each contains the predicted probabilities for three possible classes; (upper right) a bar chart of softmax outputs in which each group of bars represents the predicted probability distribution over three classes; (lower subplots) three binary classifiers distinguish one class from the other two classes using the one-vs-rest approach.</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>The process of creating a Logistic Regression model and fitting it to the training data is very similar to the approach used for the KNN model described earlier, with the main difference being the choice of classifier. A code example and the resulting confusion matrix plot are provided below.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogisticRegression</span>
+
+<span class="n">lr_model</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">random_state</span> <span class="o">=</span> <span class="mi">123</span><span class="p">)</span>
+<span class="n">lr_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train_scaled</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+<span class="n">y_pred_lr</span> <span class="o">=</span> <span class="n">lr_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test_scaled</span><span class="p">)</span>
+
+<span class="n">score_lr</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred_lr</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Accuracy for Logistic Regression:&quot;</span><span class="p">,</span> <span class="n">score_lr</span> <span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Classification Report:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">classification_report</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred_lr</span><span class="p">))</span>
+
+<span class="n">cm_lr</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred_lr</span><span class="p">)</span>
+
+<span class="n">plot_confusion_matrix</span><span class="p">(</span><span class="n">cm_lr</span><span class="p">,</span> <span class="s2">&quot;Confusion Matrix using Logistic Regression algorithm&quot;</span><span class="p">,</span> <span class="s2">&quot;5-confusion-matrix-lr.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/5-confusion-matrix-lr.png"><img alt="../_images/5-confusion-matrix-lr.png" src="../_images/5-confusion-matrix-lr.png" style="width: 75%;" />
+</a>
+</figure>
+</section>
+<section id="naive-bayes">
+<h3>Naive Bayes<a class="headerlink" href="#naive-bayes" title="Link to this heading"></a></h3>
+<p>The <strong>Naive Bayes</strong> algorithm is a simple yet powerful probabilistic classifier based on <a class="reference external" href="https://en.wikipedia.org/wiki/Bayes%27_theorem">Bayes’ Theorem</a>. It assumes that all features are and equally important — a condition that often does not hold in practice, which can introduce some bias. However, this independence assumption greatly simplifies computations by allowing conditional probabilities to be expressed as the product of individual feature probabilities. Given an input instance, the algorithm calculates the posterior probability for each class and assigns the instance to the class with the highest probability.</p>
+<p>Logistic Regression and Naive Bayes are both popular algorithms for classification tasks, but they differ significantly in their approach, assumptions, and underlying mechanics. Below is an example comparing Logistic Regression and Naive Bayes decision boundaries on a synthetic dataset with two features. The visualization highlights their fundamental differences: <strong>Logistic Regression learns a linear decision boundary directly, whereas Naive Bayes models feature distributions for each class under the independence assumption</strong>.</p>
+<div class="dropdown callout admonition" id="callout-1">
+<p class="admonition-title"><strong>Logistic Regression</strong> <em>vs.</em> <strong>Naive Bayes</strong></p>
+<ul class="simple">
+<li><p>Logistic Regression is a <strong>discriminative</strong> model that directly estimates the probability of a data point belonging to a particular class by fitting a linear combination of features. In the context of the Penguins dataset, Logistic Regression uses features such as bill length and flipper length to compute a weighted sum, which is then transformed into probabilities for penguins species. The model assumes a linear relationship between the features and the log-odds of the classes and optimizes parameters using maximum likelihood estimation. This makes Logistic Regression sensitive to feature scaling and correlations. It is generally robust to noise and can tolerate moderately correlated features, but it may struggle with highly non-linear relationships unless additional feature engineering is applied.</p></li>
+<li><p>Naive Bayes, by contrast, is a <strong>generative</strong> model that applies Bayes’ theorem to estimate the probability of a class given the input features, assuming conditional independence between features. For the Penguins dataset, it estimates the likelihood of features (<em>e.g.</em>, bill depth) for each species and combines these with prior probabilities to predict the most likely species. The “naive” independence assumption often does not hold in practice (<em>e.g.</em>, bill length and depth may be correlated), but it simplifies computation and allows Naive Bayes to be highly efficient, especially for high-dimensional data. It is less sensitive to irrelevant features and does not require feature scaling. However, it can underperform when feature dependencies are strong or when the data distribution deviates from the model’s assumptions (<em>e.g.</em>, Gaussian for continuous features in Gaussian Naive Bayes). Zero probabilities must be carefully handled, typically via smoothing techniques.</p></li>
+</ul>
+</div>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/5-naive-bayes-example.png"><img alt="../_images/5-naive-bayes-example.png" src="../_images/5-naive-bayes-example.png" style="width: 95%;" />
+</a>
+</figure>
+<p>To apply Naive Bayes, we use <code class="docutils literal notranslate"><span class="pre">GaussianNB</span></code> from <code class="docutils literal notranslate"><span class="pre">sklearn.naive_bayes</span></code>, which assumes that the features follow a Gaussian (normal) distribution — making it suitable for continuous numerical data such as bill length and body mass.</p>
+<ul class="simple">
+<li><p>Because Naive Bayes relies on probabilities, <strong>feature scaling is not required</strong>; however, <strong>handling missing values and encoding categorical variables numerically remains necessary</strong>.</p></li>
+<li><p>While Naive Bayes may not always match the performance of more complex models like Random Forests, it offers fast training, low memory requirements, and reliable performance for simpler classification tasks.</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.naive_bayes</span><span class="w"> </span><span class="kn">import</span> <span class="n">GaussianNB</span>
+
+<span class="n">nb_model</span> <span class="o">=</span> <span class="n">GaussianNB</span><span class="p">()</span>
+<span class="n">nb_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train_scaled</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+<span class="n">y_pred_nb</span> <span class="o">=</span> <span class="n">nb_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test_scaled</span><span class="p">)</span>
+
+<span class="n">score_nb</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred_nb</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Accuracy for Naive Bayes:&quot;</span><span class="p">,</span> <span class="n">score_nb</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Classification Report:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">classification_report</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred_nb</span><span class="p">))</span>
+
+<span class="n">cm_nb</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred_nb</span><span class="p">)</span>
+<span class="n">plot_confusion_matrix</span><span class="p">(</span><span class="n">cm_nb</span><span class="p">,</span> <span class="s2">&quot;Confusion Matrix using Naive Bayes algorithm&quot;</span><span class="p">,</span> <span class="s2">&quot;4-confusion-matrix-nb.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/5-confusion-matrix-nb.png"><img alt="../_images/5-confusion-matrix-nb.png" src="../_images/5-confusion-matrix-nb.png" style="width: 75%;" />
+</a>
+</figure>
+</section>
+<section id="support-vector-machine-svm">
+<h3>Support Vector Machine (SVM)<a class="headerlink" href="#support-vector-machine-svm" title="Link to this heading"></a></h3>
+<p>Previously, we presented an example using a Logistic Regression classifier, which produces a linear decision boundary to separate two classes based on their features. It works by fitting this linear boundary using the logistic function, making it particularly effective when the data is linearly separable. A notable characteristic of Logistic Regression is that the decision boundary typically lies in the region where the predicted probabilities of the two classes are closest — essentially where the model is most uncertain.</p>
+<p>However, when there is a large gap between two well-separated classes — as can occur when distinguishing cats from dogs based on weight and size — Logistic Regression faces an inherent limitation: an infinite number of possible solutions. The algorithm has no built-in mechanism to select a single “optimal” boundary when multiple valid linear separators exist within the wide margin between classes. As a result, it may place the decision boundary somewhere in that gap, creating a broad, undefined region with little or no supporting data. While this may not affect accuracy on clearly separated data, it can reduce the model’s robustness when new or noisy data points appear near that boundary.</p>
+<p>Below is another example of separating cats from dogs based on ear length and weight. In addition to the linear decision boundary produced by the Logistic Regression classifier, we can identify three other linear boundaries that also achieve good separation between the two classes. The question then arises: which boundary is truly better, and how can we evaluate their performance on unseen data?</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/5-svm-example-large-gap.png"><img alt="../_images/5-svm-example-large-gap.png" src="../_images/5-svm-example-large-gap.png" style="width: 95%;" />
+</a>
+</figure>
+<p>To better handle such situations, we can turn to the <strong>Support Vector Machine (SVM)</strong> algorithm. Unlike Logistic Regression, SVM focuses on maximizing the margin — the distance between the decision boundary and the closest data points from each class, known as support vectors (as illustrated in the figure below). When a large gap exists between two classes, SVM takes advantage of this space by positioning the boundary near the center of the gap while maintaining the maximum margin. This results in a more stable and robust classifier, especially when the classes are well-separated.</p>
+<p>Unlike Logistic Regression, which considers all data points to estimate probabilities, SVM relies primarily on the most critical examples — those closest to the decision boundary — making it less sensitive to outliers and more precise in defining class separations.</p>
+<figure class="align-center" id="id3">
+<a class="reference internal image-reference" href="../_images/5-svm-example-with-max-margin-separation.png"><img alt="../_images/5-svm-example-with-max-margin-separation.png" src="../_images/5-svm-example-with-max-margin-separation.png" style="width: 95%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">The SVM classification boundary for distinguishing cats and dogs based on ear length and weight. The solid black line represents the maximum margin hyperplane (decision boundary), while the dashed green lines indicate the positive and negative hyperplanes that define the margin. The black circles highlight the support vectors — the critical data points that determine the width of the margin.</span><a class="headerlink" href="#id3" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>To apply SVM, we use <code class="docutils literal notranslate"><span class="pre">SVC</span></code> (Support Vector Classification) from <code class="docutils literal notranslate"><span class="pre">sklearn.svm</span></code>. By default, it assumes a nonlinear relationship between features, modeled using the <code class="docutils literal notranslate"><span class="pre">rbf</span></code> (Radial Basis Function) kernel. This kernel enables the model to learn complex decision boundaries by implicitly mapping input features into a higher-dimensional space.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can also experiment with other kernels, such as <code class="docutils literal notranslate"><span class="pre">linear</span></code>, <code class="docutils literal notranslate"><span class="pre">poly</span></code>, or <code class="docutils literal notranslate"><span class="pre">sigmoid</span></code>, to explore different types of decision boundaries.</p>
+</div>
+<p>By adjusting hyperparameters such as <code class="docutils literal notranslate"><span class="pre">C</span></code> (regularization strength) and <code class="docutils literal notranslate"><span class="pre">gamma</span></code> (kernel coefficient), we can control the trade-off between margin width and classification accuracy. Below is a code example demonstrating how to apply <code class="docutils literal notranslate"><span class="pre">SVC</span></code> with the <code class="docutils literal notranslate"><span class="pre">rbf</span></code> kernel to classify penguins.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.svm</span><span class="w"> </span><span class="kn">import</span> <span class="n">SVC</span>
+
+<span class="n">svm_model</span> <span class="o">=</span> <span class="n">SVC</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="s1">&#39;rbf&#39;</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="s1">&#39;scale&#39;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span>
+<span class="n">svm_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train_scaled</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+<span class="n">y_pred_svm</span> <span class="o">=</span> <span class="n">svm_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test_scaled</span><span class="p">)</span>
+
+<span class="n">score_svm</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred_svm</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Accuracy for Support Vector Machine:&quot;</span><span class="p">,</span> <span class="n">score_svm</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Classification Report:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">classification_report</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred_svm</span><span class="p">))</span>
+
+<span class="n">cm_svm</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred_svm</span><span class="p">)</span>
+
+<span class="n">plot_confusion_matrix</span><span class="p">(</span><span class="n">cm_svm</span><span class="p">,</span> <span class="s2">&quot;Confusion Matrix using Support Vector Machine algorithm&quot;</span><span class="p">,</span> <span class="s2">&quot;5-confusion-matrix-svm.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/5-confusion-matrix-svm.png"><img alt="../_images/5-confusion-matrix-svm.png" src="../_images/5-confusion-matrix-svm.png" style="width: 75%;" />
+</a>
+</figure>
+</section>
+<section id="decision-tree">
+<h3>Decision Tree<a class="headerlink" href="#decision-tree" title="Link to this heading"></a></h3>
+<p>The <strong>Decision Tree</strong> algorithm is a versatile and highly interpretable method for classification tasks. Its core idea is to recursively split the dataset into smaller subsets based on feature thresholds, creating a tree-like structure of decisions that maximizes the separation of target classes.</p>
+<p>For example, a decision tree can be used to classify cats and dogs based on two or three features, illustrating how the algorithm partitions the feature space to distinguish between classes.</p>
+<figure class="align-center" id="id4">
+<a class="reference internal image-reference" href="../_images/5-decision-tree-example.png"><img alt="../_images/5-decision-tree-example.png" src="../_images/5-decision-tree-example.png" style="width: 95%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">(Upper): Decision boundary separating cats and dogs based on two features (ear length and weight), along with the corresponding decision tree structure.
+(lower): Decision boundaries separating cats and dogs based on three features (ear length, weight, and tail length), and the corresponding decision tree structure.</span><a class="headerlink" href="#id4" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Below is a code example demonstrating the Decision Tree classifier applied to the penguins classification task.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.tree</span><span class="w"> </span><span class="kn">import</span> <span class="n">DecisionTreeClassifier</span>
+
+<span class="n">dt_model</span> <span class="o">=</span> <span class="n">DecisionTreeClassifier</span><span class="p">(</span><span class="n">max_depth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">random_state</span> <span class="o">=</span> <span class="mi">123</span><span class="p">)</span>
+<span class="n">dt_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train_scaled</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+<span class="n">y_pred_dt</span> <span class="o">=</span> <span class="n">dt_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test_scaled</span><span class="p">)</span>
+
+<span class="n">score_dt</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred_dt</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Accuracy for Decision Tree:&quot;</span><span class="p">,</span> <span class="n">score_dt</span> <span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Classification Report:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">classification_report</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred_dt</span><span class="p">))</span>
+
+<span class="n">cm_dt</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred_dt</span><span class="p">)</span>
+<span class="n">plot_confusion_matrix</span><span class="p">(</span><span class="n">cm_dt</span><span class="p">,</span> <span class="s2">&quot;Confusion Matrix using Decision Tree algorithm&quot;</span><span class="p">,</span> <span class="s2">&quot;5-confusion-matrix-dt.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/5-confusion-matrix-dt.png"><img alt="../_images/5-confusion-matrix-dt.png" src="../_images/5-confusion-matrix-dt.png" style="width: 75%;" />
+</a>
+</figure>
+<p>We visualize the Decision Tree structure to better understand how penguins are classified based on their physical characteristics.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.tree</span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_tree</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">plot_tree</span><span class="p">(</span><span class="n">dt_model</span><span class="p">,</span> <span class="n">feature_names</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">filled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rounded</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Decision Tree Structure for Penguins Species Classification&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/5-decision-tree-structure.png"><img alt="../_images/5-decision-tree-structure.png" src="../_images/5-decision-tree-structure.png" style="width: 100%;" />
+</a>
+</figure>
+</section>
+<section id="optional-random-forest">
+<h3>(Optional) Random Forest<a class="headerlink" href="#optional-random-forest" title="Link to this heading"></a></h3>
+<p>While Decision Trees are easy to interpret and visualize, they have some notable drawbacks. One primary issue is their tendency to overfit the training data, particularly when the tree is allowed to grow deep without constraints such as maximum depth or minimum samples per split. Overfitting causes the model to capture noise in the training data, which can lead to poor generalization on unseen data — for example, misclassifying a Gentoo penguin as a Chinstrap due to overly specific splits. Additionally, decision trees are sensitive to small variations in the data; even slight changes, such as a few noisy measurements, can result in a significantly different tree structure, reducing the model’s stability and reliability.</p>
+<p>To address these limitations, we can use an ensemble learning technique called <strong>Random Forest</strong>. A Random Forest builds on the concept of decision trees by creating a large collection of them, each trained on a randomly selected subset of the data and features. By aggregating the predictions of multiple trees — typically through majority voting for classification — Random Forest reduces overfitting, improves generalization, and mitigates the inherent instability in individual decision trees.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Ensemble learning</strong> is a ML approach that combines multiple individual models (often called base learners) to create a stronger, more accurate, and more robust overall model. The idea is that by aggregating the predictions of several models, the ensemble can reduce errors, improve generalization, and mitigate weaknesses of individual models. There are two main types of ensemble learning techniques:</p>
+<ul class="simple">
+<li><p><strong>Bagging</strong> (<strong>Bootstrap Aggregating</strong>): Multiple models are trained independently on random subsets of the data, and their predictions are averaged (for regression) or voted on (for classification). Random Forest is a classic example of bagging applied to decision trees.</p></li>
+<li><p><strong>Boosting</strong>: Models are trained sequentially, with each new model focusing on the errors made by previous models. Examples include AdaBoost, Gradient Boosting, and XGBoost.</p></li>
+</ul>
+</div>
+<p>The figure below illustrates how a Random Forest improves upon a single Decision Tree when classifying cats and dogs based on synthetic measurements of ear length and weight.</p>
+<figure class="align-center" id="id5">
+<a class="reference internal image-reference" href="../_images/5-random-forest-example.png"><img alt="../_images/5-random-forest-example.png" src="../_images/5-random-forest-example.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Top row shows the classification boundaries for both models. On the left, a single Decision Tree creates rigid, rectangular decision regions that precisely follow axis-aligned splits in the training data. While this achieves a good separation of the training samples, the jagged boundaries suggest potential overfitting to noise. In contrast, the Random Forest (right) produces smoother, more nuanced decision boundaries through majority voting across 100 trees. The blended purple transition zones represent areas where individual trees disagree, demonstrating how the ensemble averages out erratic predictions from any single tree. Bottom row reveals why Random Forests are more robust by examining three constituent trees. Tree #1 prioritizes ear length for its initial split, Tree #2 begins with weight, and Tree #3 uses a completely different weight threshold.</span><a class="headerlink" href="#id5" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Below is a code example demonstrating the application of the Random Forest classifier to the penguins classification task.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.ensemble</span><span class="w"> </span><span class="kn">import</span> <span class="n">RandomForestClassifier</span>
+
+<span class="n">rf_model</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span>
+<span class="n">rf_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train_scaled</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+<span class="n">y_pred_rf</span> <span class="o">=</span> <span class="n">rf_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test_scaled</span><span class="p">)</span>
+
+<span class="n">score_rf</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred_rf</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Accuracy for Random Forest:&quot;</span><span class="p">,</span> <span class="n">score_rf</span> <span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Classification Report:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">classification_report</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred_rf</span><span class="p">))</span>
+
+<span class="n">cm_rf</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred_rf</span><span class="p">)</span>
+
+<span class="n">plot_confusion_matrix</span><span class="p">(</span><span class="n">cm_rf</span><span class="p">,</span> <span class="s2">&quot;Confusion Matrix using Random Forest algorithm&quot;</span><span class="p">,</span> <span class="s2">&quot;5-confusion-matrix-rf.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/5-confusion-matrix-rf.png"><img alt="../_images/5-confusion-matrix-rf.png" src="../_images/5-confusion-matrix-rf.png" style="width: 75%;" />
+</a>
+</figure>
+<p>In addition to the confusion matrix, feature importance in a Random Forest (and also in a Decision Tree) model provides valuable insight into which input features contribute most to the model’s predictions. Random Forest calculates feature importance by measuring how much each feature reduces impurity — such as Gini impurity or entropy — when used to split the data across all trees in the forest. Features that produce greater reductions in impurity are considered more important. These importance scores are then normalized to provide a relative ranking, helping to identify which features most strongly influence the model’s predictions. This information is particularly useful for interpreting model behavior, selecting meaningful features, and understanding the underlying structure of the data.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In Decision Tree and Random Forest, impurity measures how “mixed” the classes are in a given node. A pure node contains only instances of a single class, while an impure node contains a mixture of classes. Impurity metrics help the tree decide which feature and threshold to use when splitting the data to create nodes that are as pure as possible.</p>
+<p>Gini impurity and entropy are metrics used to measure impurity of a dataset or a node.</p>
+<p>During training, the algorithm evaluates all possible splits for a feature. It chooses the split that maximizes purity, <em>i.e.</em>, <strong>minimizes Gini impurity</strong> or maximizes information gain (<strong>reduction in entropy</strong>).</p>
+</div>
+<p>The greater the total reduction in impurity attributed to a feature, the more important it is considered. These importance scores are then normalized to provide a relative ranking, helping identify which features have the most influence on predicting the output class. This information is particularly useful for interpreting model behavior, selecting meaningful features, and understanding the underlying structure of the data.</p>
+<p>Below is a code example showing how to plot feature importance using a Random Forest model to classify penguins into three categories.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">importances</span> <span class="o">=</span> <span class="n">rf_model</span><span class="o">.</span><span class="n">feature_importances_</span>
+<span class="n">features</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">columns</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">importances</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;tab:orange&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.75</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Feature Importance&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Features&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Random Forest Feature Importance&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<figure class="align-center" id="id6">
+<a class="reference internal image-reference" href="../_images/5-random-forest-feature-importrance.png"><img alt="../_images/5-random-forest-feature-importrance.png" src="../_images/5-random-forest-feature-importrance.png" style="width: 80%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Illustration of feature importance for penguin classification. Longer bars indicate features with greater influence on the model’s decisions, showing that the Random Forest relies more heavily on these measurements to identify species.</span><a class="headerlink" href="#id6" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="optional-gradient-boosting">
+<h3>(Optional) Gradient Boosting<a class="headerlink" href="#optional-gradient-boosting" title="Link to this heading"></a></h3>
+<p>We have trained the model using a Decision Tree classifier, providing an intuitive starting point for classifying penguin species based on physical measurements. However, this classifier is sensitive to small fluctuations in the dataset, which can often lead to overfitting, especially when the tree grows deep.</p>
+<p>To address the limitations of a single decision tree, we turned to Random Forest, an ensemble method that builds multiple decision trees on different random subsets of the data and features. By averaging the predictions of all trees or taking a majority vote in classification, Random Forest reduces overfitting and improves generalization. This approach balances model complexity with predictive performance and provides a reliable estimate of feature importance, helping identify which physical attributes are most influential in distinguishing penguin species.</p>
+<p>While Random Forest provides robustness and improved accuracy over individual trees, we can further enhance performance using <strong>Gradient Boosting</strong>.</p>
+<ul class="simple">
+<li><p>Like Random Forest, Gradient Boosting is an ensemble learning technique, but it builds a strong classifier by combining many weak learners (typically shallow decision trees) in a sequential manner.</p></li>
+<li><p>Unlike Random Forest, which grows multiple trees independently and in parallel using random subsets of the training data, Gradient Boosting constructs trees one at a time, with each new tree trained to correct the errors of its predecessors.</p></li>
+</ul>
+<figure class="align-center" id="id7">
+<a class="reference internal image-reference" href="../_images/5-random-forest-vs-gradient-boosting.png"><img alt="../_images/5-random-forest-vs-gradient-boosting.png" src="../_images/5-random-forest-vs-gradient-boosting.png" style="width: 80%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Iillustration of the <a class="reference external" href="https://medium.com/&#64;mrmaster907/introduction-random-forest-classification-by-example-6983d95c7b91">Random Forest</a> and <a class="reference external" href="https://bmcmedinformdecismak.biomedcentral.com/articles/10.1186/s12911-021-01701-9">Gradient Boosting</a> algorithms.</span><a class="headerlink" href="#id7" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>In this code example below, we apply Gradient Boosting algorithm to classify penguin species. We use <code class="docutils literal notranslate"><span class="pre">GradientBoostingClassifier</span></code> from scikit-learn due to its simplicity and strong baseline performance.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.ensemble</span><span class="w"> </span><span class="kn">import</span> <span class="n">GradientBoostingClassifier</span>
+
+<span class="n">gb_model</span> <span class="o">=</span> <span class="n">GradientBoostingClassifier</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span>
+<span class="n">gb_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train_scaled</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+<span class="n">y_pred_gb</span> <span class="o">=</span> <span class="n">gb_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test_scaled</span><span class="p">)</span>
+
+<span class="n">score_gb</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred_gb</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Accuracy for Gradient Boosting:&quot;</span><span class="p">,</span> <span class="n">score_gb</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Classification Report:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">classification_report</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred_gb</span><span class="p">))</span>
+
+<span class="n">cm_gb</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred_gb</span><span class="p">)</span>
+<span class="n">plot_confusion_matrix</span><span class="p">(</span><span class="n">cm_gb</span><span class="p">,</span> <span class="s2">&quot;Confusion Matrix using Gradient Boosting algorithm&quot;</span><span class="p">,</span> <span class="s2">&quot;5-confusion-matrix-gb.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/5-confusion-matrix-gb.png"><img alt="../_images/5-confusion-matrix-gb.png" src="../_images/5-confusion-matrix-gb.png" style="width: 75%;" />
+</a>
+</figure>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This progression — from the simplicity of a single Decision Tree, to the robustness of Random Forest, and finally to the precision of Gradient Boosting — mirrors the evolution of <strong>tree-based methods</strong> in modern ML. While Random Forest remains excellent for baseline performance, Gradient Boosting often achieves state-of-the-art results on structured data, such as ecological measurements, provided the learning rate and tree depth are carefully tuned.</p>
+</div>
+</section>
+<section id="multi-layer-perceptron">
+<h3>Multi-Layer Perceptron<a class="headerlink" href="#multi-layer-perceptron" title="Link to this heading"></a></h3>
+<p>A <strong>Multilayer Perceptron</strong> (MLP) is a type of artificial neural network consisting of multiple layers of interconnected perceptrons (or neurons) designed to mimic certain aspects of human brain function. Each neuron (illustrated in the figure below) has the following characteristics:</p>
+<ul class="simple">
+<li><p>Input: one or more inputs (<code class="docutils literal notranslate"><span class="pre">x_1</span></code>, <code class="docutils literal notranslate"><span class="pre">x_2</span></code>, …), <em>e.g.</em>, features from the input data expressed as floating-point numbers.</p></li>
+<li><p>Operations: Typically, each neuron conducts three main operations:</p>
+<ul>
+<li><p>Compute the weighted sum of the inputs where (<code class="docutils literal notranslate"><span class="pre">w_1</span></code>, <code class="docutils literal notranslate"><span class="pre">w_2</span></code>, …) are the corresponding weights.</p></li>
+<li><p>Add a bias term to the weighted sum.</p></li>
+<li><p>Apply an activation function to the result.</p></li>
+</ul>
+</li>
+<li><p>Output: The neuron produces a single output value.</p></li>
+</ul>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/5-neuron-activation-function.png"><img alt="../_images/5-neuron-activation-function.png" src="../_images/5-neuron-activation-function.png" style="width: 80%;" />
+</a>
+</figure>
+<p>A common equation for the output of a neuron is</p>
+<div class="math notranslate nohighlight">
+\[output = Activation(\sum_i (x_i * w_i) + bias).\]</div>
+<p>An <strong>activation function</strong> is a mathematical transformation that converts the weighted sum of a neuron’s inputs into its output signal. By introducing non-linearity into the network, activation functions enable neural networks to learn complex patterns and make sophisticated decisions based on the weighted inputs.</p>
+<p>Below are some commonly used activation functions in neural networks and DL models. Each plays a crucial role in introducing non-linearities, allowing the network to capture intricate patterns and relationships in data.</p>
+<ul class="simple">
+<li><p><strong>Sigmoid</strong>: With its characteristic S-shaped curve, the sigmoid function maps inputs to a smooth 0-1 range, making it historically popular for binary classification tasks.</p></li>
+<li><p><strong>Hyperbolic tangent</strong> (tanh): Similar to sigmoid but ranging from -1 to 1, tanh often provides stronger gradients during training.</p></li>
+<li><p><strong>Rectified Linear Unit</strong> (ReLU): Outputs zero for negative inputs and the identity for positive inputs. ReLU has become the default choice for many architectures due to its computational efficiency and its ability to mitigate the vanishing gradient problem.</p></li>
+<li><p><strong>Linear</strong>: This identity function serves as a reference, showing network behavior without any non-linear transformation.</p></li>
+</ul>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/5-activation-function.png"><img alt="../_images/5-activation-function.png" src="../_images/5-activation-function.png" style="width: 80%;" />
+</a>
+</figure>
+<p>A single neuron (perceptron) can learn simple patterns but is limited in modeling complex relationships. By combining multiple neurons into layers and connecting them into a network, we create a powerful computational framework capable of approximating highly non-linear functions. In a Multilayer Perceptron (MLP), neurons are organized into an input layer, one or more hidden layers, and an output layer.</p>
+<p>The image below illustrates a three-layer perceptron network with 3, 4, and 2 neurons in the input, hidden, and output layers, respectively.</p>
+<ul class="simple">
+<li><p>The input layer receives raw data, such as pixel values or measurements, and passes it to the hidden layer.</p></li>
+<li><p>The hidden layer contains multiple neurons that process the information and progressively extract higher-level features. Each neuron in the hidden layer is fully connected to neurons in adjacent layers, forming a dense network of weighted connections.</p></li>
+<li><p>The output layer produces the network’s predictions, whether it’s a classification, regression output, or some other task.</p></li>
+</ul>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/5-mlp-network.png"><img alt="../_images/5-mlp-network.png" src="../_images/5-mlp-network.png" style="width: 80%;" />
+</a>
+</figure>
+<p>In the penguin classification task, we build a three-layer perceptron using scikit-learn’s <code class="docutils literal notranslate"><span class="pre">MLPClassifier</span></code> from <code class="docutils literal notranslate"><span class="pre">sklearn.neural_network</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.neural_network</span><span class="w"> </span><span class="kn">import</span> <span class="n">MLPClassifier</span>
+
+<span class="n">mlp_model</span> <span class="o">=</span> <span class="n">MLPClassifier</span><span class="p">(</span><span class="n">hidden_layer_sizes</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s1">&#39;adam&#39;</span><span class="p">,</span>
+                   <span class="n">alpha</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">learning_rate</span><span class="o">=</span><span class="s1">&#39;constant&#39;</span><span class="p">,</span>
+                   <span class="n">learning_rate_init</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+                   <span class="n">random_state</span><span class="o">=</span><span class="mi">123</span><span class="p">,</span> <span class="n">n_iter_no_change</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">mlp_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train_scaled</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The model is configured with:</p>
+<ul class="simple">
+<li><p>an input layer matching the number of features (6 per penguin),</p></li>
+<li><p>a hidden layer (<em>e.g.</em>, 16 neurons) to capture non-linear relationships, and</p></li>
+<li><p>an output layer with three nodes (one per penguin class), using <code class="docutils literal notranslate"><span class="pre">relu</span></code> activation for the hidden layer.</p></li>
+</ul>
+<p>The hyperparameters used to construct this MLP are listed below:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">adam</span></code>, the optimization algorithm used to update weight parameters.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">alpha</span></code>, the L2 regularization term (penalty). Setting this to 0 disables regularization, meaning the model won’t penalize large weights. This may cause overfitting if the dataset is small or noisy.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">batch_size</span></code>, the number of samples per mini-batch during training. Smaller batches lead to more frequent updates (finer learning) but can increase noise and training time.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">learning_rate</span></code>, specifies the learning rate schedule. “constant” means that the learning rate keeps fixed throughout training. Other options like “invscaling” or “adaptive” would adjust the learning rate during training.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">learning_rate_init=0.001</span></code>, the initial learning rate (fixed here). A smaller value means slower learning, which may require more iterations but offers more stability.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">max_iter</span></code>, the maximum number of training iterations (epochs).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">random_state=123</span></code>, controls the random number generation for weight initialization and data shuffling, ensuring reproducible results.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">n_iter_no_change=10</span></code>, if the validation score does not improve for 10 consecutive iterations, training will stop early. This is a form of early stopping to prevent overfitting or unnecessary computation.</p></li>
+</ul>
+<p>After training the model, we evaluate its accuracy on the testing set and visualize the results by computing and plotting the confusion matrix.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">y_pred_mlp</span> <span class="o">=</span> <span class="n">mlp_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test_scaled</span><span class="p">)</span>
+
+<span class="n">score_mlp</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred_mlp</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Accuracy for Neural Network:&quot;</span><span class="p">,</span> <span class="n">score_mlp</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Classification Report:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">classification_report</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred_mlp</span><span class="p">))</span>
+
+<span class="n">cm_mlp</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred_mlp</span><span class="p">)</span>
+<span class="n">plot_confusion_matrix</span><span class="p">(</span><span class="n">cm_mlp</span><span class="p">,</span> <span class="s2">&quot;Confusion Matrix using Multi-Layer Perceptron algorithm&quot;</span><span class="p">,</span> <span class="s2">&quot;5-confusion-matrix-mlp.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/5-confusion-matrix-mlp.png"><img alt="../_images/5-confusion-matrix-mlp.png" src="../_images/5-confusion-matrix-mlp.png" style="width: 75%;" />
+</a>
+</figure>
+</section>
+<section id="optional-deep-neural-networks">
+<h3>(Optional) Deep Neural Networks<a class="headerlink" href="#optional-deep-neural-networks" title="Link to this heading"></a></h3>
+<p>MLP is a foundational neural network architecture, consisting of an input layer, one or more hidden layers, and an output layer. While MLP excels at learning complex patterns from tabular data, its shallow depth (typically 1-2 hidden layers) limits its ability to handle very high-dimensional or abstract data such as raw images, audio, or text.</p>
+<p>To overcome these limitations, Deep Neural Network (DNN) extends the MLP framework by adding multiple hidden layers. These additional layers allow the model to learn highly abstract features through deep hierarchical representations: early layers might capture basic features (like edges or shapes), while deeper layers recognize complex objects or semantic patterns. This depth enables DNN to outperform traditional MLP in complex tasks requiring high-level feature extraction, such as computer vision and natural language processing.</p>
+<div class="admonition-dnn-architectures callout admonition" id="callout-2">
+<p class="admonition-title">DNN architectures</p>
+<p>DNNs have specialized architectures designed to handle different types of data (<em>e.g.</em>, spatial, temporal, and sequential data) and tasks more effectively.</p>
+<ul class="simple">
+<li><p>A standard feedforward deep neural network consists of stacked fully connected layers</p></li>
+<li><p><strong>Convolutional neural networks</strong> (CNNs) are particularly well-suited for image data. They use convolutional layers to automatically extract local features like edges, textures, and shapes, significantly reducing the number of parameters and improving generalization on visual tasks.</p></li>
+<li><p><strong>Recurrent neural network</strong> (RNN) is designed for sequential data such as time series, speech, or natural language. RNNs include loops that allow information to persist across time steps, enabling the model to learn dependencies over sequences. More advanced versions, like Long Short-Term Memory (LSTM) networks and Gated Recurrent Units (GRUs), address the limitations of basic RNNs by managing long-term dependencies more effectively.</p></li>
+<li><p>In addition to CNNs and RNNs, the <strong>Transformer</strong> architecture has emerged as the state-of-the-art in many language and vision tasks. Transformers rely entirely on attention mechanisms rather than recurrence or convolutions, enabling them to model global relationships in data more efficiently. This flexibility has made them the foundation of powerful models like BERT, GPT, and Vision Transformers (ViTs). These specialized DL architectures illustrate how tailoring the network design to the structure of the data can lead to significant performance gains and more efficient learning.</p></li>
+</ul>
+</div>
+<p>Here, we use the Keras API to construct a small DNN and apply it to the penguin classification task, demonstrating how even a compact architecture can effectively distinguish between penguin species (Adelie, Chinstrap, and Gentoo).</p>
+<p>In this example, we exclude the categorical features <code class="docutils literal notranslate"><span class="pre">island</span></code> and <code class="docutils literal notranslate"><span class="pre">sex</span></code> from both the training and testing datasets. The target label <code class="docutils literal notranslate"><span class="pre">species</span></code> is then encoded using the <code class="docutils literal notranslate"><span class="pre">pd.get_dummies()</span></code> function in Pandas. Afterward, we split the data into training and testing sets and standardize the feature values to ensure consistent scaling during model training.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">tensorflow</span><span class="w"> </span><span class="kn">import</span> <span class="n">keras</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">penguins_classification</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;species&#39;</span><span class="p">,</span><span class="s1">&#39;island&#39;</span><span class="p">,</span> <span class="s1">&#39;sex&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">penguins_classification</span><span class="p">[</span><span class="s1">&#39;species&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;int&#39;</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">get_dummies</span><span class="p">(</span><span class="n">penguins_classification</span><span class="p">[</span><span class="s1">&#39;species&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">)</span>
+<span class="n">y</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Adelie&#39;</span><span class="p">,</span> <span class="s1">&#39;Chinstrap&#39;</span><span class="p">,</span> <span class="s1">&#39;Gentoo&#39;</span><span class="p">]</span>
+
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of examples for training is </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span><span class="si">}</span><span class="s2"> and test is </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">scaler</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span>
+<span class="n">X_train_scaled</span> <span class="o">=</span> <span class="n">scaler</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+<span class="n">X_test_scaled</span> <span class="o">=</span> <span class="n">scaler</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>When building a DNN with Keras, there are two common approaches: using the <code class="docutils literal notranslate"><span class="pre">Sequential()</span></code> API step by step, or defining all layers at once within the <code class="docutils literal notranslate"><span class="pre">Sequential()</span></code> constructor. Here, we adopt the first approach, whereas the second approach is used in the Jupyter notebook to construct the same DNN.</p>
+<ul class="simple">
+<li><p>We start by creating an empty model with <code class="docutils literal notranslate"><span class="pre">keras.Sequential()</span></code>, which initializes a linear container for stacking sequential layers.</p></li>
+<li><p>Next, we define each layer separately using the <code class="docutils literal notranslate"><span class="pre">Dense</span></code> class, specifying the number of neurons and activation function for each layer.</p></li>
+<li><p>Finally, we add all the layers using <code class="docutils literal notranslate"><span class="pre">keras.Model()</span></code> to the sequential container, resulting in a trainable model.</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">tensorflow.keras.layers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dense</span><span class="p">,</span> <span class="n">Dropout</span>
+
+<span class="n">dnn_model</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">()</span>
+
+<span class="n">input_layer</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">X_train_scaled</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],))</span> <span class="c1"># 4 input features</span>
+
+<span class="n">hidden_layer1</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s2">&quot;relu&quot;</span><span class="p">)(</span><span class="n">input_layer</span><span class="p">)</span>
+<span class="n">hidden_layer1</span> <span class="o">=</span> <span class="n">Dropout</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)(</span><span class="n">hidden_layer1</span><span class="p">)</span>
+
+<span class="n">hidden_layer2</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s2">&quot;relu&quot;</span><span class="p">)(</span><span class="n">hidden_layer1</span><span class="p">)</span>
+<span class="c1">#hidden_layer2 = Dropout(0.0)(hidden_layer2)</span>
+
+<span class="n">hidden_layer3</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s2">&quot;relu&quot;</span><span class="p">)(</span><span class="n">hidden_layer2</span><span class="p">)</span>
+
+<span class="n">output_layer</span> <span class="o">=</span> <span class="n">Dense</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s2">&quot;softmax&quot;</span><span class="p">)(</span><span class="n">hidden_layer3</span><span class="p">)</span> <span class="c1"># 3 classes</span>
+
+<span class="n">dnn_model</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">input_layer</span><span class="p">,</span> <span class="n">outputs</span><span class="o">=</span><span class="n">output_layer</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">keras.layers.Dropout()</span></code> is a regularization technique in Keras used to reduce overfitting by randomly setting a fraction of input units to zero during training. For example, <code class="docutils literal notranslate"><span class="pre">Dropout(0.2)</span></code> means that 20% of the outputs of a specific layer will be randomly set to zero in each training step.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/5-dnn-network-dropout.png"><img alt="../_images/5-dnn-network-dropout.png" src="../_images/5-dnn-network-dropout.png" style="width: 80%;" />
+</a>
+</figure>
+<p>We can use <code class="docutils literal notranslate"><span class="pre">dnn_model.summary()</span></code> to print a concise summary of a DNN’s architecture. It provides provides an overview of the model’s layers, their output shapes, and the number of trainable parameters, making it easier to understand and debug the network.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/5-dnn-summary.png"><img alt="../_images/5-dnn-summary.png" src="../_images/5-dnn-summary.png" style="width: 80%;" />
+</a>
+</figure>
+<p>Now that we have designed a DNN that, in theory, should be capable of classifying penguins, we need to specify two critical components before training: (1) a loss function to quantify prediction errors, and (2) an optimizer to adjust the model’s weights during training.</p>
+<ul class="simple">
+<li><p><strong>Loss function</strong>: For multi-class classification, we select categorical cross-entropy, which penalizes incorrect probabilistic predictions. In Keras, this is implemented via the <code class="docutils literal notranslate"><span class="pre">keras.losses.CategoricalCrossentropy</span></code> class. This loss function works naturally with the <code class="docutils literal notranslate"><span class="pre">softmax</span></code> activation function we applied in the output layer. For a full list of available loss functions in Keras, see the <a class="reference external" href="https://www.tensorflow.org/api_docs/python/tf/keras/losses%3E">documentation</a>.</p></li>
+<li><p><strong>Optimizer</strong>: The optimizer determines how efficiently the model converges during training. Keras provides many options, each with its advantages, but here we use the widely adopted <code class="docutils literal notranslate"><span class="pre">Adam</span></code> (adaptive moment estimation) optimizer. Adam has several parameters, and the default values generally perform well, so we will use it with its defaults.</p></li>
+</ul>
+<p>We use <code class="docutils literal notranslate"><span class="pre">model.compile()</span></code> to combine the chosen loss function and optimier before starting training.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">keras.optimizers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Adam</span>
+
+<span class="n">dnn_model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;adam&#39;</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="n">keras</span><span class="o">.</span><span class="n">losses</span><span class="o">.</span><span class="n">CategoricalCrossentropy</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>Now we are ready to train the DNN model. Here, we vary only the number of <code class="docutils literal notranslate"><span class="pre">epochs</span></code>. One training epoch means that every sample in the training data has been shown to the neural network once and used to update its parameters. During training, we set <code class="docutils literal notranslate"><span class="pre">batch_size=16</span></code> to balance memory efficiency with gradient stability, and <code class="docutils literal notranslate"><span class="pre">verbose=1</span></code> to display a progress bar showing the loss and metrics for each epoch in real time.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">history</span> <span class="o">=</span> <span class="n">dnn_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train_scaled</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">.fit()</span></code> method returns a history object, which contains a history attribute holding the training loss and other metrics for each epoch. Plotting the training loss can provide valuable insight into how learning progresses. For example, we can use Seaborn to plot the training loss with epochs <code class="docutils literal notranslate"><span class="pre">sns.lineplot(x=history.epoch,</span> <span class="pre">y=history.history['loss'],</span> <span class="pre">c=&quot;tab:orange&quot;,</span> <span class="pre">label='Training</span> <span class="pre">Loss')</span></code>.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/5-dnn-loss.png"><img alt="../_images/5-dnn-loss.png" src="../_images/5-dnn-loss.png" style="width: 80%;" />
+</a>
+</figure>
+<p>Finally, we evaluate the model’s performance on the testing set by computing its accuracy and visualizing the results with a confusion matrix.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># predict class probabilities</span>
+<span class="n">y_pred_dnn_probs</span> <span class="o">=</span> <span class="n">dnn_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test_scaled</span><span class="p">)</span>
+
+<span class="c1"># convert probabilities to class labels</span>
+<span class="n">y_pred_dnn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">y_pred_dnn_probs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">y_true</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">score_dnn</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred_dnn</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Accuracy for Deep Neutron Network:&quot;</span><span class="p">,</span> <span class="n">score_dnn</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Classification Report:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">classification_report</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred_dnn</span><span class="p">))</span>
+
+<span class="n">cm_dnn</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred_dnn</span><span class="p">)</span>
+<span class="n">plot_confusion_matrix</span><span class="p">(</span><span class="n">cm_dnn</span><span class="p">,</span> <span class="s2">&quot;Confusion Matrix using DNN algorithm&quot;</span><span class="p">,</span> <span class="s2">&quot;5-confusion-matrix-dnn.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/5-confusion-matrix-dnn.png"><img alt="../_images/5-confusion-matrix-dnn.png" src="../_images/5-confusion-matrix-dnn.png" style="width: 75%;" />
+</a>
+</figure>
+</section>
+</section>
+<section id="comparison-of-trained-models">
+<h2>Comparison of Trained Models<a class="headerlink" href="#comparison-of-trained-models" title="Link to this heading"></a></h2>
+<p>To evaluate the performance of different algorithms in classifying penguin species, we compare their accuracy scores and confusion matrices. The algorithms we the adopted in the previous sections include:</p>
+<ul class="simple">
+<li><p>Instance-based: k-Nearest Neighbors (KNN).</p></li>
+<li><p>Probability-based: Logistic Regression, and Naive Bayes.</p></li>
+<li><p>Hyperplane-based: Support Vector Machine (SVM).</p></li>
+<li><p>Tree-based methods: Decision Tree, Random Forest, and Gradient Boosting.</p></li>
+<li><p>Network-based models: Multi-Layer Perceptron (MLP) and Deep Neural Networks (DNN).</p></li>
+</ul>
+<p>Each model was trained on the same training set and evaluated on a common testing set, with consistent preprocessing applied across all methods.</p>
+<p>Performance under current training settings:</p>
+<ul class="simple">
+<li><p>MLP achieved the highest accuracy, demonstrating its effectiveness in capturing complex patterns and feature interactions in the Penguins dataset.</p></li>
+<li><p>Naive Bayes showed slightly lower accuracy, likely due to its strong independence assumption between features, which does not fully hold in this dataset.</p></li>
+<li><p>The other algorithms provided moderate performance.</p></li>
+</ul>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/5-scores-for-all-models.png"><img alt="../_images/5-scores-for-all-models.png" src="../_images/5-scores-for-all-models.png" style="width: 80%;" />
+</a>
+</figure>
+<p>The confusion matrices provided deeper insight into class-level prediction performance:</p>
+<ul class="simple">
+<li><p>MLP demonstrated well-balanced performance across all three penguin species.</p></li>
+<li><p>Naive Bayes, in contrast, confused Adelie and Chinstrap penguins, likely due to overlapping feature distributions between these species.</p></li>
+<li><p>other algorithms had a limited number of misclassifications, primarily between Adelie and Chinstrap.</p></li>
+</ul>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/5-compare-confusion-matrices.png"><img alt="../_images/5-compare-confusion-matrices.png" src="../_images/5-compare-confusion-matrices.png" style="width: 100%;" />
+</a>
+</figure>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://enccs.github.io/deep-learning-intro/">Introduction to Deep Learning</a></p></li>
+</ul>
+</div>
+<div class="admonition-keypoints keypoints admonition" id="keypoints-0">
+<p class="admonition-title">Keypoints</p>
+<ul class="simple">
+<li><p>Provided a fundamental introducton to classification tasks, covering basic concepts.</p></li>
+<li><p>Demonstrated essential steps for data preparation and processing using the Penguins dataset.</p></li>
+<li><p>Applied a range of classification algorithms — instance-based, probability-based, margin-based, tree-based, and neural network-based — to classify penguin species.</p></li>
+<li><p>Evaluated and compared model performance using metrics such as accuracy scores and confusion matrices.</p></li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../04-data-preparation-for-ML/" class="btn btn-neutral float-left" title="Data Preparation for Machine Learning" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../06-supervised-ML-regression/" class="btn btn-neutral float-right" title="Supervised Learning (II): Regression" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, The contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
