@@ -23,6 +23,7 @@
 
 Regression is a type of supervised machine learning task where the goal is to predict a continuous numerical value based on input features. Unlike classification, which assigns outputs to discrete categories, regression models produce real-valued predictions.
 
+
 Although the Penguins dataset is most commonly used for classification tasks, it can also be applied to regression problems by choosing a continuous target variable. From the pairplot, we can observe a strong visual relationship between body mass and flipper length, indicating a clear positive correlation. Consequently, we select these two features for the regression task, aiming to estimate body mass based on flipper length.
 
 :::{figure} ./images/4-penguins-pairplot.png
@@ -59,6 +60,7 @@ X = penguins_regression[["flipper_length_mm"]].values
 y = penguins_regression["body_mass_g"].values
 ```
 
+
 In this episode, we first perform feature scaling, followed by splitting the data into training and testing sets. The ``inverse_transform()`` method reverts transformed data back to its original scale or format.
 
 ```python
@@ -78,6 +80,7 @@ y_train_orig = scaler_y.inverse_transform(y_train_scaled.reshape(-1, 1)).ravel()
 ...
 ```
 
+
 :::{figure} ./images/6-spliting-training-testing-dataset.png
 :align: center
 :width: 80%
@@ -93,6 +96,7 @@ y_train_orig = scaler_y.inverse_transform(y_train_scaled.reshape(-1, 1)).ravel()
 
 
 We begin by applying the KNN algorithm to the penguin regression task, as illustrated in the code example below.
+
 ```python
 from sklearn.neighbors import KNeighborsRegressor
 
@@ -103,6 +107,7 @@ knn_model.fit(X_train_scaled, y_train_scaled)
 y_pred_knn_scaled = knn_model.predict(X_test_scaled)
 y_pred_knn = scaler_y.inverse_transform(y_pred_knn_scaled.reshape(-1, 1)).ravel()
 ```
+
 
 For the regression task, we use Root Mean Squared Error (RMSE) and R² score as evaluation metrics.
 - RMSE measures the average magnitude of prediction errors, providing insight into how closely the model’s predictions match the actual values
@@ -120,6 +125,7 @@ print(f"K-Nearest Neighbors RMSE: {rmse_knn:.2f}, R²: {r2_value_knn:.2f}")
 
 To visualize the KNN algorithm for the regression task, we plot the **predictive curve**, which maps input values to predicted outputs. This curve illustrates how KNN responds to changes in a single feature. Since KNN is a non-parametric, instance-based method, it does not learn a fixed equation during training. Instead, predictions are made by averaging the target values of the *k* nearest training examples for each input.
 
+
 The resulting predictive curve is typically piecewise-smooth, adapting to local patterns in the data. That is, the curve may bend or flatten depending on regions where data points are dense or sparse.
 
 :::{figure} ./images/6-regression-predictive-curve-knn-5.png
@@ -127,12 +133,14 @@ The resulting predictive curve is typically piecewise-smooth, adapting to local 
 :width: 80%
 :::
 
+
 This makes the predictive curve an especially useful tool for assessing whether KNN is underfitting (*e.g.*, when *k* is large) or overfitting (e.g., when *k* is small). By adjusting *k* and observing changes in the curve’s shape, we can intuitively tune the model’s **bias-variance tradeoff**.
 
 :::{figure} ./images/6-regression-predictive-curve-knn-1357.png
 :align: center
 :width: 80%
 :::
+
 
 :::{callout} The bias-variance tradeoff
 
@@ -148,12 +156,14 @@ The bias-variance tradeoff is a fundamental concept in machine learning that des
 
 Having explored a KNN regressor to predict penguin body mass from flipper length, we now turn to a fundamental and interpretable alternative: the Linear Regression model. While KNN makes predictions based on the average mass of the most similar observations, linear regression aims to identify a single, global linear relationship between the two variables. This approach fits a straight line through the data that minimizes the overall prediction error, producing a model that is typically less computationally intensive and offers immediate insight into the underlying trend.
 
+
 The core concept of this linear model is a simple equation:
 :::{math}
 body\_mass = \beta_0 + \beta_1 × flipper\_length
 :::
 - the coefficient, $\beta_1$, represents the model’s estimate of how much a penguin’s body mass increases for each additional millimeter of flipper length
 - the intercept, $\beta_0$, indicates the theoretical body mass for a penguin with a flipper length of zero. While this value is not biologically meaningful, it is necessary to position the line correctly.
+
 
 The fitted values of $\beta_1$ and $\beta_0$ can be accessed via ``model.coef_`` and ``model.intercept_``, respectively. ​This equation provides a direct and interpretable rule: for any given flipper length, we can calculate a precise predicted body mass with given $\beta_1$ and $\beta_0$.
 
@@ -168,6 +178,7 @@ y_pred_linear_scaled = linear_model.predict(X_test_scaled)
 y_pred_linear = scaler_y.inverse_transform(y_pred_linear_scaled.reshape(-1, 1)).ravel()
 ```
 
+
 Once trained, we evaluate the linear regression model’s predictive performance on the testing set using the same metrics: RMSE and R² score. In the Penguins dataset, a high R² indicates that flipper length is a strong predictor of body mass, while a low RMSE reflects precise predictions. These metrics also allow for direct comparison with KNN and other models, such as Polynomial Regression and tree-based methods that will be discussed below, highlighting situations where the simple linear assumption is sufficient and where it may fall short.
 
 ```python
@@ -176,7 +187,9 @@ r2_value_linear = r2_score(y_test_orig, y_pred_linear)
 print(f"Linear Regression RMSE: {rmse_linear:.2f}, R²: {r2_value_linear:.2f}")
 ```
 
+
 The resulting predictive curve is shown below.
+
 
 :::{figure} ./images/6-regression-predictive-curve-linear.png
 :align: center
@@ -186,9 +199,12 @@ The resulting predictive curve is shown below.
 
 **Residual analysis**
 
+
 While metrics like RMSE and R-squared scores provide a high-level summary of model performance, **residual analysis** allows us to examine the model more deeply and verify the key assumptions of linear regression, ensuring that its conclusions are valid and reliable. Residuals are the differences between the observed body mass values and the values predicted by the model.
 
+
 From the figure below, we can see that the residuals are randomly scattered around zero, with no apparent systematic patterns. This indicates that the linear model is largely unbiased and effectively captures the main trend between flipper length and body mass.
+
 
 :::{figure} ./images/6-regression-linear-residual-analysis.png
 :align: center
@@ -203,16 +219,21 @@ If we notice certain patterns, *i.e.*, residuals that consistently increase or d
 
 Another key aspect of residual analysis involves assessing normality, as linear regression assumes normally distributed residuals for reliable inference. For the Penguins dataset, this can be evaluated using a histogram or a Q-Q (quantile-quantile) plot of the residuals.
 
+
 The histogram of residuals illustrates the distribution of prediction errors across the dataset. In the Penguins dataset, these residuals should form a roughly symmetric, bell-shaped curve centered at zero. This indicates that the model is not systematically over-predicting or under-predicting body mass, and that most errors are relatively small, with fewer large deviations.
+
 
 The Q-Q plot compares the distribution of the residuals to a theoretical normal distribution. On the plot, the x-axis represents the expected quantiles from a standard normal distribution, while the y-axis shows the quantiles of the observed residuals. If the residuals are normally distributed, the points should align closely with the diagonal reference line.
 
 
 **Overfitting and underfitting**
 
+
 In the previous section, we evaluated the Linear Regression model on the testing dataset and calculated metrics such as RMSE and R² to understand its predictive performance. While this gives a good indication of how well this model generalizes to unseen data, it only tells half the story. 
 
+
 To get a complete picture, it is important to also assess this model’s performance on the training dataset and compare it with the testing results. This comparison is the primary diagnostic tool for identifying a model's fundamental flaw: whether it is learning the underlying signal or merely memorizing the data.
+
 
 By calculating performance metrics like RMSE and R-squared for both training and testing datasets, we can identify potential issues such as overfitting and underfitting.
 - **Overfitting** occurs when the model performs extremely well on the training data but poorly on the testing data. This indicates that the model has memorized the training patterns, including noise, rather than capturing the true underlying relationship.
@@ -241,6 +262,7 @@ print(f"Linear Regression (Test)  RMSE: {rmse_linear_test:.2f}, R²: {r2_linear_
 # Linear Regression (Test)  RMSE: 411.85, R²: 0.72
 ```
 
+
 The trained Linear Regression model for predicting penguin body mass based on flipper length in the penguins dataset achieves comparable RMSE and R² scores on both the training and testing datasets, indicating a fairly good model.
 
 ::::::{exercise} Regularized Regression (Ridge and Lasso)
@@ -252,7 +274,6 @@ To address overfitting and underfitting, regularized regression methods, such as
 In this exercise (code examples are availalbe in the [Jupyter Notebook](./jupyter-notebooks/6-ML-Regression.ipynb)), we will
 - Train the Penguins dataset using Ridge and Lasso regression models, and compare their fitted parameters, RMSE, and R² scores.
 - Conduct a residual analysis to evaluate whether the regularized regression models achieve better performance than the standard linear regression model.
-
 
 :::::{tabs}
 ::::{group-tab} Ridge Regression
@@ -301,14 +322,18 @@ print(f"Regularized Regression (Lasso) RMSE: {rmse_lasso:.2f}, R²: {r2_value_la
 
 ### Polynomial Regression
 
+
 In the previous section, we assumed that penguin body mass is linearly proportional to flipper length, and after training, we have verified that this assumption holds reasonably well. However, for other applications, if two variables are explicitly not linearly related, and a simple linear model may fail to capture the underlying patterns. In such cases, we can resort to polynomial regression to capture non-linear relationship by including higher-degree terms of the predictor variable.
+
 
 In the context of the Penguins dataset, polynomial regression extends linear regression by modeling body mass as a polynomial function of flipper length with the formula as
 :::{math}
 body\_mass = \beta_0 + \beta_1 × flipper\_length + \beta_2 × flipper\_length^2 + \beta_3 × flipper\_length^3 + ...
 :::
 
+
 This approach allows the model to fit a curved relationship, which might be relevant if, for example, body mass increases more rapidly with flipper length for larger penguins, as seen in species like Gentoo.
+
 
 The process of training a Polynomial Regression model is similar to Linear Regression. We first transform the original feature (flipper length) by adding polynomial terms (*e.g.*, $flipper\_length^2$ and higher-degree terms), creating a feature matrix that the Polynomial Regression model uses to fit a non-linear curve while still employing Linear Regression techniques on the transformed features.
 
@@ -386,6 +411,7 @@ In the previous episode, we introduced the SVM model, which is widely recognized
 
 The core challenge SVR faces is that, by its fundamental nature, it seeks a linear relationship (a flat hyperplane). In many real-world problems, such as predicting a penguin’s body mass from its flipper length, the underlying relationship, while roughly linear, may contain subtle non-linear patterns that a straight line cannot fully capture.
 
+
 Rather than manually generating polynomial features, which can be computationally expensive and impractical in high-dimensional spaces, kernel functions are used to capture non-linear relationships by implicitly projecting (rather than explicitly transforming) the input data into higher-dimensional feature spaces.
 
 
@@ -395,6 +421,7 @@ Several kernel types are commonly used in SVR, each imparting different characte
 - **Polynomial Kernel**: This kernel enables the model to fit polynomial curves of a specified degree $d$ with contronable flexibility. While more adaptable than a linear kernel, it can be sensitive to the chosen degree and may perform poorly when extrapolating beyond the training range.
 - **Radial Basis Function (RBF) Kernel**: The most widely used kernel for non-linear problems, capable of generating highly flexible and smooth curves. It is versatile and effective for capturing complex relationships in the data.
 :::
+
 
 For the penguin regression task, we use the RBF kernel in the SVR model to capture potential non-linear relationships between flipper length and body mass that a simple linear model might not be able to detect.
 
@@ -448,7 +475,9 @@ Cross-validation is a method to check how well a model will perform on unseen da
 
 ### Decision Tree
 
+
 In addition to instance-based models such as KNN and margin-based models like SVR, we can also apply tree-based methods for the regression task to predict a penguin's body mass from its flipper length. One of the most intuitive and interpretable approaches in this family is the **Decision Tree Regressor**.
+
 
 A Decision Tree Regressor is a non-linear model that partitions the feature space (flipper length) into distinct regions based on feature thresholds and assigns a constant value (the average body mass) to each region. For the penguin regression task, the Decision Tree Regressor recursively splits the dataset into groups of penguins with similar flipper lengths. At each split, the model selects the threshold that minimizes the variance of body mass within the resulting groups. This recursive process continues until stopping criteria are met, such as reaching a maximum tree depth or a minimum number of samples per leaf.
 
@@ -479,6 +508,7 @@ Predictions for a new penguin are straightforward. Once the tree is built, the m
 
 When applying a Decision Tree Regressor to the penguin regression tesk, the tree depth plays a crucial role in shaping the fitted curve. With a relatively shallow tree, such as depth = 3, the model makes only a few splits on flipper length, resulting in broad, step-like regions where body mass is predicted as the average within each group. This provides a coarse approximation of the relationship, capturing the general trend but missing finer variations.
 
+
 Increasing the tree depth to 5 allows for more splits, creating narrower regions and a fitted curve that follows the data more closely. While this improves flexibility and reduces bias, it also increases the risk of capturing noise in the training set, leading to overfitting. Comparing fitted curves at different depths illustrates **the classic trade-off in decision trees: shallow trees may underfit, while deeper trees may fit the training data too closely**.
 
 
@@ -497,6 +527,7 @@ We have discussed the limitations of Decision Tree algorithm, which can be mitig
 
 For this penguins task, we will explore implementations using three popular frameworks: the user-friendly scikit-learn, the high-level deep learning library Keras, and the more granular, research-oriented PyTorch.
 
+
 In Scikit-learn, the ``MLPRegressor`` class offers a convenient interface for training small- to medium-sized neural networks, requiring minimal configuration while still providing flexibility for most regression tasks.
 
 ```python
@@ -514,12 +545,15 @@ r2_value_mlp = r2_score(y_test_orig, y_pred_mlp)
 print(f"Multi-Layer Perceptron RMSE: {rmse_mlp:.2f}, R²: {r2_value_mlp:.2f}")
 ```
 
+
 :::{figure} ./images/6-regression-predictive-curve-linear-mlp.png
 :align: center
 :width: 80%
 :::
 
+
 For greater control and scalability, frameworks like Keras (built on TensorFlow) and PyTorch allow us to design custom neural network architectures. We can specify the number of hidden layers, the number of neurons per layer, activation functions (*e.g.*, ReLU or tanh), and optimization algorithms (*e.g.*, stochastic gradient descent or Adam). These frameworks also offer tools for monitoring training, adjusting learning rates, and preventing overfitting through techniques such as regularization or dropout.
+
 
 :::{exercise} DNNs using Keras (TensorFlow) and PyTorch
 
@@ -555,8 +589,8 @@ Code examples are availalbe in the [Jupyter Notebook](./jupyter-notebooks/6-ML-R
 
 **Summary of regression models**
 - Best performance: Polynomial Regression (degree=3) gave the lowest RMSE (407.47) and the highest R² (0.73), slightly outperforming Linear Regression.
-- Strong performers: Linear Regression, Ridge, Lasso, and both Deep Neural Networks (Keras, PyTorch) all showed similar results (RMSE ≈ 412–415, R² ≈ 0.71–0.72).
-- Moderate performers: Decision Trees (depth=3), Random Forest (depth=5), Gradient Boosting, and SVR (optimized) performed decently (R² ≈ 0.70–0.72) but not better than simpler models.
+- Strong performers: Linear Regression, Ridge, Polynomial Regression (degree=5), Decision Tree (depth=3), MLP, and Deep Neural Networks (Keras, PyTorch) showed similar results (RMSE ≈ 412–415, R² ≈ 0.71–0.72).
+- Moderate performers: Random Forest (depth=5), Decision Tree (depth=5), and SVR (optimized) performed decently (R² ≈ 0.70–0.72) but not better than simpler models.
 - Weaker performers: Plain SVR, Lasso, Gradient Boosting, and KNN trailed behind with higher RMSEs (>430) and lower R² values (≈0.68–0.69).
 
 

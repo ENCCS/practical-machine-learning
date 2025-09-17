@@ -23,9 +23,12 @@
 
 Classification is a supervised ML task in which a model predicts discrete class labels based on input features. It involves training the model on labeled data so that it can assign new and unseen data to predefined categories or classes by learning patterns from the training dataset.
 
+
 In binary classification, the model predicts one of two classes, such as spam or not spam for emails. Multiclass classification extends this to multiple categories, like classifying images as cats, dogs, or birds.
 
+
 Common algorithms for classification tasks include k-Nearest Neighbors (KNN), Logistic Regression, Naive Bayes, Support Vector Machine (SVM), Decision Trees, Random Forests, Gradient Boosting, and Neural Networks.
+
 
 In this episode we will perform supervised classification to categorize penguins into three species --- Adelie, Chinstrap, and Gentoo --- based on their physical measurements (flipper length, body mass, *etc.*). We will build and train multiple classifier models, and then evaluate their performance using metrics such as accuracy, precision, recall, and F1 score.
 By comparing the results, we aim to identify which model provides the most accurate and reliable classification for this task.
@@ -36,6 +39,7 @@ By comparing the results, we aim to identify which model provides the most accur
 
 
 In the previous episode, [Episode 4: Data Preparation for Machine Learning](./04-data-preparation-for-ML.md), we discussed data preparation steps, including handling missing values, detecting outliers, and encoding categorical variables.
+
 
 In this episode, we will revisit these steps, with particular emphasis on encoding categorical variables. For the classification task, we will treat the categorical variable ``species`` as the label (target variable) and use the remaining columns as features to predict the penguins species.
 To achieve this, we transform the categorical features ``island`` and ``sex``, as well as the ``species`` label, into numerical format (code examples are availalbe in the [Jupyter Notebook](./jupyter-notebooks/5-ML-Classifion.ipynb)).
@@ -67,12 +71,15 @@ penguins_classification.loc[:, 'sex'] = encoder.fit_transform(penguins_classific
 
 ## Data Processing
 
+
 In this episode, data processing will focus on two essential steps: **data splitting** and **feature scaling**
 
 
 ### Data splitting
 
+
 Data splitting involves two important substeps: splitting into features and labels, and splitting into training and testing sets.
+
 
 The first substep is to split the dataset into features and labels. Features (also called predictors or independent variables) are the input values used to make predictions, while labels (or target variables) represent the output the model is trying to predict.
 
@@ -81,7 +88,9 @@ X = penguins_classification.drop(['species'], axis=1)
 y = penguins_classification['species'].astype('int')
 ```
 
+
 The second substep is to divide the Penguins dataset into training and testing sets. The training set is used to fit and train the models, allowing it to learn patterns and relationships from the data, and the testing set, on the other hand, is reserved for evaluating the model’s performance on unseen data.
+
 
 A common split is 80% for training and 20% for testing, which provides enough data for training while still retaining a meaningful set for testing.
 This step is typically performed using the ``train_test_split`` function from ``sklearn.model_selection``, where setting a fixed ``random_state`` ensures reproducibility of the results.
@@ -102,9 +111,11 @@ print(f"Number of examples for training is {len(X_train)} and test is {len(X_tes
 Feature scaling is to standardize or normalize the range of independent variables (features) in a dataset.
 In many datasets, features can have different units or scales. For example, in the Penguins dataset, body mass is measured in grams and can range in the thousands, while flipper length is measured in millimeters and typically ranges in the hundreds. These differences in scale can unintentionally bias ML algorithms, making features with larger values dominate the learning process, leading to biased and inaccurate models.
 
+
 Scaling transforms these features to a common, limited range, such as [0, 1] or a distribution with a mean of 0 and a standard deviation of 1, without distorting the differences in the ranges of values or losing information.
 This is particularly important for algorithms that rely on distance calculations, such as k-Nearest Neighbors (k-NN), Support Vector Machines (SVM), and clustering methods. Similarly, gradient-based optimization methods (used in neural networks and logistic regression) converge faster and more reliably when input features are scaled.
 Without scaling, the algorithm might oscillate inefficiently or struggle to find the optimal solution. Furthermore, it helps ensure that regularization penalties are applied uniformly across all coefficients, preventing the model from unfairly penalizing features with smaller natural ranges.
+
 
 Two of the most common methods for feature scaling are **Normalization** (Min-Max Scaling) and **Standardization** (Z-score Normalization).
 - Normalization (Min-Max Scaling)
@@ -127,9 +138,12 @@ Two of the most common methods for feature scaling are **Normalization** (Min-Ma
 :width: 95%
 :::
 
+
 In practice, these transformations are easily applied using libraries like scikit-learn with the ``MinMaxScaler`` and ``StandardScaler`` classes, which efficiently learn the parameters (``mean``, ``min``, ``max``) from the training data and apply them consistently to avoid data leakage.
 
+
 In this episode, we will apply feature standardization to both the training and testing sets. The implementation can be easily achieved using ``StandardScaler`` from ``sklearn.preprocessing``, as shown in the code below.
+
 ```python
 from sklearn.preprocessing import StandardScaler
 
@@ -147,6 +161,7 @@ X_test_scaled = scaler.transform(X_test)
 After preparing the Penguins dataset by handling missing values, encoding categorical variables, and splitting it into features/labels and training/testing sets, the next step is to apply classification algorithms.
 In this episode, we will experiment with k-Nearest Neighbors (KNN), Naive Bayes, Decision Trees, Random Forests, and Neural Networks to predict penguins species based on their physical measurements. Each of these algorithms offers a distinct approach to pattern recognition and generalization. By applying them to the same prepared dataset, we can make a fair and meaningful comparison of their predictive performance.
 
+
 The workflow for training and evaluating a classification model generally follows these steps:
 - Choose a model class and import it, ``from sklearn.neighbors import XXX``.
 - Set model hyperparameters by instantiating the class with desired values, ``xxx_model = XXX(<... hyperparameters ...>)``.
@@ -162,6 +177,7 @@ The workflow for training and evaluating a classification model generally follow
 
 One intuitive and widely used method for classification is the k-Nearest Neighbors (KNN) algorithm. KNN is a non-parametric, instance-based approach that predicts a sample's label by considering the majority class of its *k* closest neighbors in the training set. Unlike many other algorithms, **KNN does not require a traditional training phase**; instead, **it stores the entire dataset and performs the necessary computations at prediction step**. This makes it a lazy learner --- simple to implement but potentially expensive during inference, especially with large datasets.
 
+
 Below is an example illustrating how KNN determines the class of a new query point. Given a query point, KNN first calculates the distance between this point and all points in the training set. It then identifies the *k* closest points, and the class that appears most frequently among these neighbors is assigned as the predicted label for the query point. The choice of *k* plays a crucial role in performance: a small *k* can make the model overly sensitive to noise, while a large *k* may oversmooth the decision boundaries and obscure important local patterns.
 
 :::{figure} ./images/5-knn-example.png
@@ -171,6 +187,7 @@ Below is an example illustrating how KNN determines the class of a new query poi
 
 
 Let’s create a KNN model. Here, we set ``k = 3``, meaning that the algorithm will consider the 3 nearest neighbors to determine the class of a data point. We then train the model on the training set using the ``.fit()`` method.
+
 ```python
 from sklearn.neighbors import KNeighborsClassifier
 
@@ -178,12 +195,15 @@ knn_model = KNeighborsClassifier(n_neighbors=3)
 knn_model.fit(X_train_scaled, y_train)
 ```
 
+
 After fitting the model to the training dataset, we use the trained KNN model to predict the species on the testing set and evaluate its performance.
+
 
 For classification tasks, metrics such as accuracy, precision, recall, and the F1-score provide a comprehensive assessment of model performance:
 - **Accuracy** measures the proportion of correctly classified instances across all species (Adelie, Chinstrap, Gentoo). It provides an overall sense of how often the model is correct but can be misleading when the dataset is imbalanced.
 - **Precision** quantifies the proportion of correct positive predictions for each species, while **recall** measures the proportion of actual positives that are correctly identified.
 - **F1-score** is the harmonic mean of precision and recall, offering a balanced metric for each class. It is particularly useful when dealing with imbalanced class distributions, as it accounts for both false positives and false negatives.
+
 
 :::{callout} Relations among different matrics
 :class: dropdown
@@ -212,8 +232,10 @@ print("Accuracy for k-Nearest Neighbors:", score_knn)
 print("\nClassification Report:\n", classification_report(y_test, y_pred_knn))
 ```
 
+
 In classification tasks, a **confusion matrix** is a powerful tool for evaluating model performance by comparing predicted labels with true labels. For a multiclass problem like the Penguins dataset, the confusion matrix is an **N x N** matrix, where N represents the number of target classes (here, **N=3** for the three penguins species).
 Each cell *(i, j)* shows the number of instances where the true class was *i* and the model predicted class *j*. Diagonal elements correspond to correct predictions, while off-diagonal elements indicate misclassifications. This visualization provides an intuitive overview of how often the model predicts correctly and where it tends to make errors.
+
 
 ```python
 from sklearn.metrics import confusion_matrix
@@ -236,6 +258,7 @@ cm_knn = confusion_matrix(y_test, y_pred_knn)
 plot_confusion_matrix(cm_knn, "Confusion Matrix using KNN algorithm", "5-confusion-matrix-knn.png")
 ```
 
+
 :::{figure} ./images/5-confusion-matrix-knn.png
 :align: center
 :width: 75%
@@ -255,7 +278,9 @@ The choice of ``k`` can greatly affect the accuracy of KNN. Always try multiple 
 
 **Logistic Regression** is a fundamental classification algorithm to predict categorical outcomes. Despite its name, logistic regression is not a regression algorithm but a classification method that predicts the **probability** of an instance belonging to a particular class.
 
+
 For binary classification, it uses the logistic (**sigmoid**) function to map a linear combination of input features to a probability between 0 and 1, which is then thresholded (typically at 0.5) to assign a class.
+
 
 For multiclass classification, logistic regression can be extended using approaches such as one-vs-rest (OvR) or softmax regression.
 - In OvR, a separate binary classifier is trained for each species, treating that species as the positive class (blue area) and all other species as the negative class (red area).
@@ -267,6 +292,7 @@ For multiclass classification, logistic regression can be extended using approac
 
 (Upper left) the sigmoid function; (upper middle) the softmax regression process: three input features to the softmax regression model resulting in three output vectors where each contains the predicted probabilities for three possible classes; (upper right) a bar chart of softmax outputs in which each group of bars represents the predicted probability distribution over three classes; (lower subplots) three binary classifiers distinguish one class from the other two classes using the one-vs-rest approach.
 :::
+
 
 The process of creating a Logistic Regression model and fitting it to the training data is very similar to the approach used for the KNN model described earlier, with the main difference being the choice of classifier. A code example and the resulting confusion matrix plot are provided below.
 
@@ -287,6 +313,7 @@ cm_lr = confusion_matrix(y_test, y_pred_lr)
 plot_confusion_matrix(cm_lr, "Confusion Matrix using Logistic Regression algorithm", "5-confusion-matrix-lr.png")
 ```
 
+
 :::{figure} ./images/5-confusion-matrix-lr.png
 :align: center
 :width: 75%
@@ -299,6 +326,7 @@ plot_confusion_matrix(cm_lr, "Confusion Matrix using Logistic Regression algorit
 
 The **Naive Bayes** algorithm is a simple yet powerful probabilistic classifier based on [Bayes' Theorem](https://en.wikipedia.org/wiki/Bayes%27_theorem). It assumes that all features are and equally important --- a condition that often does not hold in practice, which can introduce some bias. However, this independence assumption greatly simplifies computations by allowing conditional probabilities to be expressed as the product of individual feature probabilities. Given an input instance, the algorithm calculates the posterior probability for each class and assigns the instance to the class with the highest probability.
 
+
 Logistic Regression and Naive Bayes are both popular algorithms for classification tasks, but they differ significantly in their approach, assumptions, and underlying mechanics. Below is an example comparing Logistic Regression and Naive Bayes decision boundaries on a synthetic dataset with two features. The visualization highlights their fundamental differences: **Logistic Regression learns a linear decision boundary directly, whereas Naive Bayes models feature distributions for each class under the independence assumption**.
 
 
@@ -308,6 +336,7 @@ Logistic Regression and Naive Bayes are both popular algorithms for classificati
 - Logistic Regression is a **discriminative** model that directly estimates the probability of a data point belonging to a particular class by fitting a linear combination of features. In the context of the Penguins dataset, Logistic Regression uses features such as bill length and flipper length to compute a weighted sum, which is then transformed into probabilities for penguins species. The model assumes a linear relationship between the features and the log-odds of the classes and optimizes parameters using maximum likelihood estimation. This makes Logistic Regression sensitive to feature scaling and correlations. It is generally robust to noise and can tolerate moderately correlated features, but it may struggle with highly non-linear relationships unless additional feature engineering is applied.
 - Naive Bayes, by contrast, is a **generative** model that applies Bayes’ theorem to estimate the probability of a class given the input features, assuming conditional independence between features. For the Penguins dataset, it estimates the likelihood of features (*e.g.*, bill depth) for each species and combines these with prior probabilities to predict the most likely species. The "naive" independence assumption often does not hold in practice (*e.g.*, bill length and depth may be correlated), but it simplifies computation and allows Naive Bayes to be highly efficient, especially for high-dimensional data. It is less sensitive to irrelevant features and does not require feature scaling. However, it can underperform when feature dependencies are strong or when the data distribution deviates from the model’s assumptions (*e.g.*, Gaussian for continuous features in Gaussian Naive Bayes). Zero probabilities must be carefully handled, typically via smoothing techniques.
 :::
+
 
 :::{figure} ./images/5-naive-bayes-example.png
 :align: center
@@ -335,6 +364,7 @@ cm_nb = confusion_matrix(y_test, y_pred_nb)
 plot_confusion_matrix(cm_nb, "Confusion Matrix using Naive Bayes algorithm", "4-confusion-matrix-nb.png")
 ```
 
+
 :::{figure} ./images/5-confusion-matrix-nb.png
 :align: center
 :width: 75%
@@ -347,7 +377,9 @@ plot_confusion_matrix(cm_nb, "Confusion Matrix using Naive Bayes algorithm", "4-
 
 Previously, we presented an example using a Logistic Regression classifier, which produces a linear decision boundary to separate two classes based on their features. It works by fitting this linear boundary using the logistic function, making it particularly effective when the data is linearly separable. A notable characteristic of Logistic Regression is that the decision boundary typically lies in the region where the predicted probabilities of the two classes are closest --- essentially where the model is most uncertain.
 
+
 However, when there is a large gap between two well-separated classes --- as can occur when distinguishing cats from dogs based on weight and size --- Logistic Regression faces an inherent limitation: an infinite number of possible solutions. The algorithm has no built-in mechanism to select a single "optimal" boundary when multiple valid linear separators exist within the wide margin between classes. As a result, it may place the decision boundary somewhere in that gap, creating a broad, undefined region with little or no supporting data. While this may not affect accuracy on clearly separated data, it can reduce the model’s robustness when new or noisy data points appear near that boundary.
+
 
 Below is another example of separating cats from dogs based on ear length and weight. In addition to the linear decision boundary produced by the Logistic Regression classifier, we can identify three other linear boundaries that also achieve good separation between the two classes. The question then arises: which boundary is truly better, and how can we evaluate their performance on unseen data?
 
@@ -358,6 +390,7 @@ Below is another example of separating cats from dogs based on ear length and we
 
 
 To better handle such situations, we can turn to the **Support Vector Machine (SVM)** algorithm. Unlike Logistic Regression, SVM focuses on maximizing the margin --- the distance between the decision boundary and the closest data points from each class, known as support vectors (as illustrated in the figure below). When a large gap exists between two classes, SVM takes advantage of this space by positioning the boundary near the center of the gap while maintaining the maximum margin. This results in a more stable and robust classifier, especially when the classes are well-separated.
+
 
 Unlike Logistic Regression, which considers all data points to estimate probabilities, SVM relies primarily on the most critical examples --- those closest to the decision boundary --- making it less sensitive to outliers and more precise in defining class separations.
 
@@ -374,6 +407,7 @@ To apply SVM, we use ``SVC`` (Support Vector Classification) from ``sklearn.svm`
 :::{note}
 You can also experiment with other kernels, such as ``linear``, ``poly``, or ``sigmoid``, to explore different types of decision boundaries.
 :::
+
 
 By adjusting hyperparameters such as ``C`` (regularization strength) and ``gamma`` (kernel coefficient), we can control the trade-off between margin width and classification accuracy. Below is a code example demonstrating how to apply ``SVC`` with the ``rbf`` kernel to classify penguins.
 
@@ -394,6 +428,7 @@ cm_svm = confusion_matrix(y_test, y_pred_svm)
 plot_confusion_matrix(cm_svm, "Confusion Matrix using Support Vector Machine algorithm", "5-confusion-matrix-svm.png")
 ```
 
+
 :::{figure} ./images/5-confusion-matrix-svm.png
 :align: center
 :width: 75%
@@ -406,7 +441,9 @@ plot_confusion_matrix(cm_svm, "Confusion Matrix using Support Vector Machine alg
 
 The **Decision Tree** algorithm is a versatile and highly interpretable method for classification tasks. Its core idea is to recursively split the dataset into smaller subsets based on feature thresholds, creating a tree-like structure of decisions that maximizes the separation of target classes.
 
+
 For example, a decision tree can be used to classify cats and dogs based on two or three features, illustrating how the algorithm partitions the feature space to distinguish between classes.
+
 
 :::{figure} ./images/5-decision-tree-example.png
 :align: center
@@ -455,6 +492,7 @@ plt.tight_layout()
 plt.show()
 ```
 
+
 :::{figure} ./images/5-decision-tree-structure.png
 :align: center
 :width: 100%
@@ -467,6 +505,7 @@ plt.show()
 
 While Decision Trees are easy to interpret and visualize, they have some notable drawbacks. One primary issue is their tendency to overfit the training data, particularly when the tree is allowed to grow deep without constraints such as maximum depth or minimum samples per split. Overfitting causes the model to capture noise in the training data, which can lead to poor generalization on unseen data --- for example, misclassifying a Gentoo penguin as a Chinstrap due to overly specific splits. Additionally, decision trees are sensitive to small variations in the data; even slight changes, such as a few noisy measurements, can result in a significantly different tree structure, reducing the model’s stability and reliability.
 
+
 To address these limitations, we can use an ensemble learning technique called **Random Forest**. A Random Forest builds on the concept of decision trees by creating a large collection of them, each trained on a randomly selected subset of the data and features. By aggregating the predictions of multiple trees --- typically through majority voting for classification --- Random Forest reduces overfitting, improves generalization, and mitigates the inherent instability in individual decision trees.
 
 :::{note}
@@ -477,6 +516,7 @@ To address these limitations, we can use an ensemble learning technique called *
 
 
 The figure below illustrates how a Random Forest improves upon a single Decision Tree when classifying cats and dogs based on synthetic measurements of ear length and weight.
+
 
 :::{figure} ./images/5-random-forest-example.png
 :align: center
@@ -504,6 +544,7 @@ cm_rf = confusion_matrix(y_test, y_pred_rf)
 plot_confusion_matrix(cm_rf, "Confusion Matrix using Random Forest algorithm", "5-confusion-matrix-rf.png")
 ```
 
+
 :::{figure} ./images/5-confusion-matrix-rf.png
 :align: center
 :width: 75%
@@ -523,7 +564,9 @@ During training, the algorithm evaluates all possible splits for a feature. It c
 
 The greater the total reduction in impurity attributed to a feature, the more important it is considered. These importance scores are then normalized to provide a relative ranking, helping identify which features have the most influence on predicting the output class. This information is particularly useful for interpreting model behavior, selecting meaningful features, and understanding the underlying structure of the data.
 
+
 Below is a code example showing how to plot feature importance using a Random Forest model to classify penguins into three categories.
+
 ```python
 importances = rf_model.feature_importances_
 features = X.columns
@@ -536,6 +579,7 @@ plt.title("Random Forest Feature Importance")
 plt.tight_layout()
 plt.show()
 ```
+
 
 :::{figure} ./images/5-random-forest-feature-importrance.png
 :align: center
@@ -551,7 +595,9 @@ Illustration of feature importance for penguin classification. Longer bars indic
 
 We have trained the model using a Decision Tree classifier, providing an intuitive starting point for classifying penguin species based on physical measurements. However, this classifier is sensitive to small fluctuations in the dataset, which can often lead to overfitting, especially when the tree grows deep.
 
+
 To address the limitations of a single decision tree, we turned to Random Forest, an ensemble method that builds multiple decision trees on different random subsets of the data and features. By averaging the predictions of all trees or taking a majority vote in classification, Random Forest reduces overfitting and improves generalization. This approach balances model complexity with predictive performance and provides a reliable estimate of feature importance, helping identify which physical attributes are most influential in distinguishing penguin species.
+
 
 While Random Forest provides robustness and improved accuracy over individual trees, we can further enhance performance using **Gradient Boosting**.
 - Like Random Forest, Gradient Boosting is an ensemble learning technique, but it builds a strong classifier by combining many weak learners (typically shallow decision trees) in a sequential manner.
@@ -583,10 +629,12 @@ cm_gb = confusion_matrix(y_test, y_pred_gb)
 plot_confusion_matrix(cm_gb, "Confusion Matrix using Gradient Boosting algorithm", "5-confusion-matrix-gb.png")
 ```
 
+
 :::{figure} ./images/5-confusion-matrix-gb.png
 :align: center
 :width: 75%
 :::
+
 
 :::{note}
 
@@ -611,12 +659,15 @@ A **Multilayer Perceptron** (MLP) is a type of artificial neural network consist
 :width: 80%
 :::
 
+
 A common equation for the output of a neuron is
 :::{math}
 output = Activation(\sum_i (x_i * w_i) + bias).
 :::
 
+
 An **activation function** is a mathematical transformation that converts the weighted sum of a neuron’s inputs into its output signal. By introducing non-linearity into the network, activation functions enable neural networks to learn complex patterns and make sophisticated decisions based on the weighted inputs.
+
 
 Below are some commonly used activation functions in neural networks and DL models. Each plays a crucial role in introducing non-linearities, allowing the network to capture intricate patterns and relationships in data.
 - **Sigmoid**: With its characteristic S-shaped curve, the sigmoid function maps inputs to a smooth 0-1 range, making it historically popular for binary classification tasks.
@@ -631,6 +682,7 @@ Below are some commonly used activation functions in neural networks and DL mode
 
 
 A single neuron (perceptron) can learn simple patterns but is limited in modeling complex relationships. By combining multiple neurons into layers and connecting them into a network, we create a powerful computational framework capable of approximating highly non-linear functions. In a Multilayer Perceptron (MLP), neurons are organized into an input layer, one or more hidden layers, and an output layer.
+
 
 The image below illustrates a three-layer perceptron network with 3, 4, and 2 neurons in the input, hidden, and output layers, respectively.
 - The input layer receives raw data, such as pixel values or measurements, and passes it to the hidden layer.
@@ -655,6 +707,7 @@ mlp_model = MLPClassifier(hidden_layer_sizes=(16), activation='relu', solver='ad
 mlp_model.fit(X_train_scaled, y_train)
 ```
 
+
 The model is configured with:
 - an input layer matching the number of features (6 per penguin),
 - a hidden layer (*e.g.*, 16 neurons) to capture non-linear relationships, and
@@ -673,6 +726,7 @@ The hyperparameters used to construct this MLP are listed below:
 
 
 After training the model, we evaluate its accuracy on the testing set and visualize the results by computing and plotting the confusion matrix.
+
 ```python
 y_pred_mlp = mlp_model.predict(X_test_scaled)
 
@@ -694,7 +748,9 @@ plot_confusion_matrix(cm_mlp, "Confusion Matrix using Multi-Layer Perceptron alg
 
 ### (Optional) Deep Neural Networks
 
+
 MLP is a foundational neural network architecture, consisting of an input layer, one or more hidden layers, and an output layer. While MLP excels at learning complex patterns from tabular data, its shallow depth (typically 1-2 hidden layers) limits its ability to handle very high-dimensional or abstract data such as raw images, audio, or text.
+
 
 To overcome these limitations, Deep Neural Network (DNN) extends the MLP framework by adding multiple hidden layers. These additional layers allow the model to learn highly abstract features through deep hierarchical representations: early layers might capture basic features (like edges or shapes), while deeper layers recognize complex objects or semantic patterns. This depth enables DNN to outperform traditional MLP in complex tasks requiring high-level feature extraction, such as computer vision and natural language processing.
 
@@ -728,6 +784,7 @@ scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 ```
+
 
 When building a DNN with Keras, there are two common approaches: using the ``Sequential()`` API step by step, or defining all layers at once within the ``Sequential()`` constructor. Here, we adopt the first approach, whereas the second approach is used in the Jupyter notebook to construct the same DNN.
 - We start by creating an empty model with ``keras.Sequential()``, which initializes a linear container for stacking sequential layers. 
@@ -777,17 +834,20 @@ Now that we have designed a DNN that, in theory, should be capable of classifyin
 
 
 We use ``model.compile()`` to combine the chosen loss function and optimier before starting training.
+
 ```python
 from keras.optimizers import Adam
 
 dnn_model.compile(optimizer='adam', loss=keras.losses.CategoricalCrossentropy())
 ```
 
+
 Now we are ready to train the DNN model. Here, we vary only the number of ``epochs``. One training epoch means that every sample in the training data has been shown to the neural network once and used to update its parameters. During training, we set ``batch_size=16`` to balance memory efficiency with gradient stability, and ``verbose=1`` to display a progress bar showing the loss and metrics for each epoch in real time.
 
 ```python
 history = dnn_model.fit(X_train_scaled, y_train, batch_size=16, epochs=100, verbose=1)
 ```
+
 
 The ``.fit()`` method returns a history object, which contains a history attribute holding the training loss and other metrics for each epoch. Plotting the training loss can provide valuable insight into how learning progresses. For example, we can use Seaborn to plot the training loss with epochs ``sns.lineplot(x=history.epoch, y=history.history['loss'], c="tab:orange", label='Training Loss')``.
 
@@ -798,6 +858,7 @@ The ``.fit()`` method returns a history object, which contains a history attribu
 
 
 Finally, we evaluate the model’s performance on the testing set by computing its accuracy and visualizing the results with a confusion matrix.
+
 ```python
 # predict class probabilities
 y_pred_dnn_probs = dnn_model.predict(X_test_scaled)
@@ -823,12 +884,14 @@ plot_confusion_matrix(cm_dnn, "Confusion Matrix using DNN algorithm", "5-confusi
 
 ## Comparison of Trained Models
 
+
 To evaluate the performance of different algorithms in classifying penguin species, we compare their accuracy scores and confusion matrices. The algorithms we the adopted in the previous sections include:
 - Instance-based: k-Nearest Neighbors (KNN).
 - Probability-based: Logistic Regression, and Naive Bayes.
 - Hyperplane-based: Support Vector Machine (SVM).
 - Tree-based methods: Decision Tree, Random Forest, and Gradient Boosting.
 - Network-based models: Multi-Layer Perceptron (MLP) and Deep Neural Networks (DNN).
+
 
 Each model was trained on the same training set and evaluated on a common testing set, with consistent preprocessing applied across all methods.
 
@@ -848,6 +911,7 @@ The confusion matrices provided deeper insight into class-level prediction perfo
 - MLP demonstrated well-balanced performance across all three penguin species.
 - Naive Bayes, in contrast, confused Adelie and Chinstrap penguins, likely due to overlapping feature distributions between these species.
 - other algorithms had a limited number of misclassifications, primarily between Adelie and Chinstrap.
+
 
 :::{figure} ./images/5-compare-confusion-matrices.png
 :align: center
