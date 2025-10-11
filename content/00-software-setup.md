@@ -106,3 +106,43 @@ If you are using VS Code, you can select the installed ``practical_machine_learn
 - Once selected, VS Code will use this environment for running Python code and Jupyter Notebooks, ensuring that all required packages are available.
 :::
 
+
+
+## (Optional) Setting Up PyTorch with GPU Support
+
+
+If your computer has a GPU, you can install PyTorch with GPU support. Below are step-by-step instructions to update the `practical_machine_learning` programming environment.
+
+
+First check your CUDA version.
+Open a terminal (Linux/macOS) or PowerShell (Windows) and run:
+```shell
+nvcc --version
+```
+If `nvcc` is not in your PATH, you can instead run
+```shell
+nvidia-smi
+```
+Here is the output from my Windows machine:
+:::{figure} ./env/test-cuda-compiler-driver.png
+:align: center
+:width: 80%
+:::
+
+
+Second, install the required packages and libraries using conda (for CUDA 12.1):
+```shell
+(base) C:\Users\XXX> conda activate practical_machine_learning
+
+(practical_machine_learning) C:\Users\XXX> conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia
+```
+
+
+Third, verify your installation in a Jupyter Notebook. Run the following command and ensure it returns `True` for `torch.cuda.is_available()`.
+```python
+import torch
+
+print(torch.__version__)               # 2.5.1
+print(torch.cuda.is_available())       # True
+print(torch.cuda.get_device_name(0))   # NVIDIA GeForce GT 1030
+```
