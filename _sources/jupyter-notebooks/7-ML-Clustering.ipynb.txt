@@ -1,0 +1,1109 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "a96d99e6-5949-446d-a933-30e95c1774fe",
+   "metadata": {},
+   "source": [
+    "# Unsupervised Learning (I): Clustering"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "b59713c2-e84e-49f0-938b-548cb0aa5a36",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import numpy as np\n",
+    "import matplotlib.pyplot as plt\n",
+    "import pandas as pd\n",
+    "import seaborn as sns"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "1926dc3b-ec67-4780-a3dc-0078e8229734",
+   "metadata": {},
+   "source": [
+    "## 1. The Penguins Dataset"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "5a153e4c-1156-482d-94b7-705529788d05",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "penguins = sns.load_dataset('penguins')\n",
+    "penguins"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "f94b5ea5-a796-480f-8670-9368ce25f1f6",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "sns.pairplot(penguins[[\"species\", \"bill_length_mm\", \"bill_depth_mm\", \"flipper_length_mm\", \"body_mass_g\"]], hue=\"species\", height=2.0)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "6704551f-f030-4040-82f0-8cab65b1dc70",
+   "metadata": {},
+   "source": [
+    "## 2. Data Processing"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "ee92b7a3-7db0-466a-8708-4d61395837e5",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# remove missing values\n",
+    "penguins_clustering = penguins.dropna()\n",
+    "\n",
+    "# check duplicate values from dataset\n",
+    "penguins_clustering.duplicated().value_counts()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "64958eda-1cb0-4986-8c88-fb552cc9807c",
+   "metadata": {},
+   "source": [
+    "## 3. Data Processing"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "8dc34435-177e-477e-bc66-94f90e758b96",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# select numerical features for clustering\n",
+    "\n",
+    "X = penguins_clustering[['bill_length_mm', 'bill_depth_mm', 'flipper_length_mm', 'body_mass_g']]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "3a645fef-5cd6-4ce6-a07a-ca0cd6380db4",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# standardize features (important for distance-based methods like KMeans)\n",
+    "\n",
+    "from sklearn.preprocessing import StandardScaler\n",
+    "\n",
+    "scaler = StandardScaler()\n",
+    "X_scaled = scaler.fit_transform(X)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "688f882a-3f05-4f58-ba9c-19180e1b2fa5",
+   "metadata": {},
+   "source": [
+    "## 4. Training Model & Evaluating Model Performance"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "772a07f1-d948-4406-8c6f-d2df9d07f033",
+   "metadata": {},
+   "source": [
+    "### 4.1 K-Means Clustering"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "90dd674f-34fd-4bc6-9f80-55c06543f13c",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from sklearn.cluster import KMeans\n",
+    "\n",
+    "k = 3  # we know there are 3 species\n",
+    "\n",
+    "kmeans = KMeans(n_clusters=k, random_state=42, n_init=10)\n",
+    "kmeans_labels = kmeans.fit_predict(X_scaled)\n",
+    "kmeans_labels"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "24cbdf6d-4ab1-4243-954c-7e837867c7b6",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# add cluster labels to dataframe\n",
+    "\n",
+    "penguins_cluster = penguins.dropna().copy()\n",
+    "penguins_cluster['kmeans_cluster'] = kmeans_labels\n",
+    "penguins_cluster"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "635b37bb-3f00-41ac-bb3a-57ea829be8d4",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# evaluate clustering\n",
+    "\n",
+    "from sklearn.metrics import silhouette_score, adjusted_rand_score\n",
+    "\n",
+    "sil_score_kmeans = silhouette_score(X_scaled, kmeans_labels)\n",
+    "ari_score_kmeans = adjusted_rand_score(penguins_cluster['species'], kmeans_labels)\n",
+    "print(f\"Silhouette Score: {sil_score_kmeans:.3f}\")\n",
+    "print(f\"Adjusted Rand Index (vs true species): {ari_score_kmeans:.3f}\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "f3bde39e-87e6-4d63-beb3-4c0e867c8c5c",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# visualization: clusters vs. true labels\n",
+    "fig, axes = plt.subplots(1, 2, figsize=(12, 5))\n",
+    "\n",
+    "# plot KMeans clusters\n",
+    "axes[0].scatter(\n",
+    "    penguins_cluster['flipper_length_mm'],\n",
+    "    penguins_cluster['body_mass_g'],\n",
+    "    c=penguins_cluster['kmeans_cluster'],\n",
+    "    cmap='viridis',\n",
+    "    s=60\n",
+    ")\n",
+    "axes[0].scatter(\n",
+    "    kmeans.cluster_centers_[:, 2] * scaler.scale_[2] + scaler.mean_[2],  # inverse scaling\n",
+    "    kmeans.cluster_centers_[:, 3] * scaler.scale_[3] + scaler.mean_[3],\n",
+    "    c='red', marker='X', s=200, label='Centroids'\n",
+    ")\n",
+    "axes[0].set_title(\"K-Means Clustering\")\n",
+    "axes[0].set_xlabel(\"Flipper Length (mm)\")\n",
+    "axes[0].set_ylabel(\"Body Mass (g)\")\n",
+    "axes[0].legend()\n",
+    "\n",
+    "# Plot true species for comparison\n",
+    "species_map = {'Adelie': 0, 'Chinstrap': 1, 'Gentoo': 2}\n",
+    "colors = [species_map[s] for s in penguins_cluster['species']]\n",
+    "scatter = axes[1].scatter(\n",
+    "    penguins_cluster['flipper_length_mm'],\n",
+    "    penguins_cluster['body_mass_g'],\n",
+    "    c=colors,\n",
+    "    cmap='viridis',\n",
+    "    s=60\n",
+    ")\n",
+    "axes[1].set_title(\"True Species Labels\")\n",
+    "axes[1].set_xlabel(\"Flipper Length (mm)\")\n",
+    "axes[1].set_ylabel(\"Body Mass (g)\")\n",
+    "\n",
+    "# Legend for species\n",
+    "handles, labels = scatter.legend_elements()\n",
+    "axes[1].legend(handles, species_map.keys(), title=\"Species\")\n",
+    "\n",
+    "plt.tight_layout()\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "35d8845f-2d91-42fe-a882-abf5237e4f1f",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "print(\"\\nSpecies distribution in clusters:\")\n",
+    "cross_tab = pd.crosstab(penguins_cluster['kmeans_cluster'], penguins_cluster['species'])\n",
+    "print(cross_tab)\n",
+    "    \n",
+    "# plot species distribution in clusters\n",
+    "cross_tab.plot(kind='bar', stacked=True, figsize=(9, 6))\n",
+    "plt.title('Species Distribution Across Clusters')\n",
+    "plt.xlabel('Cluster')\n",
+    "plt.ylabel('Count')\n",
+    "plt.legend(title='Species')\n",
+    "plt.tight_layout()\n",
+    "plt.show()\n",
+    "# plt.savefig(\"7-penguins-in-clusters.png\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "c5481e41-d2a0-4da8-b417-7fbbf5c6e997",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "penguins_cluster"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "68802629-ab88-4f1f-b370-9cd8cdfc11f2",
+   "metadata": {},
+   "source": [
+    "#### Determining optimal number of clusters"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "c0e58e24-2b98-4ac3-9918-e459f87bedde",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# determining optimal number of clusters\n",
+    "\n",
+    "max_clusters = 15\n",
+    "wcss = []  # within-Cluster Sum of Square\n",
+    "silhouette_scores = []\n",
+    "\n",
+    "for i in range(2, max_clusters + 1):\n",
+    "    kmeans = KMeans(n_clusters=i, random_state=42, n_init=10)\n",
+    "    kmeans.fit(X_scaled)\n",
+    "    wcss.append(kmeans.inertia_)\n",
+    "    \n",
+    "    # calculate silhouette score\n",
+    "    silhouette_avg = silhouette_score(X_scaled, kmeans.labels_)\n",
+    "    silhouette_scores.append(silhouette_avg)\n",
+    "    \n",
+    "    print(f\"Clusters: {i}, WCSS: {kmeans.inertia_:.2f}, Silhouette: {silhouette_avg:.3f}\")\n",
+    "\n",
+    "# plot elbow method\n",
+    "plt.figure(figsize=(12, 5))\n",
+    "\n",
+    "plt.subplot(1, 2, 1)\n",
+    "plt.plot(range(2, max_clusters + 1), wcss, marker='o', linestyle='--')\n",
+    "plt.xlabel('Number of Clusters')\n",
+    "plt.ylabel('WCSS')\n",
+    "plt.title('Elbow Method')\n",
+    "\n",
+    "plt.subplot(1, 2, 2)\n",
+    "plt.plot(range(2, max_clusters + 1), silhouette_scores, marker='o', color='red')\n",
+    "plt.xlabel('Number of Clusters')\n",
+    "plt.ylabel('Silhouette Score')\n",
+    "plt.title('Silhouette Score Method')\n",
+    "\n",
+    "plt.tight_layout()\n",
+    "plt.show()\n",
+    "# plt.savefig(\"./7-kmeans-optimal-parameter.png\")\n",
+    "\n",
+    "optimal_clusters = silhouette_scores.index(max(silhouette_scores)) + 2\n",
+    "print(f\"Suggested optimal number of clusters: {optimal_clusters}\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "e874f064-6b5d-49d1-8e0a-6291caafbe37",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# comparison of k = 2, 3, and 4\n",
+    "\n",
+    "penguins_cluster_k234 = penguins_cluster.copy()\n",
+    "\n",
+    "# apply K-Means with k=2\n",
+    "kmeans2 = KMeans(n_clusters=2, random_state=42, n_init=10)\n",
+    "labels2 = kmeans2.fit_predict(X_scaled)\n",
+    "penguins_cluster_k234['cluster_k2'] = labels2\n",
+    "\n",
+    "# apply K-Means with k=3\n",
+    "kmeans3 = KMeans(n_clusters=3, random_state=42, n_init=10)\n",
+    "labels3 = kmeans3.fit_predict(X_scaled)\n",
+    "penguins_cluster_k234['cluster_k3'] = labels3\n",
+    "\n",
+    "# apply K-Means with k=4\n",
+    "kmeans4 = KMeans(n_clusters=4, random_state=42, n_init=10)\n",
+    "labels4 = kmeans4.fit_predict(X_scaled)\n",
+    "penguins_cluster_k234['cluster_k4'] = labels4"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "031d6737-3c3a-41ce-8b8a-040d894a866c",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# plot the distributions of data points in clusters\n",
+    "fig, axes = plt.subplots(1, 3, figsize=(16,5))\n",
+    "\n",
+    "# k=2 clusters\n",
+    "axes[0].scatter(penguins_cluster_k234['flipper_length_mm'], penguins_cluster_k234['body_mass_g'], \n",
+    "                c=penguins_cluster_k234['cluster_k2'], cmap='viridis', s=80)\n",
+    "axes[0].set_title('K-Means Clusters (k=2)')\n",
+    "axes[0].set_xlabel('Flipper Length (mm)')\n",
+    "axes[0].set_ylabel('Body Mass (g)')\n",
+    "\n",
+    "# k=3 clusters\n",
+    "axes[1].scatter(penguins_cluster_k234['flipper_length_mm'], penguins_cluster_k234['body_mass_g'], \n",
+    "                c=penguins_cluster_k234['cluster_k3'], cmap='viridis', s=80)\n",
+    "axes[1].set_title('K-Means Clusters (k=3)')\n",
+    "axes[1].set_xlabel('Flipper Length (mm)')\n",
+    "axes[1].set_ylabel('Body Mass (g)')\n",
+    "\n",
+    "# k=4 clusters\n",
+    "axes[2].scatter(penguins_cluster_k234['flipper_length_mm'], penguins_cluster_k234['body_mass_g'], \n",
+    "                c=penguins_cluster_k234['cluster_k4'], cmap='viridis', s=80)\n",
+    "axes[2].set_title('K-Means Clusters (k=4)')\n",
+    "axes[2].set_xlabel('Flipper Length (mm)')\n",
+    "axes[2].set_ylabel('Body Mass (g)')\n",
+    "\n",
+    "plt.tight_layout()\n",
+    "plt.show()\n",
+    "# plt.savefig(\"./7-kmeans-234-clusters.png\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "4ff19233-8a94-44be-bd7f-e19d1ae95150",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# print cluster counts\n",
+    "\n",
+    "print(\"Cluster counts for k=2:\\n\", penguins_cluster_k234['cluster_k2'].value_counts())\n",
+    "print(\"Cluster counts for k=3:\\n\", penguins_cluster_k234['cluster_k3'].value_counts())\n",
+    "print(\"Cluster counts for k=4:\\n\", penguins_cluster_k234['cluster_k4'].value_counts())"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "a633c6ae-fe51-469b-9a4a-dda8b4bf81a5",
+   "metadata": {},
+   "source": [
+    "### 4.2 Hierarchical Clustering"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "76c592e1-8842-49ed-86a1-d4ce24821ff5",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from scipy.cluster.hierarchy import dendrogram, linkage, fcluster\n",
+    "\n",
+    "# compute linkage matrix\n",
+    "linked = linkage(X_scaled, method='ward')\n",
+    "\n",
+    "# assign 3 clusters based on dendrogram cut\n",
+    "labels_scipy = fcluster(linked, t=3, criterion='maxclust')\n",
+    "\n",
+    "# evaluate clustering\n",
+    "sil_score_hier_scipy = silhouette_score(X_scaled, labels_scipy)\n",
+    "ari_score_hier_scipy = adjusted_rand_score(penguins_cluster['species'], labels_scipy)\n",
+    "print(f\"Silhouette Score: {sil_score_hier_scipy:.3f}\")\n",
+    "print(f\"Adjusted Rand Index (vs true species): {ari_score_hier_scipy:.3f}\")\n",
+    "\n",
+    "# penguins_cluster = penguins.dropna().copy()\n",
+    "penguins_cluster['hier_cluster_scipy'] = labels_scipy\n",
+    "penguins_cluster"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "a4e1f4ef-d5db-44aa-8676-8e762eba684f",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# plot dendrogram to visualize clustering structure\n",
+    "\n",
+    "plt.figure(figsize=(16, 6))\n",
+    "dendrogram(\n",
+    "    linked,\n",
+    "    labels=penguins_cluster['species'].values,  # for leaf labels\n",
+    "    leaf_rotation=90,\n",
+    "    leaf_font_size=8\n",
+    ")\n",
+    "plt.title(\"Hierarchical Clustering Dendrogram (Ward linkage)\", fontsize=13)\n",
+    "plt.xlabel(\"Penguin (species labels)\", fontsize=13)\n",
+    "plt.ylabel(\"Distance\", fontsize=13)\n",
+    "plt.tight_layout()\n",
+    "plt.show()\n",
+    "# plt.savefig(\"./7-hierarcical-dendrogram.png\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "301a58dc-800b-4b77-8921-a36ccfac3483",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# agglomerative clustering from scikit-learn (choose number of clusters, e.g., 3)\n",
+    "\n",
+    "from sklearn.cluster import AgglomerativeClustering\n",
+    "\n",
+    "hc = AgglomerativeClustering(n_clusters=3, metric='euclidean', linkage='ward')\n",
+    "labels_aggl = hc.fit_predict(X_scaled)\n",
+    "\n",
+    "# evaluate clustering\n",
+    "sil_score_hier_aggl = silhouette_score(X_scaled, labels_aggl)\n",
+    "ari_score_hier_aggl = adjusted_rand_score(penguins_cluster['species'], labels_aggl)\n",
+    "print(f\"Silhouette Score: {sil_score_hier_aggl:.3f}\")\n",
+    "print(f\"Adjusted Rand Index (vs true species): {ari_score_hier_aggl:.3f}\")\n",
+    "\n",
+    "# add cluster labels to dataframe\n",
+    "penguins_cluster['hier_cluster_aggl'] = labels_aggl\n",
+    "penguins_cluster"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "910f2924-dce1-4bee-8096-7bb8f5c13b89",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# check distribution of species in clusters\n",
+    "\n",
+    "print(\"\\nSpecies distribution in hierarchical clusters:\\n\")\n",
+    "\n",
+    "print(pd.crosstab(penguins_cluster['species'], penguins_cluster['hier_cluster_scipy']), '\\n')\n",
+    "print(pd.crosstab(penguins_cluster['species'], penguins_cluster['hier_cluster_aggl']))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "54ed955e-068e-423f-aeee-df6b5f2687be",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "fig, axes = plt.subplots(1, 2, figsize=(16, 6))\n",
+    "\n",
+    "# clusters determined using SciPy\n",
+    "scatter1 = axes[0].scatter(\n",
+    "    penguins_cluster['flipper_length_mm'],\n",
+    "    penguins_cluster['body_mass_g'],\n",
+    "    c=labels_scipy,\n",
+    "    cmap='viridis',\n",
+    "    s=80\n",
+    ")\n",
+    "axes[0].set_xlabel(\"Flipper Length (mm)\")\n",
+    "axes[0].set_ylabel(\"Body Mass (g)\")\n",
+    "axes[0].set_title(\"Hierarchical Clustering (SciPy)\")\n",
+    "cbar1 = plt.colorbar(scatter1, ax=axes[0])\n",
+    "cbar1.set_label(\"Cluster ID\")\n",
+    "\n",
+    "# clusters determined using Scikit-Learn\n",
+    "scatter2 = axes[1].scatter(\n",
+    "    penguins_cluster['flipper_length_mm'],\n",
+    "    penguins_cluster['body_mass_g'],\n",
+    "    c=labels_aggl,\n",
+    "    cmap='viridis',\n",
+    "    s=80\n",
+    ")\n",
+    "axes[1].set_xlabel(\"Flipper Length (mm)\")\n",
+    "axes[1].set_ylabel(\"Body Mass (g)\")\n",
+    "axes[1].set_title(\"Hierarchical Clustering (Scikit-Learn)\")\n",
+    "cbar2 = plt.colorbar(scatter2, ax=axes[1])\n",
+    "cbar2.set_label(\"Cluster ID\")\n",
+    "\n",
+    "plt.tight_layout()\n",
+    "plt.show()\n",
+    "# plt.savefig(\"./7-hierarchical-clusters-from-scipy-scikit-learn.png\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "8c6629eb-a152-4eca-94fd-c33548bfe09a",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# calculation of confusion matrix\n",
+    "\n",
+    "# clusters determined using Scikit-Learn\n",
+    "# map clusters to species (majority vote)\n",
+    "cluster_mapping = penguins_cluster.groupby('hier_cluster_aggl')['species'].agg(lambda x: x.value_counts().idxmax()).to_dict()\n",
+    "predicted_species = penguins_cluster['hier_cluster_aggl'].map(cluster_mapping)\n",
+    "# compute confusion matrix as a DataFrame\n",
+    "cm_aggl = pd.crosstab(penguins_cluster['species'], predicted_species)\n",
+    "\n",
+    "# clusters determined using SciPy\n",
+    "cluster_mapping = penguins_cluster.groupby('hier_cluster_scipy')['species'].agg(lambda x: x.value_counts().idxmax()).to_dict()\n",
+    "predicted_species = penguins_cluster['hier_cluster_scipy'].map(cluster_mapping)\n",
+    "cm_scipy = pd.crosstab(penguins_cluster['species'], predicted_species)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "7fd7f559-3bfe-46f6-b96f-e0bcd761039c",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# visualisation\n",
+    "\n",
+    "fig, axes = plt.subplots(1, 2, figsize=(14, 6))  # 1 row, 2 columns\n",
+    "\n",
+    "# SciPy clusters\n",
+    "sns.heatmap(cm_scipy, annot=True, fmt=\"d\", cmap=\"OrRd\", ax=axes[0])\n",
+    "axes[0].set_title(\"Confusion Matrix: SciPy Clusters\")\n",
+    "axes[0].set_xlabel(\"Predicted Species (clusters)\")\n",
+    "axes[0].set_ylabel(\"True Species\")\n",
+    "\n",
+    "# Scikit-Learn clusters\n",
+    "sns.heatmap(cm_aggl, annot=True, fmt=\"d\", cmap=\"OrRd\", ax=axes[1])\n",
+    "axes[1].set_title(\"Confusion Matrix: Scikit-Learn Clusters\")\n",
+    "axes[1].set_xlabel(\"Predicted Species (clusters)\")\n",
+    "axes[1].set_ylabel(\"True Species\")\n",
+    "\n",
+    "plt.tight_layout()\n",
+    "plt.show()\n",
+    "# plt.savefig(\"./7-hierarchical-confusion-matrix.png\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "611bc2ff-ec04-435c-af01-45364b2090cf",
+   "metadata": {},
+   "source": [
+    "### 4.3 DBSCAN (Density-Based Spatial Clustering of Applications with Noise)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "71fcd18e-3b35-4006-90f0-1be1680f0fd0",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from sklearn.cluster import DBSCAN\n",
+    "\n",
+    "dbscan = DBSCAN(eps=0.55, min_samples=5)\n",
+    "labels = dbscan.fit_predict(X_scaled)\n",
+    "\n",
+    "# evaluate clustering (only if at least 2 clusters found)\n",
+    "n_clusters = len(set(labels)) - (1 if -1 in labels else 0)\n",
+    "print(f\"DBSCAN found {n_clusters} clusters (and {sum(labels==-1)} noise points).\")\n",
+    "\n",
+    "if n_clusters > 1:\n",
+    "    sil_score_dbscan = silhouette_score(X_scaled, labels)  # FIXED\n",
+    "    ari_score_dbscan = adjusted_rand_score(penguins_cluster['species'], labels)\n",
+    "    print(f\"Silhouette Score: {sil_score_dbscan:.3f}\")\n",
+    "    print(f\"Adjusted Rand Index (vs true species): {ari_score_dbscan:.3f}\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "a9c3babe-089e-4773-9963-9d80661a73b5",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# add cluster labels to dataframe\n",
+    "\n",
+    "penguins_cluster['dbscan_cluster'] = labels\n",
+    "penguins_cluster"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "e10733f0-dc92-4d65-8446-b713dea147c8",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# visualization\n",
+    "\n",
+    "plt.figure(figsize=(9,6))\n",
+    "scatter = plt.scatter(\n",
+    "    penguins_cluster['flipper_length_mm'], \n",
+    "    penguins_cluster['body_mass_g'],\n",
+    "    c=labels, cmap='viridis', s=80\n",
+    ")\n",
+    "plt.xlabel(\"Flipper Length (mm)\")\n",
+    "plt.ylabel(\"Body Mass (g)\")\n",
+    "plt.title(\"DBSCAN Clustering of Penguins (flipper length vs body mass)\")\n",
+    "plt.colorbar(scatter, label=\"Cluster ID (-1 = noise)\")\n",
+    "plt.tight_layout()\n",
+    "plt.show()\n",
+    "# plt.savefig(\"./7-dbscan-point-types.png\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "5813cd4f-087d-4827-9fe8-74729b6b6f50",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# cross-tabulation: species distribution in clusters\n",
+    "\n",
+    "cross_tab = pd.crosstab(penguins_cluster['dbscan_cluster'], penguins_cluster['species'])\n",
+    "\n",
+    "cross_tab.plot(kind='bar', stacked=True, figsize=(9,6))\n",
+    "\n",
+    "plt.title(\"Distribution of Penguin Species in Each DBSCAN Cluster\")\n",
+    "plt.xlabel(\"Cluster ID\")\n",
+    "plt.ylabel(\"Number of Penguins\")\n",
+    "plt.legend(title=\"Species\")\n",
+    "plt.tight_layout()\n",
+    "plt.show()\n",
+    "# plt.savefig(\"./7-dbscan-penguins-in-clusters.png\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "57fda1b3-009e-4416-8501-0c0642d259d4",
+   "metadata": {},
+   "source": [
+    "### 4.4 Gaussian Mixture Models"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "3d05e7a3-6d04-4c34-95b3-1a59c3e93f72",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from sklearn.mixture import GaussianMixture\n",
+    "from sklearn.metrics import adjusted_rand_score, silhouette_score\n",
+    "\n",
+    "# build GMM model with 3 components (clusters)\n",
+    "gmm = GaussianMixture(n_components=3, covariance_type='full', random_state=42)\n",
+    "gmm.fit(X_scaled)\n",
+    "labels_gmm = gmm.predict(X_scaled)\n",
+    "\n",
+    "# evaluate clustering performance\n",
+    "sil_score_gmm = silhouette_score(X_scaled, labels_gmm)\n",
+    "ari_score_gmm = adjusted_rand_score(penguins_cluster['species'], labels)\n",
+    "print(f\"Silhouette Score: {sil_score_gmm:.3f}\")\n",
+    "print(f\"Adjusted Rand Index: {ari_score_gmm:.3f}\")\n",
+    "\n",
+    "\n",
+    "# add cluster labels to dataframe\n",
+    "penguins_cluster['gmm_cluster'] = labels_gmm\n",
+    "penguins_cluster"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "cec72c35-3a86-4268-a039-50787b420e8b",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# check species distribution in each cluster\n",
+    "\n",
+    "print(\"\\nSpecies distribution per GMM cluster:\\n\")\n",
+    "print(pd.crosstab(penguins_cluster['species'], penguins_cluster['gmm_cluster']))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "378772ac-2168-4cd4-aa3f-fff4523bf83b",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# visualization (flipper length vs body mass)\n",
+    "\n",
+    "plt.figure(figsize=(8,6))\n",
+    "scatter = plt.scatter(\n",
+    "    penguins_cluster['flipper_length_mm'],\n",
+    "    penguins_cluster['body_mass_g'],\n",
+    "    c=labels_gmm, cmap='viridis', s=80\n",
+    ")\n",
+    "plt.xlabel(\"Flipper Length (mm)\")\n",
+    "plt.ylabel(\"Body Mass (g)\")\n",
+    "plt.title(\"Gaussian Mixture Model Clustering of Penguins\")\n",
+    "plt.colorbar(scatter, label=\"Cluster ID\")\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "4313277e-034a-4f30-87f4-259ec61e3726",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# map clusters to species (majority vote)\n",
+    "cluster_mapping = penguins_cluster.groupby('gmm_cluster')['species'].agg(lambda x: x.value_counts().idxmax()).to_dict()\n",
+    "predicted_species = penguins_cluster['gmm_cluster'].map(cluster_mapping)\n",
+    "\n",
+    "# compute confusion matrix as a DataFrame\n",
+    "cm_gmm = pd.crosstab(penguins_cluster['species'], predicted_species)\n",
+    "\n",
+    "# plot heatmap\n",
+    "plt.figure(figsize=(7,5))\n",
+    "sns.heatmap(cm_gmm, annot=True, fmt=\"d\", cmap=\"OrRd\")\n",
+    "plt.title(\"Confusion Matrix: Species vs Gaussian Mixture Model\")\n",
+    "plt.xlabel(\"Predicted Species (from clusters)\")\n",
+    "plt.ylabel(\"True Species\")\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "4493d916-323d-4ed9-b6f4-009b050296d2",
+   "metadata": {},
+   "source": [
+    "**Shapes of clusters (KMeans vs GMM)**"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "b33128fc-efaa-4b9d-8571-03243bea0592",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "penguins_test = sns.load_dataset(\"penguins\").dropna()\n",
+    "features_test = ['flipper_length_mm', 'body_mass_g']\n",
+    "X_test = penguins_test[features_test].values\n",
+    "\n",
+    "scaler = StandardScaler()\n",
+    "X_test_scaled = scaler.fit_transform(X_test)\n",
+    "\n",
+    "# K-Means clustering\n",
+    "kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)\n",
+    "kmeans_labels = kmeans.fit_predict(X_test_scaled)\n",
+    "kmeans_centers = kmeans.cluster_centers_\n",
+    "kmeans_centers"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "7b700c74-b9f3-4a1c-b463-99a47a546c0f",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# GMM clustering\n",
+    "\n",
+    "gmm = GaussianMixture(n_components=3, covariance_type='full', random_state=42)\n",
+    "gmm.fit(X_test_scaled)\n",
+    "gmm_labels = gmm.predict(X_test_scaled)\n",
+    "gmm_means = gmm.means_\n",
+    "gmm_covs = gmm.covariances_"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "0fd95cc2-b04a-452a-9024-3beb935a7e20",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# function to draw GMM ellipses\n",
+    "\n",
+    "def plot_gmm_ellipses(gmm, ax):\n",
+    "    for i in range(gmm.n_components):\n",
+    "        mean = gmm.means_[i]\n",
+    "        cov = gmm.covariances_[i]\n",
+    "        v, w = np.linalg.eigh(cov)\n",
+    "        angle = np.arctan2(w[0][1], w[0][0])\n",
+    "        angle = np.degrees(angle)\n",
+    "        width, height = 2 * np.sqrt(v) * 1.5\n",
+    "        ell = Ellipse(xy=mean, width=width, height=height, angle=angle, edgecolor='red', fc='None', lw=2)\n",
+    "        ax.add_patch(ell)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "a4c77811-e1a5-4e75-ae16-ce441739c2dd",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# plot shapes of clusters\n",
+    "\n",
+    "from matplotlib.patches import Circle, Ellipse\n",
+    "\n",
+    "fig, axes = plt.subplots(1, 2, figsize=(12,6))\n",
+    "\n",
+    "# left: K-Means with circles\n",
+    "axes[0].scatter(X_test_scaled[:,0], X_test_scaled[:, 1], c=kmeans_labels, cmap='viridis', s=80)\n",
+    "for center in kmeans_centers:\n",
+    "    circle = Circle(center, radius=0.8, edgecolor='red', fc='None', lw=2)  # circular clusters\n",
+    "    axes[0].add_patch(circle)\n",
+    "axes[0].set_title(\"K-Means (Circular clusters)\")\n",
+    "axes[0].set_xlabel(\"Flipper length (scaled)\")\n",
+    "axes[0].set_ylabel(\"Body mass (scaled)\")\n",
+    "\n",
+    "# right: GMM with elliptical/larger shapes\n",
+    "axes[1].scatter(X_test_scaled[:,0], X_test_scaled[:,1], c=gmm_labels, cmap='viridis', s=80)\n",
+    "plot_gmm_ellipses(gmm, axes[1])\n",
+    "axes[1].set_title(\"GMM (Elliptical clusters)\")\n",
+    "axes[1].set_xlabel(\"Flipper length (scaled)\")\n",
+    "axes[1].set_ylabel(\"Body mass (scaled)\")\n",
+    "\n",
+    "plt.tight_layout()\n",
+    "plt.show()\n",
+    "# plt.savefig(\"./7-gmm-elliptical-clusters.png\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "4951b289-8d56-42e6-bf5e-e077e1d76b22",
+   "metadata": {},
+   "source": [
+    "### 4.5 Spectral Clustering"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "85a46829-e03c-40ec-915e-57be1c41445c",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from sklearn.cluster import SpectralClustering\n",
+    "\n",
+    "# build model using Spectral Clustering (graph-based)\n",
+    "spectral = SpectralClustering(\n",
+    "    n_clusters=3,\n",
+    "    affinity='rbf',   # Gaussian kernel\n",
+    "    gamma=1.0,        # controls width of the Gaussian\n",
+    "    assign_labels='kmeans',\n",
+    "    random_state=42\n",
+    ")\n",
+    "labels = spectral.fit_predict(X_scaled)\n",
+    "penguins_cluster['spectral_cluster'] = labels\n",
+    "\n",
+    "# evaluate clustering\n",
+    "sil_score_spectral = silhouette_score(X_scaled, labels)\n",
+    "ari_score_spectral = adjusted_rand_score(penguins_cluster['species'], labels)\n",
+    "print(f\"Silhouette Score: {sil_score_spectral:.3f}\")\n",
+    "print(f\"Adjusted Rand Index (vs species): {ari_score_spectral:.3f}\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "bcc41b8e-c83a-486b-a58b-2a3568110ac2",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# visualization (flipper length vs body mass)\n",
+    "\n",
+    "plt.figure(figsize=(8,6))\n",
+    "scatter = plt.scatter(\n",
+    "    penguins_cluster['flipper_length_mm'],\n",
+    "    penguins_cluster['body_mass_g'],\n",
+    "    c=labels, cmap='viridis', s=80\n",
+    ")\n",
+    "plt.xlabel(\"Flipper Length (mm)\")\n",
+    "plt.ylabel(\"Body Mass (g)\")\n",
+    "plt.title(\"Spectral Clustering (Graph-Based) of Penguins\")\n",
+    "plt.colorbar(scatter, label=\"Cluster ID\")\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "8d8f24ec-90d5-4121-8f79-a68e19ef13a8",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# species distribution in each cluster\n",
+    "print(\"\\nSpecies distribution per Spectral cluster:\")\n",
+    "print(pd.crosstab(penguins_cluster['species'], penguins_cluster['spectral_cluster']))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "48c75dd8-9c37-4acc-a36a-2b0489d7706b",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# confusion matrix\n",
+    "\n",
+    "cluster_mapping = penguins_cluster.groupby('kmeans_cluster')['species'].agg(lambda x: x.value_counts().idxmax()).to_dict()\n",
+    "predicted_species = penguins_cluster['kmeans_cluster'].map(cluster_mapping)\n",
+    "cm_kmeans = pd.crosstab(penguins_cluster['species'], predicted_species)\n",
+    "\n",
+    "cluster_mapping = penguins_cluster.groupby('spectral_cluster')['species'].agg(lambda x: x.value_counts().idxmax()).to_dict()\n",
+    "predicted_species = penguins_cluster['spectral_cluster'].map(cluster_mapping)\n",
+    "cm_spectral = pd.crosstab(penguins_cluster['species'], predicted_species)\n",
+    "\n",
+    "# visualisation\n",
+    "fig, axes = plt.subplots(1, 3, figsize=(19, 6))\n",
+    "\n",
+    "# Kmeans clusters\n",
+    "sns.heatmap(cm_kmeans, annot=True, fmt=\"d\", cmap=\"OrRd\", ax=axes[0])\n",
+    "axes[0].set_title(\"Confusion Matrix: K-Means Clustering\")\n",
+    "axes[0].set_xlabel(\"Predicted Species (clusters)\")\n",
+    "axes[0].set_ylabel(\"True Species\")\n",
+    "\n",
+    "# GMM clusters\n",
+    "sns.heatmap(cm_gmm, annot=True, fmt=\"d\", cmap=\"OrRd\", ax=axes[1])\n",
+    "axes[1].set_title(\"Confusion Matrix: Gaussian Mixture Models\")\n",
+    "axes[1].set_xlabel(\"Predicted Species (clusters)\")\n",
+    "axes[1].set_ylabel(\"True Species\")\n",
+    "\n",
+    "# Spectral clusters\n",
+    "sns.heatmap(cm_spectral, annot=True, fmt=\"d\", cmap=\"OrRd\", ax=axes[2])\n",
+    "axes[2].set_title(\"Confusion Matrix: Spectral Clustering\")\n",
+    "axes[2].set_xlabel(\"Predicted Species (clusters)\")\n",
+    "axes[2].set_ylabel(\"True Species\")\n",
+    "\n",
+    "plt.tight_layout()\n",
+    "plt.show()\n",
+    "# plt.savefig(\"./7-spectral-confusion-matrix-kmeans-gmm.png\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "d9c3793b-d43c-419c-8185-0442375e9157",
+   "metadata": {},
+   "source": [
+    "**Spectral Clustering vs. K-Means models on the Two-Moon Dataset**"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "da83f8a3-f986-41e8-a97c-ba5e4ba59402",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from sklearn.datasets import make_moons\n",
+    "from sklearn.cluster import KMeans, SpectralClustering\n",
+    "\n",
+    "# generate the \"two moons\" dataset\n",
+    "X, y = make_moons(n_samples=1000, noise=0.05, random_state=0)\n",
+    "\n",
+    "# K-Means will fail because the clusters are not spherical\n",
+    "kmeans = KMeans(n_clusters=2, random_state=0, n_init='auto')\n",
+    "y_kmeans = kmeans.fit_predict(X)\n",
+    "\n",
+    "# Spectral Clustering will succeed because it sees the connectivity.\n",
+    "spectral = SpectralClustering(n_clusters=2, affinity='nearest_neighbors', n_neighbors=30, random_state=0)\n",
+    "y_spectral = spectral.fit_predict(X)\n",
+    "\n",
+    "# visualize the results\n",
+    "fig, axes = plt.subplots(1, 2, figsize=(10, 5))\n",
+    "\n",
+    "# plot K-Means results\n",
+    "axes[0].scatter(X[:, 0], X[:, 1], c=y_kmeans, s=50, cmap='summer', alpha=0.75)\n",
+    "axes[0].set_title('K-Means Clustering (Fails)')\n",
+    "axes[0].set_xticks([])\n",
+    "axes[0].set_yticks([])\n",
+    "\n",
+    "# plot Spectral Clustering results\n",
+    "axes[1].scatter(X[:, 0], X[:, 1], c=y_spectral, s=50, cmap='summer', alpha=0.75)\n",
+    "axes[1].set_title('Spectral Clustering (Succeeds)')\n",
+    "axes[1].set_xticks([])\n",
+    "axes[1].set_yticks([])\n",
+    "\n",
+    "plt.suptitle('Comparison of Clustering Algorithms on Non-Convex Data')\n",
+    "plt.tight_layout()\n",
+    "plt.show()\n",
+    "# plt.savefig(\"./7-spectral-kmeans-two-moon-dataset.png\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "33fe4e23-ff6a-461c-8c8e-92fe8fabb672",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "penguins_cluster"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "0f58c152-af2a-49e7-a5d1-62d56e883c2c",
+   "metadata": {},
+   "source": [
+    "## 5. Comparison of Trained Models"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "62c03396-4aa0-463d-95cd-f3f0337d00f4",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "model_names = ['Spectral Clustering', 'Gaussian Mixture Models', 'DBSCAN', \n",
+    "               'Hierarchical Clustering (Scikit-Learn)',\n",
+    "               'Hierarchical Clustering (SciPy)', 'K-Means Clustering']\n",
+    "\n",
+    "sil_accuracy_scores = [sil_score_spectral, sil_score_gmm, sil_score_dbscan,\n",
+    "                       sil_score_hier_aggl, sil_score_hier_scipy, sil_score_kmeans]\n",
+    "\n",
+    "ari_accuracy_scores = [ari_score_spectral, ari_score_gmm, ari_score_dbscan,\n",
+    "                       ari_score_hier_aggl, ari_score_hier_scipy, ari_score_kmeans]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "0d3cf018-a3d6-4c9f-b69a-0788c6ff9ec0",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "fig, axes = plt.subplots(1, 2, figsize=(12, 5))\n",
+    "\n",
+    "# silhouette scores\n",
+    "axes[0].barh(model_names, sil_accuracy_scores, color='tab:orange', alpha=0.75)\n",
+    "axes[0].set_xlabel('Silhouette Score')\n",
+    "axes[0].set_xlim(0.35, 0.5)\n",
+    "for i, score in enumerate(sil_accuracy_scores):\n",
+    "    axes[0].text(score + 0.01, i, f'{score:.2f}', va='center')\n",
+    "\n",
+    "# adjusted rand index scores\n",
+    "axes[1].barh(model_names, ari_accuracy_scores, color='tab:green', alpha=0.75)\n",
+    "axes[1].set_xlabel('Adjusted Rand Index Score')\n",
+    "axes[1].set_xlim(0.7, 0.95)\n",
+    "axes[1].set_yticks([])\n",
+    "for i, score in enumerate(ari_accuracy_scores):\n",
+    "    axes[1].text(score + 0.01, i, f'{score:.2f}', va='center')\n",
+    "\n",
+    "plt.tight_layout()\n",
+    "plt.show()\n",
+    "# plt.savefig(\"./7-comparison-sil-ari-scores.png\")"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.10.13"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
