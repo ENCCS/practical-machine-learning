@@ -1,10 +1,14 @@
 # Setting Up Programming Environment
 
 
-This page provides instructions for installing the required packages and their dependencies on a local computer or server.
+
+## Using Personal Computer
 
 
-## Install miniforge
+This section provides instructions for installing the required packages and their dependencies on a local computer or server.
+
+
+### Install miniforge
 
 
 If you already have a preferred way to manage Python versions and libraries, you can stick to that. Otherwise, we recommend you to install Python3 and all required libraries using [Miniforge](https://conda-forge.org/download/), a free minimal installer for the package, dependency, and environment manager [Conda](https://docs.conda.io/en/latest/index.html).
@@ -17,10 +21,10 @@ $ conda --version
 ```
 
 
-## Configure programming environment
+### Configure programming environment
 
 
-With Conda installed, run the command below to install required packages and depenencies (except PyTorch):
+With Conda installed, open the **Anaconda Prompt terminal**, and run the command below to install required packages and depenencies (except PyTorch):
 ```console
 $ conda env create -y --file=https://raw.githubusercontent.com/ENCCS/practical-machine-learning/main/content/env/environment.yml
 ```
@@ -41,10 +45,10 @@ Remember to activate your programming environment each time before running code 
 :::
 
 
-## Validate programming environment
+### Validate programming environment
 
 
-Once the programming environment is fully set up, open a new terminal (just as you should do each time before running code examples), activate the programming environment, and launch JupyterLab by running the command below.
+Once the programming environment is fully set up, open a new **Anaconda Prompt terminal** (just as you should do each time before running code examples), activate the programming environment, and launch JupyterLab by running the command below:
 ```console
 $ conda activate practical_machine_learning
 
@@ -86,22 +90,25 @@ You should see output similar to the figure below. The exact package versions ma
 :::
 
 
-If the code runs without errors, it means the packages are correctly installed and your programming environment is ready for use. If you encounter an error (*e.g.*, ``ModuleNotFoundError``), it indicates that a package may not have been installed properly. In that case, please double-check your programming environment setup or bring the issue to the on-boarding session for assistance.
+If the code runs without errors, it means that all packages are correctly installed and your programming environment is ready to use.
 
 
 ::::{warning}
-If you encounter an error like the one shown in the figure below, it usually means PyTorch is trying to load a DLL (such as fbgemm.dll), but one of its dependencies is missing or incompatible. The most common causes are a missing Microsoft Visual C++ runtime or a mismatch between the installed PyTorch build and your Python/OS environment.
+For Windows OS users, you might encounter an error 
+(``ImportError: DLL load failed while importing _C: The specified procedure could not be found``) as described below.
+
 :::{figure} ./env/pytorch_error.png
 :align: center
 :width: 80%
 :::
 
-To verify, you can open another Jupyter notebook and test PyTorch again. You should see output similar to the example below.
+It is a very common Windows-specific PyTorch issue, and it means that the underlying C++/CUDA DLLs that torch depends on could not be loaded correctly.
 
-:::{figure} ./env/pytorch_another_test.png
-:align: center
-:width: 80%
-:::
+You should reinstall the correct matching build via the command below.
+
+```console
+$ conda install -y pytorch torchvision torchaudio torchtext cpuonly -c pytorch
+```
 ::::
 
 
@@ -115,18 +122,25 @@ If you are using VS Code, you can select the installed ``practical_machine_learn
 :::
 
 
-## (Optional) Setting Up PyTorch with GPU Support
+
+### (Optional) Setting Up PyTorch with GPU Support
 
 
-If your computer has a GPU, you can install PyTorch with GPU support. Below are step-by-step instructions to update the `practical_machine_learning` programming environment.
+**For Windows OS users**, if your computer has a GPU card, you can install PyTorch with GPU support.
+Below are step-by-step instructions to update the ``practical_machine_learning`` programming environment.
 
 
 First check your CUDA version.
 Open a terminal (Linux/macOS) or PowerShell (Windows) and run:
-```shell
-nvcc --version
+```console
+$ nvcc --version
 ```
 If ``nvcc`` is not in your PATH, you can instead run ``nvidia-smi``.
+```console
+$ nvidia-smi
+```
+
+
 Here is the output from my Windows machine:
 :::{figure} ./env/test-cuda-compiler-driver.png
 :align: center
@@ -134,21 +148,68 @@ Here is the output from my Windows machine:
 :::
 
 
-Second, install the required packages and libraries using conda (for CUDA 12.1):
-```shell
-(base) C:\Users\wangy> conda activate practical_machine_learning
+Second, remove any CPU-only versions of PyTorch that may have been installed (for example, those coming from Conda’s defaults or conda-forge channels), and hten install an older, CUDA-compatible version of PyTorch directly using ``pip``.
+Here ``cu121`` indicates the CUDA version (12.1) that the PyTorch build was compiled with.
 
-(practical_machine_learning) C:\Users\wangy> conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia
+
+```console
+$ conda activate practical_machine_learning
+
+$ conda remove pytorch torchvision torchaudio torchtext
+
+$ pip install torch==2.4.0 torchvision==0.19.0 torchaudio==2.4.0 --index-url https://download.pytorch.org/whl/cu121
 ```
 
 
-Third, verify your installation in a Jupyter Notebook. Run the following command and ensure it returns ``True`` for ``torch.cuda.is_available()``.
+Third, verify your installation in a Jupyter Notebook.
+Run the following command and ensure it returns ``True`` for ``torch.cuda.is_available()``.
 
 
 ```python
 import torch
 
-print(torch.__version__)               # 2.5.1
+print(torch.__version__)               # 2.4.0+cu121
 print(torch.cuda.is_available())       # True
 print(torch.cuda.get_device_name(0))   # NVIDIA GeForce GT 1030
 ```
+
+
+## Using Google Colab
+
+
+You can also run all the code examples in tutorials using [Google Colab](https://colab.research.google.com/), a free cloud-based platform that provides Jupyter Notebook environments with preinstalled ML libraries.
+
+
+### Download Jupyter Notebooks
+
+
+- You can open each Jupyter Notebook (usually with the ``.ipynb`` extension) from [HERE](https://github.com/ENCCS/practical-machine-learning/tree/main/content/jupyter-notebooks), and then select **Download raw file** to save it locally.
+- Alternatively, you can download the entire repository at [HERE](https://github.com/ENCCS/practical-machine-learning/tree/main) by clicking the green ``<> Code`` button and choosing **Download ZIP** file. After unzipping the downloaded ZIP file, you will find all Jupyter Notebooks in the directory **practical-machine-learning-main/content/jupyter-notebooks**.
+
+
+### Upload Jupyter Notebooks to Google Drive
+
+
+Sign in to your [Google Drive](https://workspace.google.com/intl/en-US/products/drive/), then upload the downloaded Jupyter Notebooks to a convenient folder.
+You can simply drag and drop the files directly into Google Drive or use the option **New → File upload**.
+
+
+### Open Jupyter Notebooks in Google Colab
+
+
+Once uploaded, right-click the Jupyter Notebooks file in Google Drive and select **Open with → Google Colaboratory**.
+This will launch the notebook in Google Colab, where you can view, edit, and run the code cells interactively.
+
+
+### Connect to a Hosted Runtime
+
+
+In Google Colab, go to the top-right corner and click **Connect** to link your notebook to a Google-hosted runtime environment.
+If you need GPU or TPU acceleration, select **Runtime → Change runtime type**, then choose the desired hardware accelerator.
+
+
+### Run the Code
+
+
+After connecting, follow the instructions inside the Jupyter Notebooks.
+You can run each cell individually by pressing **Shift** + **Enter**, or execute the entire notebook using **Runtime → Run all**.
