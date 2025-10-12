@@ -1,0 +1,428 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unsupervised Learning (II): Dimensionality Reduction &mdash; Practical Machine Learning  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_lesson.css?v=e9df6548" />
+      <link rel="stylesheet" type="text/css" href="../_static/term_role_formatting.css?v=4194e21c" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_rtd_theme_ext_color_contrast.css?v=8e8ea19f" />
+      <link rel="stylesheet" type="text/css" href="../_static/overrides.css?v=c88db32d" />
+
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=187304be"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=35a8b989"></script>
+      <script src="../_static/minipres.js?v=a0d29692"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex/" />
+    <link rel="search" title="Search" href="../search/" />
+    <link rel="next" title="Quick Reference" href="../quick-reference/" />
+    <link rel="prev" title="Unsupervised Learning (I): Clustering" href="../07-unsupervised-ML-clustering/" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../" class="icon icon-home">
+            Practical Machine Learning
+              <img src="../_static/ENCCS.jpg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search/" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Software setup</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../00-software-setup/">Setting Up Programming Environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Lesson episodes</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../01-intro-to-ML/">Introduction to Machine Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../02-fundamentals-of-ML/">Fundamentals of Machine Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../03-scientific-data-for-ML/">Scientific Data for Machine Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../04-data-preparation-for-ML/">Data Preparation for Machine Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../05-supervised-ML-classification/">Supervised Learning (I): Classification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../06-supervised-ML-regression/">Supervised Learning (II): Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../07-unsupervised-ML-clustering/">Unsupervised Learning (I): Clustering</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Unsupervised Learning (II): Dimensionality Reduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#from-clustering-to-dimensionality-reduction-simplifying-complexity">From Clustering to Dimensionality Reduction: Simplifying Complexity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data-preparation">Data Preparation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data-processing">Data Processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#training-model-evaluating-model-performance">Training Model &amp; Evaluating Model Performance</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#principal-component-analysis">Principal Component Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#t-sne">t-SNE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#umap">UMAP</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quick-reference/">Quick Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guide/">Instructor’s guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://enccs.se/lessons/">All lessons</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://enccs.se/">ENCCS</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../">Practical Machine Learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Unsupervised Learning (II): Dimensionality Reduction</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/ENCCS/practical-machine-learning/blob/main/content/08-unsupervised-ML-dimensionality-reduction.md" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="unsupervised-learning-ii-dimensionality-reduction">
+<h1>Unsupervised Learning (II): Dimensionality Reduction<a class="headerlink" href="#unsupervised-learning-ii-dimensionality-reduction" title="Link to this heading"></a></h1>
+<div class="admonition-objectives objectives admonition" id="objectives-0">
+<p class="admonition-title">Objectives</p>
+<ul class="simple">
+<li><p>Understand the motivation for dimensionality reduction.</p></li>
+<li><p>Explain key dimensionality reduction techniques (PCA, t-SNE, UMAP).</p></li>
+<li><p>Describe the idea of PCA (linear method that keeps most variance) and apply PCA to correlate features with components.</p></li>
+<li><p>Interpret explained variance ratio and decide how many components to keep.</p></li>
+<li><p>Use PCA loadings and correlation circles to see how features contribute.</p></li>
+<li><p>Recognize t-SNE and UMAP as nonlinear methods for complex data visualization.</p></li>
+<li><p>Connect dimensionality reduction with clustering.</p></li>
+</ul>
+</div>
+<div class="admonition-instructor-note instructor-note admonition" id="instructor-note-0">
+<p class="admonition-title">Instructor note</p>
+<ul class="simple">
+<li><p>40 min teaching/demonstration</p></li>
+<li><p>40 min exercises</p></li>
+</ul>
+</div>
+<section id="from-clustering-to-dimensionality-reduction-simplifying-complexity">
+<h2>From Clustering to Dimensionality Reduction: Simplifying Complexity<a class="headerlink" href="#from-clustering-to-dimensionality-reduction-simplifying-complexity" title="Link to this heading"></a></h2>
+<p>In the <a class="reference internal" href="../07-unsupervised-ML-clustering/"><span class="std std-doc">last episode</span></a>, we talked about clustering, which is a core unsupervised ML technique that groups similar data points into clusters based on their features, without requiring labeled data. The fundamental value of clustering lies in its ability to reveal segments and patterns that are not immediately obvious, with applications ranging from customer segmentation in marketing to anomaly detection in network security.</p>
+<p>Despite its usefulness, clustering comes with notable limitations. A major challenge is determining the appropriate number of clusters in advance, as in K-Means, where results can vary depending on initialization.
+Clustering results are also highly sensitive to the choice of distance metric and scaling of features, which can significantly alter outcomes.
+Furthermore, clustering often struggles with high-dimensional data due to the “curse of dimensionality”, where distance measures lose their discriminative power, making it harder to identify meaningful groups.
+Given these challenges, especially around data sensitivity and interpretability, it is often crucial to preprocess data with another form of unsupervised learning before clustering: <strong>Dimensionality Reduction</strong>.</p>
+<p>Where clustering seeks to group samples, dimensionality reduction focuses on simplifying the feature space itself. By transforming a high-dimensional dataset into a lower-dimensional subspace while preserving its most critical relationships, dimension reduction can mitigate noise, reduce computational cost, and reveal the most discriminative features that define the data’s structure.
+This process not only addresses clustering’s sensitivity to irrelevant features but also provides a powerful foundation for visualizing potential clusters in two or three dimensions, making the entire analytical process more robust and insightful.</p>
+<p>Methods such as <strong>PCA</strong> (Principal Component Analysis), <strong>t-SNE</strong> (t-Distributed Stochastic Neighbor Embedding), and <strong>UMAP</strong> (Uniform Manifold Approximation and Projection) make data more manageable, reduce noise, and improve clustering performance.</p>
+<p>Since the Penguins dataset includes multiple features (bill length, bill depth, flipper length, body mass, species labels, <em>etc.</em>), plotting it directly in two dimensions can make it difficult to capture all the relationships and structures hidden in the dataset. That is why we parepare the pairplots between all pair of features to achieve a clear visualization of their correlations.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/4-penguins-pairplot.png"><img alt="../_images/4-penguins-pairplot.png" src="../_images/4-penguins-pairplot.png" style="width: 100%;" />
+</a>
+</figure>
+<p>In this episode, we will explore dimensionality reduction techniques and apply them to the Penguins dataset. Our goal is to take the dataset’s multiple features, and project them into a simpler, lower-dimensional space for a better visualization.
+This process not only helps us better understand the data but also prepares it for downstream tasks, such as clustering or classification, by reducing noise and highlighting the most informative aspects of the dataset.</p>
+</section>
+<section id="data-preparation">
+<h2>Data Preparation<a class="headerlink" href="#data-preparation" title="Link to this heading"></a></h2>
+<p>Following the procedures used in previous episodes, we apply the same preprocessing steps to the Penguins dataset, including handling missing values and detecting outliers. For the clustering task, categorical features are not required, so encoding them is unnecessary.</p>
+</section>
+<section id="data-processing">
+<h2>Data Processing<a class="headerlink" href="#data-processing" title="Link to this heading"></a></h2>
+<p>The data processing is straightforward for the clustering task: we simply extract the numerical variables and apply standardization.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">penguins</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">load_dataset</span><span class="p">(</span><span class="s1">&#39;penguins&#39;</span><span class="p">)</span>
+<span class="n">penguins_dimR</span> <span class="o">=</span> <span class="n">penguins</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+<span class="n">penguins_dimR</span><span class="o">.</span><span class="n">duplicated</span><span class="p">()</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+
+<span class="n">species</span> <span class="o">=</span> <span class="n">penguins_dimR</span><span class="p">[</span><span class="s2">&quot;species&quot;</span><span class="p">]</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">StandardScaler</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">penguins_dimR</span><span class="p">[[</span><span class="s1">&#39;bill_length_mm&#39;</span><span class="p">,</span> <span class="s1">&#39;bill_depth_mm&#39;</span><span class="p">,</span> <span class="s1">&#39;flipper_length_mm&#39;</span><span class="p">,</span> <span class="s1">&#39;body_mass_g&#39;</span><span class="p">]]</span>
+
+<span class="n">scaler</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span>
+<span class="n">X_scaled</span> <span class="o">=</span> <span class="n">scaler</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="training-model-evaluating-model-performance">
+<h2>Training Model &amp; Evaluating Model Performance<a class="headerlink" href="#training-model-evaluating-model-performance" title="Link to this heading"></a></h2>
+<section id="principal-component-analysis">
+<h3>Principal Component Analysis<a class="headerlink" href="#principal-component-analysis" title="Link to this heading"></a></h3>
+<p>We start with Principal Component Analysis (PCA), a powerful statistical technique used to reduce the dimensionality of data while preserving as much variability as possible.
+This is achieved by transforming the original variables into a new set of uncorrelated variables called <strong>principal components</strong>.
+Each principal component is a linear combination of the original variables, and they are ordered such that the first few retain most of the variation present in the original variables.</p>
+<p><strong>1. A simplified view: PCA with two components</strong></p>
+<p>We begin with a simple subspace consisting of two principal components. That is, we will transform the Penguins dataset, which originally contains four numerical features (bill length, bill depth, flipper length, and body mass), into a reduced subdataset represented by just two composite variables.
+These two new variables, called principal components, form a simplified version of the Penguins dataset and can essentially capture the most significant variance in the Penguins dataset while reducing complexity.
+This allows us to visualize the structure of the data in a two-dimensional space and better understand the relationships among the penguins.</p>
+<p>We build a model using the <code class="docutils literal notranslate"><span class="pre">PCA</span></code> class from <code class="docutils literal notranslate"><span class="pre">sklearn.decomposition</span></code>, specifying that the <code class="docutils literal notranslate"><span class="pre">X_scaled</span></code> data should be reduced to two principal components.”</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.decomposition</span><span class="w"> </span><span class="kn">import</span> <span class="n">PCA</span>
+
+<span class="c1"># construct a PCA model with 2 PCs</span>
+<span class="n">pca_2</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">X_pca_2</span> <span class="o">=</span> <span class="n">pca_2</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_scaled</span><span class="p">)</span>
+<span class="n">explained_var_2</span> <span class="o">=</span> <span class="n">pca_2</span><span class="o">.</span><span class="n">explained_variance_ratio_</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&#39;&#39;The explained variance of PC1    is </span><span class="si">{</span><span class="n">explained_var_2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s1">.2%</span><span class="si">}</span>
+<span class="s1">The explained variance of PC2    is </span><span class="si">{</span><span class="n">explained_var_2</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s1">.2%</span><span class="si">}</span>
+<span class="s1">The explained variance (PC1+PC2) is </span><span class="si">{</span><span class="n">explained_var_2</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">:</span><span class="s1">.2%</span><span class="si">}</span><span class="s1">&#39;&#39;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The term <code class="docutils literal notranslate"><span class="pre">explained</span> <span class="pre">variance</span> <span class="pre">ratio</span></code> tells us how much of the total variability in the original Penguins dataset is captured by each principal component. The first principal component has an explained variance ratio of 0.72, it means 72% of the variability in the dataset can be represented by that single component.</p>
+<p>For each penguine in the dataset, the contributions of its four original featuers to the new components are available in the <code class="docutils literal notranslate"><span class="pre">X_pca_2</span></code> dataset.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">X_pca_2_species</span> <span class="o">=</span> <span class="n">penguins_dimR</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">X_pca_2</span><span class="p">,</span>
+	<span class="n">index</span> <span class="o">=</span> <span class="n">penguins_dimR</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+	<span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;PC_1&#39;</span><span class="p">,</span> <span class="s1">&#39;PC_2&#39;</span><span class="p">]))</span>
+</pre></div>
+</div>
+<div class="admonition-what-does-the-data-in-two-principal-components-represent discussion important admonition" id="discussion-0">
+<p class="admonition-title">What does the data in two principal components represent?</p>
+<ul class="simple">
+<li><p>When we have two components,</p>
+<ul>
+<li><p>PC1 is the direction in feature space along which the data varies the most,</p></li>
+<li><p>PC2 is the direction orthogonal to PC1 that captures the next largest variance.</p></li>
+</ul>
+</li>
+<li><p>When we have three components, PC3 captures the next largest source of variance, orthogonal to both PC1 and PC2.</p>
+<ul>
+<li><p>In such a situation, we have to use 3D visualization to visualize the three components.</p></li>
+</ul>
+</li>
+<li><p>When we have four componnents, PC4 captures the next largest source of variance, orthogonal to both PC1, PC2, and PC3.</p>
+<ul>
+<li><p>It id difficult for us to visualize the four dimensional space.</p></li>
+</ul>
+</li>
+</ul>
+<p>A short summary</p>
+<ul class="simple">
+<li><p>fewer components → lower-dimensional representation → some information is lost, but main patterns remain.</p></li>
+<li><p>more components → higher-dimensional representation → more information retained.</p></li>
+</ul>
+</div>
+<p>After reducing the dimensionality of the Penguins dataset to two principal components, we can now visualize the transformed data. Each penguin, originally described by four numerical features (bill length, bill depth, flipper length, and body mass), is now represented by just two composite variables.</p>
+<p>By plotting the two components, we can examine how penguins cluster in this reduced space.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/8-pca2-penguins-distributions-species-sex-island.png"><img alt="../_images/8-pca2-penguins-distributions-species-sex-island.png" src="../_images/8-pca2-penguins-distributions-species-sex-island.png" style="width: 100%;" />
+</a>
+</figure>
+<p><strong>2. Preserving full variance: PCA with four components</strong></p>
+<p>The two-component model does a good job in capturing the main structure of the original features in the Penguins dataset, but it naturally raises an important question: <strong>how many principal components are truly necessary to represent the dataset effectively?</strong>
+Choosing the optimal number of components requires balancing simplicity against information retention — fewer components make visualization and interpretation easier, while more components preserve a greater share of the original variance.
+By examining metrics such as the explained variance ratio, we can make an informed choice about the number of components needed to capture the essential patterns in the Penguins dataset.</p>
+<p>Here, we consider another case in which the new dataset has four principal components, preserving all of the original features in the Penguins dataset. By setting the parameter <code class="docutils literal notranslate"><span class="pre">n_components=4</span></code> and running the code example, we obtain a full representation of the Penguins data in the new component space. This can be verified by examining the <code class="docutils literal notranslate"><span class="pre">explained_variance_ratio</span></code>, which shows how much variance each component contributes.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">X_scaled_temp</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">X_scaled</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+
+<span class="c1"># build a new PCA model with 4 PCs</span>
+<span class="n">pca_4</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">X_pca_4</span> <span class="o">=</span> <span class="n">pca_4</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_scaled_temp</span><span class="p">)</span>
+<span class="n">explained_var_4</span> <span class="o">=</span> <span class="n">pca_4</span><span class="o">.</span><span class="n">explained_variance_ratio_</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&#39;&#39;The explained variance of PC1 is </span><span class="si">{</span><span class="n">explained_var_4</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s1">.2%</span><span class="si">}</span>
+<span class="s1">The explained variance of PC2 is </span><span class="si">{</span><span class="n">explained_var_4</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s1">.2%</span><span class="si">}</span>
+<span class="s1">The explained variance of PC3 is </span><span class="si">{</span><span class="n">explained_var_4</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">:</span><span class="s1">.2%</span><span class="si">}</span>
+<span class="s1">The explained variance of PC4 is </span><span class="si">{</span><span class="n">explained_var_4</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="si">:</span><span class="s1">.2%</span><span class="si">}</span>
+<span class="s1">The explained variance of ALL is </span><span class="si">{</span><span class="n">explained_var_4</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">:</span><span class="s1">.2%</span><span class="si">}</span><span class="s1">&#39;&#39;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In PCA, each original variable (feature) is essentially correlated with each principal component (PC), which can be described by <code class="docutils literal notranslate"><span class="pre">corr_var_comp</span></code>, which qualifies how strongly each original variable contributes to a component. The <code class="docutils literal notranslate"><span class="pre">corr_var_comp</span></code> ranges from -1 to 1:</p>
+<ul class="simple">
+<li><p>+1 means a perfect positive correlation between the variable and the component.</p></li>
+<li><p>0 indicates no linear correlation, and the component does not explain that variable at all.</p></li>
+<li><p>-1 suggests a perfect negative correlation.</p></li>
+</ul>
+<p>In practical applications, the square of the correlation between a variable and a component is often denoted cos² (cosine squared). The cosine of the angle between the variable vector and the component axis tells you how much of the variable’s variance is explained by that component. Squaring it gives the proportion of variance of that variable explained by the component, hence cos².</p>
+<p>We first calculate <code class="docutils literal notranslate"><span class="pre">corr_var_comp</span></code> and square it to get the proportion of each variable’s variance explained by the component, as shown in the figure below.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/8-pca4-correlation-variable-component.png"><img alt="../_images/8-pca4-correlation-variable-component.png" src="../_images/8-pca4-correlation-variable-component.png" style="width: 80%;" />
+</a>
+</figure>
+<p>This allows us to examine and visualize in detail how each original penguine feature contributes to the four principal components.
+As discussed in the previous subsection, each principal component is a linear combination of the original features and can be expressed mathematically as follows:</p>
+<div class="math notranslate nohighlight">
+\[PC1_i = w_1 * bill\_length_i + w_2 * bill\_depth_i + w_3 * flipper\_length_i + w_4 * body\_mass_i\]</div>
+<p>By analyzing the PCA loadings, we can see that the first two principal components explain approximately 90% of the total variance in the Penguins dataset. This indicates that most of the important information in the original four features is already captured by these two components.
+Consequently, we can conclude that reducing the dataset to two principal components is sufficient for visualization and analysis, striking a balance between simplicity and information retention while effectively summarizing the underlying structure of the data.</p>
+<p><strong>3. Correlation circle</strong></p>
+<p>To gain deeper insight into how the original variables relate to the principal components, we can use a <strong>correlation circle</strong>, also known as a <strong>variable factor map</strong>. This graphical tool provides a visual representation of the contribution and correlation of each original variable with the components.</p>
+<p>In a 2D PCA plot (PC1 <em>vs.</em> PC2 in the left subplot, and PC3 <em>vs.</em> PC4 in the right subplot), each original feature is represented as a vector (arrow) pointing from the origin.</p>
+<ul class="simple">
+<li><p>The direction of the arrow indicates whether the variable (feature) is positively or negatively correlated with the principal components.</p></li>
+<li><p>The length of the arrow indicates the strength of correlation — longer arrows mean the variable (feature) contributes strongly to the components.</p></li>
+<li><p>The circle itself (radius = 1) represents the maximum possible correlation between a variable (feature) and the components, since PCA projects standardized variables (features) .</p></li>
+</ul>
+<p>In addition, the correlations between variables (features) can also be specified.</p>
+<ul class="simple">
+<li><p>Variables (features) pointing in similar directions are positively correlated (body mass and flipper length), that is why we performed regression task yesterday using these two features.</p></li>
+<li><p>Variables (features) pointing in opposite directions are negatively correlated (for specific pairs of components).</p></li>
+<li><p>Variables (features) at roughly 90° to each other are nearly uncorrelated.</p></li>
+</ul>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/8-pca4-correlation-circle.png"><img alt="../_images/8-pca4-correlation-circle.png" src="../_images/8-pca4-correlation-circle.png" style="width: 100%;" />
+</a>
+</figure>
+</section>
+<section id="t-sne">
+<h3>t-SNE<a class="headerlink" href="#t-sne" title="Link to this heading"></a></h3>
+<p>Since PCA is based on linear combinations of all features, it has some inherent limitations. In particular, it may fail to capture complex, non-linear relationships in the data, and it primarily focuses on maximizing global variance, which can overlook subtle local structures, intricate clusters, or hierarchical patterns – that are quite common in real-world datasets.</p>
+<p>To address these challenges, we move beyond linear methods and explore advanced non-linear dimensionality reduction techniques. Algorithms such as <strong>t-SNE</strong> (t-Distributed Stochastic Neighbor Embedding) and <strong>UMAP</strong> (Uniform Manifold Approximation and Projection) are particularly effective at capturing the non-linear structure of the data.
+These methods are designed to preserve local neighborhood relationships, revealing intricate patterns that PCA might miss and providing a more detailed view of the underlying structure of the penguin population.</p>
+<p>In this subsection, we apply the t-SNE algorithm to visualize local structures and potential clusters, and we will explore UMAP for complementary insights in the next subsection.</p>
+<p>t-SNE, is a powerful dimensionality reduction technique primarily used for visualizing high-dimensional data in two or three dimensions. Unlike linear methods such as PCA, t-SNE is non-linear and focuses on preserving the local structure of the data, meaning that points that are close in the high-dimensional space remain close in the lower-dimensional embedding.
+This is the main idea of t-SNE and it models the pairwise similarities between data points in both the high-dimensional and low-dimensional spaces.</p>
+<p>We build a t-SNE model with 2 principle components using the <code class="docutils literal notranslate"><span class="pre">TSNE</span></code> class in the <code class="docutils literal notranslate"><span class="pre">sklearn.manifold</span></code> before fitting the model.
+The hyperparameter <code class="docutils literal notranslate"><span class="pre">perplexity</span></code> controls the number of effective neighbors each point considers when learning the embedding. Higher values emphasize global structure, lower values emphasize local relationships.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.manifold</span><span class="w"> </span><span class="kn">import</span> <span class="n">TSNE</span>
+
+<span class="c1"># build a t-SNE model having 2 PCs</span>
+<span class="n">tsne</span> <span class="o">=</span> <span class="n">TSNE</span><span class="p">(</span><span class="n">n_components</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">perplexity</span> <span class="o">=</span> <span class="mi">50</span><span class="p">)</span>
+<span class="n">X_tsne</span> <span class="o">=</span> <span class="n">tsne</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_scaled</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>After fitting the t-SNE model, we can visualize the Penguin dataset in two dimensions, allowing us to explore the relationships between individual data points, identify potential clusters, and observe how different species are distributed across the embedding.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/8-tsne-penguins-distributions-species-sex-island.png"><img alt="../_images/8-tsne-penguins-distributions-species-sex-island.png" src="../_images/8-tsne-penguins-distributions-species-sex-island.png" style="width: 100%;" />
+</a>
+</figure>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>It is noted that <strong>t-SNE is primarily a visualization tool rather than a feature extraction method</strong>, and the <strong>resulting embedding should not be used directly for downstream tasks such as classification</strong>. Each time you run t-SNE, the coordinates can change slightly due to randomness, even with the same data. As such, the features produced by t-SNE may not be stable or meaningful for predictive modeling.</p>
+</div>
+<div class="admonition-exercise exercise important admonition" id="exercise-0">
+<p class="admonition-title">Exercise</p>
+<p>Here, we will perform a clustering task using K-Means on a dataset reduced to two components obtained from the t-SNE model (code examples are availalbe in the <a class="reference internal" href="../jupyter-notebooks/8-ML-Dimension-Reduction/"><span class="std std-doc">Jupyter Notebook</span></a>.</p>
+<ul class="simple">
+<li><p>Group the data into 9 clusters <code class="docutils literal notranslate"><span class="pre">kmeans</span> <span class="pre">=</span> <span class="pre">KMeans(n_clusters=9)</span></code>.</p></li>
+<li><p>Repeat the clustering several times to observe how the cluster assignments change.</p></li>
+<li><p>Change the number of clusters (<em>e.g.</em>, 5 or 11) to see how it affects the result.</p></li>
+</ul>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/8-tsne-kmeans-clustering.png"><img alt="../_images/8-tsne-kmeans-clustering.png" src="../_images/8-tsne-kmeans-clustering.png" style="width: 60%;" />
+</a>
+</figure>
+</div>
+</section>
+<section id="umap">
+<h3>UMAP<a class="headerlink" href="#umap" title="Link to this heading"></a></h3>
+<p>UMAP (Uniform Manifold Approximation and Projection) is a non-linear dimensionality reduction technique similar in purpose to t-SNE, but with some key differences:</p>
+<ul class="simple">
+<li><p>Preserves both local and some global structure of the data.</p></li>
+<li><p>Generally faster and more scalable than t-SNE, especially for large datasets.</p></li>
+<li><p>Can be used for visualization (2D/3D) or as a preprocessing step for downstream tasks like clustering or classification.</p></li>
+</ul>
+<p>UMAP is based on <strong>manifold learning</strong> and <strong>graph theory</strong>.</p>
+<ul class="simple">
+<li><p>Manifold learning means it assumes that even though our data might have many dimensions, the real structure of the data lies on a lower-dimensional surface (like a curve or sheet) inside that high-dimensional space. UMAP tries to find and keep that structure.</p></li>
+<li><p>Graph theory means UMAP represents the data as a graph: each point is a node, and connections (edges) show how close points are to each other. Then it uses math to squeeze this graph down into 2D or 3D while keeping the structure as much as possible.</p></li>
+</ul>
+<p>UMAP it constructs a high-dimensional graph representation of the data and then projects it onto a low-dimensional space, by applying a series of optimization steps. This results in a visual representation of the data that is both accurate and interpretable. In comparison to PCA and t-SNE, UMAP offers a good balance of accuracy, efficiency, and scalability, making it a popular choice for dimensionality reduction in machine learning and data analysis.</p>
+<p>Using the same procedure as in the t-SNE subsection, we build and fit the UMAP model, and visualize the Penguin dataset in two dimensions by species, island, and sex.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">umap</span>
+
+<span class="n">umap_model</span> <span class="o">=</span> <span class="n">umap</span><span class="o">.</span><span class="n">UMAP</span><span class="p">(</span><span class="n">n_components</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">X_umap</span> <span class="o">=</span> <span class="n">umap_model</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_scaled</span><span class="p">)</span>
+
+<span class="n">X_umap_species</span> <span class="o">=</span> <span class="n">penguins_dimR</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">X_umap</span><span class="p">,</span>
+									<span class="n">index</span> <span class="o">=</span> <span class="n">penguins_dimR</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+									<span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;PC_1&#39;</span><span class="p">,</span> <span class="s1">&#39;PC_2&#39;</span><span class="p">]))</span>
+</pre></div>
+</div>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/8-umap-penguins-distributions-species-sex-island.png"><img alt="../_images/8-umap-penguins-distributions-species-sex-island.png" src="../_images/8-umap-penguins-distributions-species-sex-island.png" style="width: 100%;" />
+</a>
+</figure>
+<div class="admonition-exercise exercise important admonition" id="exercise-1">
+<p class="admonition-title">Exercise</p>
+<p>Here we perform the same clustering task using K-Means on a dataset reduced to two components obtained from the UMAP model (code examples are availalbe in the <a class="reference internal" href="../jupyter-notebooks/8-ML-Dimension-Reduction/"><span class="std std-doc">Jupyter Notebook</span></a>.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/8-umap-kmeans-clustering.png"><img alt="../_images/8-umap-kmeans-clustering.png" src="../_images/8-umap-kmeans-clustering.png" style="width: 100%;" />
+</a>
+</figure>
+</div>
+<div class="admonition-keypoints keypoints admonition" id="keypoints-0">
+<p class="admonition-title">Keypoints</p>
+<ul class="simple">
+<li><p>Representative method include PCA, t-SNE, and UMAP</p></li>
+<li><p>PCA is a method to reduce dimensions via creating new variables called principal components (PCs), which are linear combinations of the original features.</p></li>
+<li><p>Perform PCA task and then decide optmal number of component.</p></li>
+<li><p>T-SNE and UMAP are both nonlinear dimensionality reduction methods mainly used to visualize high-dimensional data in 2D or 3D.</p></li>
+<li><p>T-SNE focuses on keeping similar points close and dissimilar points apart in lower-dimensional space, but not applicable for feature reduction or predictive modeling.</p></li>
+<li><p>UMAP preserves both local relationships (nearby points stay close) and some global structure, scales well to large datasets, and is mainly used for exploration and visualization.</p></li>
+</ul>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../07-unsupervised-ML-clustering/" class="btn btn-neutral float-left" title="Unsupervised Learning (I): Clustering" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../quick-reference/" class="btn btn-neutral float-right" title="Quick Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, The contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,328 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Setting Up Programming Environment &mdash; Practical Machine Learning  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_lesson.css?v=e9df6548" />
+      <link rel="stylesheet" type="text/css" href="../_static/term_role_formatting.css?v=4194e21c" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_rtd_theme_ext_color_contrast.css?v=8e8ea19f" />
+      <link rel="stylesheet" type="text/css" href="../_static/overrides.css?v=c88db32d" />
+
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=187304be"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=35a8b989"></script>
+      <script src="../_static/minipres.js?v=a0d29692"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex/" />
+    <link rel="search" title="Search" href="../search/" />
+    <link rel="next" title="Introduction to Machine Learning" href="../01-intro-to-ML/" />
+    <link rel="prev" title="Practical Machine Learning" href="../" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../" class="icon icon-home">
+            Practical Machine Learning
+              <img src="../_static/ENCCS.jpg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search/" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Software setup</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Setting Up Programming Environment</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#using-personal-computer">Using Personal Computer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#install-miniforge">Install miniforge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#configure-programming-environment">Configure programming environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#validate-programming-environment">Validate programming environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#optional-setting-up-pytorch-with-gpu-support">(Optional) Setting Up PyTorch with GPU Support</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#using-google-colab">Using Google Colab</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#download-jupyter-notebooks">Download Jupyter Notebooks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#upload-jupyter-notebooks-to-google-drive">Upload Jupyter Notebooks to Google Drive</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#open-jupyter-notebooks-in-google-colab">Open Jupyter Notebooks in Google Colab</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#connect-to-a-hosted-runtime">Connect to a Hosted Runtime</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#run-the-code">Run the Code</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Lesson episodes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../01-intro-to-ML/">Introduction to Machine Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../02-fundamentals-of-ML/">Fundamentals of Machine Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../03-scientific-data-for-ML/">Scientific Data for Machine Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../04-data-preparation-for-ML/">Data Preparation for Machine Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../05-supervised-ML-classification/">Supervised Learning (I): Classification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../06-supervised-ML-regression/">Supervised Learning (II): Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../07-unsupervised-ML-clustering/">Unsupervised Learning (I): Clustering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../08-unsupervised-ML-dimensionality-reduction/">Unsupervised Learning (II): Dimensionality Reduction</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quick-reference/">Quick Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guide/">Instructor’s guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://enccs.se/lessons/">All lessons</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://enccs.se/">ENCCS</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../">Practical Machine Learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Setting Up Programming Environment</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/ENCCS/practical-machine-learning/blob/main/content/00-software-setup.md" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="setting-up-programming-environment">
+<h1>Setting Up Programming Environment<a class="headerlink" href="#setting-up-programming-environment" title="Link to this heading"></a></h1>
+<section id="using-personal-computer">
+<h2>Using Personal Computer<a class="headerlink" href="#using-personal-computer" title="Link to this heading"></a></h2>
+<p>This section provides instructions for installing the required packages and their dependencies on a local computer or server.</p>
+<section id="install-miniforge">
+<h3>Install miniforge<a class="headerlink" href="#install-miniforge" title="Link to this heading"></a></h3>
+<p>If you already have a preferred way to manage Python versions and libraries, you can stick to that. Otherwise, we recommend you to install Python3 and all required libraries using <a class="reference external" href="https://conda-forge.org/download/">Miniforge</a>, a free minimal installer for the package, dependency, and environment manager <a class="reference external" href="https://docs.conda.io/en/latest/index.html">Conda</a>.</p>
+<ul class="simple">
+<li><p>Please follow the <a class="reference external" href="https://conda-forge.org/download/">installation instructions</a> to install Miniforge.</p></li>
+<li><p>After installation, verify that Conda is installed correctly by running:</p></li>
+</ul>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>conda<span class="w"> </span>--version
+
+<span class="gp"># </span>Example<span class="w"> </span>output:<span class="w"> </span>conda<span class="w"> </span><span class="m">24</span>.11.2
+</pre></div>
+</div>
+</section>
+<section id="configure-programming-environment">
+<h3>Configure programming environment<a class="headerlink" href="#configure-programming-environment" title="Link to this heading"></a></h3>
+<p>With Conda installed, open the <strong>Anaconda Prompt terminal</strong>, and run the command below to install required packages and depenencies (except PyTorch):</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>conda<span class="w"> </span>env<span class="w"> </span>create<span class="w"> </span>-y<span class="w"> </span>--file<span class="o">=</span>https://raw.githubusercontent.com/ENCCS/practical-machine-learning/main/content/env/environment.yml
+</pre></div>
+</div>
+<p>This creates a new environment called <code class="docutils literal notranslate"><span class="pre">practical_machine_learning</span></code>.
+We activate it and then install PyTorch library:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>conda<span class="w"> </span>activate<span class="w"> </span>practical_machine_learning
+
+<span class="gp">$ </span>conda<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>pytorch<span class="w"> </span>torchvision<span class="w"> </span>torchaudio<span class="w"> </span>torchtext<span class="w"> </span>cpuonly<span class="w"> </span>-c<span class="w"> </span>pytorch
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Remember to activate your programming environment each time before running code examples. This ensures that the correct Python version and all required dependencies are available. If you forget to activate it, you may encounter errors or missing packages.</p>
+</div>
+</section>
+<section id="validate-programming-environment">
+<h3>Validate programming environment<a class="headerlink" href="#validate-programming-environment" title="Link to this heading"></a></h3>
+<p>Once the programming environment is fully set up, open a new <strong>Anaconda Prompt terminal</strong> (just as you should do each time before running code examples), activate the programming environment, and launch JupyterLab by running the command below:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>conda<span class="w"> </span>activate<span class="w"> </span>practical_machine_learning
+
+<span class="gp">$ </span>jupyter<span class="w"> </span>lab
+</pre></div>
+</div>
+<p>This will start a Jupyter server and automatically open the JupyterLab interface in your web browser.</p>
+<p>To verify that all required packages are properly installed, follow these steps:</p>
+<ul class="simple">
+<li><p>Open JupyterLab (see instructions above).</p></li>
+<li><p>Create a new Jupyter Notebook by selecting <strong>File</strong> → <strong>New</strong> → <strong>Notebook</strong>.</p></li>
+<li><p>Copy the code examples listed below into a cell of the notebook.</p></li>
+<li><p>Run the cell (press <strong>Shift + Enter</strong> or click the <strong>Run</strong> button).</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="p">;</span>      <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Numpy version: &#39;</span><span class="p">,</span>            <span class="n">numpy</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="p">;</span>     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Pandas version: &#39;</span><span class="p">,</span>           <span class="n">pandas</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy</span><span class="p">;</span>      <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Scipy version: &#39;</span><span class="p">,</span>            <span class="n">scipy</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="p">;</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Matplotlib version: &#39;</span><span class="p">,</span>       <span class="n">matplotlib</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="p">;</span>    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Seaborn version: &#39;</span><span class="p">,</span>          <span class="n">seaborn</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sklearn</span><span class="p">;</span>    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Scikit-learn version: &#39;</span><span class="p">,</span>     <span class="n">sklearn</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">keras</span><span class="p">;</span>      <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Keras version: &#39;</span><span class="p">,</span>            <span class="n">keras</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tensorflow</span><span class="p">;</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Tensorflow version: &#39;</span><span class="p">,</span>       <span class="n">tensorflow</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span><span class="p">;</span>      <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Pytorch version: &#39;</span><span class="p">,</span>          <span class="n">torch</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">umap</span><span class="p">;</span>       <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Umap-learn version: &#39;</span><span class="p">,</span>       <span class="n">umap</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">notebook</span><span class="p">;</span>   <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Jupyter Notebook version: &#39;</span><span class="p">,</span> <span class="n">notebook</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You should see output similar to the figure below. The exact package versions may vary depending on when you installed them.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/0-verification-programming-environment.png"><img alt="../_images/0-verification-programming-environment.png" src="../_images/0-verification-programming-environment.png" style="width: 80%;" />
+</a>
+</figure>
+<p>If the code runs without errors, it means that all packages are correctly installed and your programming environment is ready to use.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>For Windows OS users, you might encounter an error
+(<code class="docutils literal notranslate"><span class="pre">ImportError:</span> <span class="pre">DLL</span> <span class="pre">load</span> <span class="pre">failed</span> <span class="pre">while</span> <span class="pre">importing</span> <span class="pre">_C:</span> <span class="pre">The</span> <span class="pre">specified</span> <span class="pre">procedure</span> <span class="pre">could</span> <span class="pre">not</span> <span class="pre">be</span> <span class="pre">found</span></code>) as described below.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/pytorch_error.png"><img alt="../_images/pytorch_error.png" src="../_images/pytorch_error.png" style="width: 80%;" />
+</a>
+</figure>
+<p>It is a very common Windows-specific PyTorch issue, and it means that the underlying C++/CUDA DLLs that torch depends on could not be loaded correctly.</p>
+<p>You should reinstall the correct matching build via the command below.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>conda<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>pytorch<span class="w"> </span>torchvision<span class="w"> </span>torchaudio<span class="w"> </span>torchtext<span class="w"> </span>cpuonly<span class="w"> </span>-c<span class="w"> </span>pytorch
+</pre></div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you are using VS Code, you can select the installed <code class="docutils literal notranslate"><span class="pre">practical_machine_learning</span></code> programming environment as follows:</p>
+<ul class="simple">
+<li><p>Open your project folder in VS Code.</p></li>
+<li><p>In the upper-right corner of the editor window (when working with a Python file or Jupyter Notebook), click on <strong>Select Kernel</strong>.</p></li>
+<li><p>From the list of <strong>Python Environments</strong>, locate and choose the <code class="docutils literal notranslate"><span class="pre">practical_machine_learning</span></code> environment (which you have installed earlier).</p></li>
+<li><p>Once selected, VS Code will use this environment for running Python code and Jupyter Notebooks, ensuring that all required packages are available.</p></li>
+</ul>
+</div>
+</section>
+<section id="optional-setting-up-pytorch-with-gpu-support">
+<h3>(Optional) Setting Up PyTorch with GPU Support<a class="headerlink" href="#optional-setting-up-pytorch-with-gpu-support" title="Link to this heading"></a></h3>
+<p><strong>For Windows OS users</strong>, if your computer has a GPU card, you can install PyTorch with GPU support.
+Below are step-by-step instructions to update the <code class="docutils literal notranslate"><span class="pre">practical_machine_learning</span></code> programming environment.</p>
+<p>First check your CUDA version.
+Open a terminal (Linux/macOS) or PowerShell (Windows) and run:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>nvcc<span class="w"> </span>--version
+</pre></div>
+</div>
+<p>If <code class="docutils literal notranslate"><span class="pre">nvcc</span></code> is not in your PATH, you can instead run <code class="docutils literal notranslate"><span class="pre">nvidia-smi</span></code>.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>nvidia-smi
+</pre></div>
+</div>
+<p>Here is the output from my Windows machine:</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/test-cuda-compiler-driver.png"><img alt="../_images/test-cuda-compiler-driver.png" src="../_images/test-cuda-compiler-driver.png" style="width: 80%;" />
+</a>
+</figure>
+<p>Second, remove any CPU-only versions of PyTorch that may have been installed (for example, those coming from Conda’s defaults or conda-forge channels), and hten install an older, CUDA-compatible version of PyTorch directly using <code class="docutils literal notranslate"><span class="pre">pip</span></code>.
+Here <code class="docutils literal notranslate"><span class="pre">cu121</span></code> indicates the CUDA version (12.1) that the PyTorch build was compiled with.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>conda<span class="w"> </span>activate<span class="w"> </span>practical_machine_learning
+
+<span class="gp">$ </span>conda<span class="w"> </span>remove<span class="w"> </span>pytorch<span class="w"> </span>torchvision<span class="w"> </span>torchaudio<span class="w"> </span>torchtext
+
+<span class="gp">$ </span>pip<span class="w"> </span>install<span class="w"> </span><span class="nv">torch</span><span class="o">==</span><span class="m">2</span>.4.0<span class="w"> </span><span class="nv">torchvision</span><span class="o">==</span><span class="m">0</span>.19.0<span class="w"> </span><span class="nv">torchaudio</span><span class="o">==</span><span class="m">2</span>.4.0<span class="w"> </span>--index-url<span class="w"> </span>https://download.pytorch.org/whl/cu121
+</pre></div>
+</div>
+<p>Third, verify your installation in a Jupyter Notebook.
+Run the following command and ensure it returns <code class="docutils literal notranslate"><span class="pre">True</span></code> for <code class="docutils literal notranslate"><span class="pre">torch.cuda.is_available()</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>               <span class="c1"># 2.4.0+cu121</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">())</span>       <span class="c1"># True</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">get_device_name</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>   <span class="c1"># NVIDIA GeForce GT 1030</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="using-google-colab">
+<h2>Using Google Colab<a class="headerlink" href="#using-google-colab" title="Link to this heading"></a></h2>
+<p>You can also run all the code examples in tutorials using <a class="reference external" href="https://colab.research.google.com/">Google Colab</a>, a free cloud-based platform that provides Jupyter Notebook environments with preinstalled ML libraries.</p>
+<section id="download-jupyter-notebooks">
+<h3>Download Jupyter Notebooks<a class="headerlink" href="#download-jupyter-notebooks" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>You can open each Jupyter Notebook (usually with the <code class="docutils literal notranslate"><span class="pre">.ipynb</span></code> extension) from <a class="reference external" href="https://github.com/ENCCS/practical-machine-learning/tree/main/content/jupyter-notebooks">HERE</a>, and then select <strong>Download raw file</strong> to save it locally.</p></li>
+<li><p>Alternatively, you can download the entire repository at <a class="reference external" href="https://github.com/ENCCS/practical-machine-learning/tree/main">HERE</a> by clicking the green <code class="docutils literal notranslate"><span class="pre">&lt;&gt;</span> <span class="pre">Code</span></code> button and choosing <strong>Download ZIP</strong> file. After unzipping the downloaded ZIP file, you will find all Jupyter Notebooks in the directory <strong>practical-machine-learning-main/content/jupyter-notebooks</strong>.</p></li>
+</ul>
+</section>
+<section id="upload-jupyter-notebooks-to-google-drive">
+<h3>Upload Jupyter Notebooks to Google Drive<a class="headerlink" href="#upload-jupyter-notebooks-to-google-drive" title="Link to this heading"></a></h3>
+<p>Sign in to your <a class="reference external" href="https://workspace.google.com/intl/en-US/products/drive/">Google Drive</a>, then upload the downloaded Jupyter Notebooks to a convenient folder.
+You can simply drag and drop the files directly into Google Drive or use the option <strong>New → File upload</strong>.</p>
+</section>
+<section id="open-jupyter-notebooks-in-google-colab">
+<h3>Open Jupyter Notebooks in Google Colab<a class="headerlink" href="#open-jupyter-notebooks-in-google-colab" title="Link to this heading"></a></h3>
+<p>Once uploaded, right-click the Jupyter Notebooks file in Google Drive and select <strong>Open with → Google Colaboratory</strong>.
+This will launch the notebook in Google Colab, where you can view, edit, and run the code cells interactively.</p>
+</section>
+<section id="connect-to-a-hosted-runtime">
+<h3>Connect to a Hosted Runtime<a class="headerlink" href="#connect-to-a-hosted-runtime" title="Link to this heading"></a></h3>
+<p>In Google Colab, go to the top-right corner and click <strong>Connect</strong> to link your notebook to a Google-hosted runtime environment.
+If you need GPU or TPU acceleration, select <strong>Runtime → Change runtime type</strong>, then choose the desired hardware accelerator.</p>
+</section>
+<section id="run-the-code">
+<h3>Run the Code<a class="headerlink" href="#run-the-code" title="Link to this heading"></a></h3>
+<p>After connecting, follow the instructions inside the Jupyter Notebooks.
+You can run each cell individually by pressing <strong>Shift</strong> + <strong>Enter</strong>, or execute the entire notebook using <strong>Runtime → Run all</strong>.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../" class="btn btn-neutral float-left" title="Practical Machine Learning" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../01-intro-to-ML/" class="btn btn-neutral float-right" title="Introduction to Machine Learning" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, The contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

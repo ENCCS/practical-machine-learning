@@ -1,0 +1,666 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Supervised Learning (II): Regression &mdash; Practical Machine Learning  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_lesson.css?v=e9df6548" />
+      <link rel="stylesheet" type="text/css" href="../_static/term_role_formatting.css?v=4194e21c" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_rtd_theme_ext_color_contrast.css?v=8e8ea19f" />
+      <link rel="stylesheet" type="text/css" href="../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../_static/overrides.css?v=c88db32d" />
+
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=187304be"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=35a8b989"></script>
+      <script src="../_static/minipres.js?v=a0d29692"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="../_static/tabs.js?v=3030b3cb"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex/" />
+    <link rel="search" title="Search" href="../search/" />
+    <link rel="next" title="Unsupervised Learning (I): Clustering" href="../07-unsupervised-ML-clustering/" />
+    <link rel="prev" title="Supervised Learning (I): Classification" href="../05-supervised-ML-classification/" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../" class="icon icon-home">
+            Practical Machine Learning
+              <img src="../_static/ENCCS.jpg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search/" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Software setup</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../00-software-setup/">Setting Up Programming Environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Lesson episodes</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../01-intro-to-ML/">Introduction to Machine Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../02-fundamentals-of-ML/">Fundamentals of Machine Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../03-scientific-data-for-ML/">Scientific Data for Machine Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../04-data-preparation-for-ML/">Data Preparation for Machine Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../05-supervised-ML-classification/">Supervised Learning (I): Classification</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Supervised Learning (II): Regression</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#regression">Regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data-preparation">Data Preparation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data-processing">Data Processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#training-model-evaluating-model-performance">Training Model &amp; Evaluating Model Performance</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#k-nearest-neighbors-knn">k-Nearest Neighbors (KNN)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#linear-regression">Linear Regression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#polynomial-regression">Polynomial Regression</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#support-vector-machine">Support Vector Machine</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#decision-tree">Decision Tree</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multi-layer-perceptron">Multi-Layer Perceptron</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#comparison-of-trained-models">Comparison of Trained Models</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../07-unsupervised-ML-clustering/">Unsupervised Learning (I): Clustering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../08-unsupervised-ML-dimensionality-reduction/">Unsupervised Learning (II): Dimensionality Reduction</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quick-reference/">Quick Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guide/">Instructor’s guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://enccs.se/lessons/">All lessons</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://enccs.se/">ENCCS</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../">Practical Machine Learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Supervised Learning (II): Regression</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/ENCCS/practical-machine-learning/blob/main/content/06-supervised-ML-regression.md" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="supervised-learning-ii-regression">
+<h1>Supervised Learning (II): Regression<a class="headerlink" href="#supervised-learning-ii-regression" title="Link to this heading"></a></h1>
+<div class="admonition-objectives objectives admonition" id="objectives-0">
+<p class="admonition-title">Objectives</p>
+<ul class="simple">
+<li><p>Understand the fundamental concept of regression (overfitting, cross-validation, gradient search, …)</p></li>
+<li><p>Distinguish between types of regression: simple vs. multiple regression, linear vs. non-linear regression, and other specialized regression methods.</p></li>
+<li><p>Perform regression tasks using representative algorithms (<em>e.g.</em>, k-NN, Linear Regression, Polynomial Regression, Support Vector Regression, Decision Tree, and Multi-Layer Perceptron)</p></li>
+<li><p>Evaluate model performance with metrics such as Root Mean Squared Error (RMSE) and the R-squared (R²) score, and visualize predictive curves.</p></li>
+</ul>
+</div>
+<div class="admonition-instructor-note instructor-note admonition" id="instructor-note-0">
+<p class="admonition-title">Instructor note</p>
+<ul class="simple">
+<li><p>40 min teaching/demonstration</p></li>
+<li><p>40 min exercises</p></li>
+</ul>
+</div>
+<section id="regression">
+<h2>Regression<a class="headerlink" href="#regression" title="Link to this heading"></a></h2>
+<p>Regression is a type of supervised machine learning task where the goal is to predict a continuous numerical value based on input features. Unlike classification, which assigns outputs to discrete categories, regression models produce real-valued predictions.</p>
+<p>Although the Penguins dataset is most commonly used for classification tasks, it can also be applied to regression problems by choosing a continuous target variable. From the pairplot, we can observe a strong visual relationship between body mass and flipper length, indicating a clear positive correlation. Consequently, we select these two features for the regression task, aiming to estimate body mass based on flipper length.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/4-penguins-pairplot.png"><img alt="../_images/4-penguins-pairplot.png" src="../_images/4-penguins-pairplot.png" style="width: 100%;" />
+</a>
+</figure>
+<p>Depending on the model construction approach, in this episode we explore a variety of regression algorithms to predict penguin body mass based on flipper length. These models are selected to represent different categories of machine learning approaches, ranging from simple, interpretable methods to more complex, flexible ones.</p>
+<ul class="simple">
+<li><p><strong>KNN Regression</strong>: Predictions are made based on the average of the closest training samples. This non-parametric, instance-based model captures local patterns in the data effectively.</p></li>
+<li><p><strong>Linear Models</strong>: Standard Linear Regression and Regularized Regression assume a straight-line relationship between flipper length and body mass. These models are interpretable and efficient, providing a solid baseline for comparison.</p></li>
+<li><p><strong>Non-linear Models</strong>: To account for possible non-linear trends, we include Polynomial Regression with higher-degree terms and Support Vector Regression (SVR) with <code class="docutils literal notranslate"><span class="pre">rbf</span></code> kernels, which can model more complex relationships.</p></li>
+<li><p><strong>Tree-based Models</strong>: Decision Trees, Random Forests, and Gradient Boosting offer robust alternatives by recursively partitioning the feature space or combining ensembles to improve accuracy and handle non-linearities effectively.</p></li>
+<li><p><strong>Neural Networks</strong>: These serve as universal function approximators, capable of learning intricate patterns in the data, but typically require larger datasets and more computational resources.</p></li>
+</ul>
+<p>Each model’s performance is rigorously assessed using cross-validated metrics such as Root Mean Squared Error (RMSE) and R². The resulting predictive curves illustrate how well each model captures the biological relationship between flipper length and body mass.</p>
+</section>
+<section id="data-preparation">
+<h2>Data Preparation<a class="headerlink" href="#data-preparation" title="Link to this heading"></a></h2>
+<p>Similar to the procedures adopted in previous episodes, we follow the same preprocessing steps for the Penguins dataset, including handling missing values and detecting outliers. For the regression task, categorical features are not needed, so encoding them is unnecessary.</p>
+</section>
+<section id="data-processing">
+<h2>Data Processing<a class="headerlink" href="#data-processing" title="Link to this heading"></a></h2>
+<p>Below is the code script to extract <code class="docutils literal notranslate"><span class="pre">flipper_length_mm</span></code> and <code class="docutils literal notranslate"><span class="pre">body_mass_g</span></code> features from the main dataset.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">X</span> <span class="o">=</span> <span class="n">penguins_regression</span><span class="p">[[</span><span class="s2">&quot;flipper_length_mm&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">penguins_regression</span><span class="p">[</span><span class="s2">&quot;body_mass_g&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+</pre></div>
+</div>
+<p>In this episode, we first perform feature scaling, followed by splitting the data into training and testing sets. The <code class="docutils literal notranslate"><span class="pre">inverse_transform()</span></code> method reverts transformed data back to its original scale or format.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">StandardScaler</span>
+   
+<span class="c1"># standardize feature and target</span>
+<span class="n">scaler_X</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span>
+<span class="n">scaler_y</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span>
+
+<span class="n">X_scaled</span> <span class="o">=</span> <span class="n">scaler_X</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="n">y_scaled</span> <span class="o">=</span> <span class="n">scaler_y</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+
+<span class="n">X_train_scaled</span><span class="p">,</span> <span class="n">X_test_scaled</span><span class="p">,</span> <span class="n">y_train_scaled</span><span class="p">,</span> <span class="n">y_test_scaled</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X_scaled</span><span class="p">,</span> <span class="n">y_scaled</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span>
+
+<span class="n">X_train_orig</span> <span class="o">=</span> <span class="n">scaler_X</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">(</span><span class="n">X_train_scaled</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+<span class="n">y_train_orig</span> <span class="o">=</span> <span class="n">scaler_y</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">(</span><span class="n">y_train_scaled</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+<span class="o">...</span>
+</pre></div>
+</div>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/6-spliting-training-testing-dataset.png"><img alt="../_images/6-spliting-training-testing-dataset.png" src="../_images/6-spliting-training-testing-dataset.png" style="width: 80%;" />
+</a>
+</figure>
+</section>
+<section id="training-model-evaluating-model-performance">
+<h2>Training Model &amp; Evaluating Model Performance<a class="headerlink" href="#training-model-evaluating-model-performance" title="Link to this heading"></a></h2>
+<section id="k-nearest-neighbors-knn">
+<h3>k-Nearest Neighbors (KNN)<a class="headerlink" href="#k-nearest-neighbors-knn" title="Link to this heading"></a></h3>
+<p>We begin by applying the KNN algorithm to the penguin regression task, as illustrated in the code example below.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.neighbors</span><span class="w"> </span><span class="kn">import</span> <span class="n">KNeighborsRegressor</span>
+
+<span class="n">knn_model</span> <span class="o">=</span> <span class="n">KNeighborsRegressor</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">knn_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train_scaled</span><span class="p">,</span> <span class="n">y_train_scaled</span><span class="p">)</span>
+
+<span class="c1"># predict on test data</span>
+<span class="n">y_pred_knn_scaled</span> <span class="o">=</span> <span class="n">knn_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test_scaled</span><span class="p">)</span>
+<span class="n">y_pred_knn</span> <span class="o">=</span> <span class="n">scaler_y</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">(</span><span class="n">y_pred_knn_scaled</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>For the regression task, we use Root Mean Squared Error (RMSE) and R² score as evaluation metrics.</p>
+<ul class="simple">
+<li><p>RMSE measures the average magnitude of prediction errors, providing insight into how closely the model’s predictions match the actual values</p></li>
+<li><p>R² score indicates the proportion of variance in the target variable that is explained by the model, reflecting its overall goodness of fit.</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># evaluate model performance</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">root_mean_squared_error</span><span class="p">,</span> <span class="n">r2_score</span>
+
+<span class="n">rmse_knn</span> <span class="o">=</span> <span class="n">root_mean_squared_error</span><span class="p">(</span><span class="n">y_test_orig</span><span class="p">,</span> <span class="n">y_pred_knn</span><span class="p">)</span>
+<span class="n">r2_value_knn</span> <span class="o">=</span> <span class="n">r2_score</span><span class="p">(</span><span class="n">y_test_orig</span><span class="p">,</span> <span class="n">y_pred_knn</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;K-Nearest Neighbors RMSE: </span><span class="si">{</span><span class="n">rmse_knn</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, R²: </span><span class="si">{</span><span class="n">r2_value_knn</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To visualize the KNN algorithm for the regression task, we plot the <strong>predictive curve</strong>, which maps input values to predicted outputs. This curve illustrates how KNN responds to changes in a single feature. Since KNN is a non-parametric, instance-based method, it does not learn a fixed equation during training. Instead, predictions are made by averaging the target values of the <em>k</em> nearest training examples for each input.</p>
+<p>The resulting predictive curve is typically piecewise-smooth, adapting to local patterns in the data. That is, the curve may bend or flatten depending on regions where data points are dense or sparse.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/6-regression-predictive-curve-knn-5.png"><img alt="../_images/6-regression-predictive-curve-knn-5.png" src="../_images/6-regression-predictive-curve-knn-5.png" style="width: 80%;" />
+</a>
+</figure>
+<p>This makes the predictive curve an especially useful tool for assessing whether KNN is underfitting (<em>e.g.</em>, when <em>k</em> is large) or overfitting (e.g., when <em>k</em> is small). By adjusting <em>k</em> and observing changes in the curve’s shape, we can intuitively tune the model’s <strong>bias-variance tradeoff</strong>.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/6-regression-predictive-curve-knn-1357.png"><img alt="../_images/6-regression-predictive-curve-knn-1357.png" src="../_images/6-regression-predictive-curve-knn-1357.png" style="width: 80%;" />
+</a>
+</figure>
+<div class="admonition-the-bias-variance-tradeoff callout admonition" id="callout-0">
+<p class="admonition-title">The bias-variance tradeoff</p>
+<p>The bias-variance tradeoff is a fundamental concept in machine learning that describes the balance between model simplicity and model flexibility when trying to make accurate predictions.</p>
+<ul class="simple">
+<li><p>Bias measures how much a model’s predictions systematically differ from the true values. High bias means the model is too simple and cannot capture the underlying patterns in the data, which leads to underfitting.</p></li>
+<li><p>Variance measures how much a model’s predictions change when trained on different datasets. High variance means the model is too sensitive to small fluctuations in the training data, which leads to overfitting.</p></li>
+</ul>
+</div>
+</section>
+<section id="linear-regression">
+<h3>Linear Regression<a class="headerlink" href="#linear-regression" title="Link to this heading"></a></h3>
+<p>Having explored a KNN regressor to predict penguin body mass from flipper length, we now turn to a fundamental and interpretable alternative: the Linear Regression model. While KNN makes predictions based on the average mass of the most similar observations, linear regression aims to identify a single, global linear relationship between the two variables. This approach fits a straight line through the data that minimizes the overall prediction error, producing a model that is typically less computationally intensive and offers immediate insight into the underlying trend.</p>
+<p>The core concept of this linear model is a simple equation:</p>
+<div class="math notranslate nohighlight">
+\[body\_mass = \beta_0 + \beta_1 × flipper\_length\]</div>
+<ul class="simple">
+<li><p>the coefficient, $\beta_1$, represents the model’s estimate of how much a penguin’s body mass increases for each additional millimeter of flipper length</p></li>
+<li><p>the intercept, $\beta_0$, indicates the theoretical body mass for a penguin with a flipper length of zero. While this value is not biologically meaningful, it is necessary to position the line correctly.</p></li>
+</ul>
+<p>The fitted values of $\beta_1$ and $\beta_0$ can be accessed via <code class="docutils literal notranslate"><span class="pre">model.coef_</span></code> and <code class="docutils literal notranslate"><span class="pre">model.intercept_</span></code>, respectively. ​This equation provides a direct and interpretable rule: for any given flipper length, we can calculate a precise predicted body mass with given $\beta_1$ and $\beta_0$.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LinearRegression</span>
+
+<span class="n">linear_model</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span>
+<span class="n">linear_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train_scaled</span><span class="p">,</span> <span class="n">y_train_scaled</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">linear_model</span><span class="o">.</span><span class="n">coef_</span><span class="p">,</span> <span class="n">linear_model</span><span class="o">.</span><span class="n">intercept_</span><span class="p">)</span>
+
+<span class="n">y_pred_linear_scaled</span> <span class="o">=</span> <span class="n">linear_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test_scaled</span><span class="p">)</span>
+<span class="n">y_pred_linear</span> <span class="o">=</span> <span class="n">scaler_y</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">(</span><span class="n">y_pred_linear_scaled</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Once trained, we evaluate the linear regression model’s predictive performance on the testing set using the same metrics: RMSE and R² score. In the Penguins dataset, a high R² indicates that flipper length is a strong predictor of body mass, while a low RMSE reflects precise predictions. These metrics also allow for direct comparison with KNN and other models, such as Polynomial Regression and tree-based methods that will be discussed below, highlighting situations where the simple linear assumption is sufficient and where it may fall short.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rmse_linear</span> <span class="o">=</span> <span class="n">root_mean_squared_error</span><span class="p">(</span><span class="n">y_test_orig</span><span class="p">,</span> <span class="n">y_pred_linear</span><span class="p">)</span>
+<span class="n">r2_value_linear</span> <span class="o">=</span> <span class="n">r2_score</span><span class="p">(</span><span class="n">y_test_orig</span><span class="p">,</span> <span class="n">y_pred_linear</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Linear Regression RMSE: </span><span class="si">{</span><span class="n">rmse_linear</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, R²: </span><span class="si">{</span><span class="n">r2_value_linear</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The resulting predictive curve is shown below.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/6-regression-predictive-curve-linear.png"><img alt="../_images/6-regression-predictive-curve-linear.png" src="../_images/6-regression-predictive-curve-linear.png" style="width: 80%;" />
+</a>
+</figure>
+<p><strong>Residual analysis</strong></p>
+<p>While metrics like RMSE and R-squared scores provide a high-level summary of model performance, <strong>residual analysis</strong> allows us to examine the model more deeply and verify the key assumptions of linear regression, ensuring that its conclusions are valid and reliable. Residuals are the differences between the observed body mass values and the values predicted by the model.</p>
+<p>From the figure below, we can see that the residuals are randomly scattered around zero, with no apparent systematic patterns. This indicates that the linear model is largely unbiased and effectively captures the main trend between flipper length and body mass.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/6-regression-linear-residual-analysis.png"><img alt="../_images/6-regression-linear-residual-analysis.png" src="../_images/6-regression-linear-residual-analysis.png" style="width: 100%;" />
+</a>
+</figure>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If we notice certain patterns, <em>i.e.</em>, residuals that consistently increase or decrease with larger flipper lengths, it suggests that the relationship between body mass and flipper length might not be purely linear. Similarly, if the residuals fan out, showing greater spread at higher predicted values, it indicates heteroscedasticity, meaning the model errors are not consistent across the range of predictions. Such patterns imply that a simple linear regression model may not fully capture the variability in body mass.</p>
+</div>
+<p>Another key aspect of residual analysis involves assessing normality, as linear regression assumes normally distributed residuals for reliable inference. For the Penguins dataset, this can be evaluated using a histogram or a Q-Q (quantile-quantile) plot of the residuals.</p>
+<p>The histogram of residuals illustrates the distribution of prediction errors across the dataset. In the Penguins dataset, these residuals should form a roughly symmetric, bell-shaped curve centered at zero. This indicates that the model is not systematically over-predicting or under-predicting body mass, and that most errors are relatively small, with fewer large deviations.</p>
+<p>The Q-Q plot compares the distribution of the residuals to a theoretical normal distribution. On the plot, the x-axis represents the expected quantiles from a standard normal distribution, while the y-axis shows the quantiles of the observed residuals. If the residuals are normally distributed, the points should align closely with the diagonal reference line.</p>
+<p><strong>Overfitting and underfitting</strong></p>
+<p>In the previous section, we evaluated the Linear Regression model on the testing dataset and calculated metrics such as RMSE and R² to understand its predictive performance. While this gives a good indication of how well this model generalizes to unseen data, it only tells half the story.</p>
+<p>To get a complete picture, it is important to also assess this model’s performance on the training dataset and compare it with the testing results. This comparison is the primary diagnostic tool for identifying a model’s fundamental flaw: whether it is learning the underlying signal or merely memorizing the data.</p>
+<p>By calculating performance metrics like RMSE and R-squared for both training and testing datasets, we can identify potential issues such as overfitting and underfitting.</p>
+<ul class="simple">
+<li><p><strong>Overfitting</strong> occurs when the model performs extremely well on the training data but poorly on the testing data. This indicates that the model has memorized the training patterns, including noise, rather than capturing the true underlying relationship.</p></li>
+<li><p><strong>Underfitting</strong> happens when the model performs poorly on both training and testing datasets, suggesting that it is too simple to capture the relevant trends in the data.</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># --- Training data predictions ---</span>
+<span class="n">y_pred_train_scaled</span> <span class="o">=</span> <span class="n">linear_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_train_scaled</span><span class="p">)</span>
+<span class="n">y_pred_train</span> <span class="o">=</span> <span class="n">scaler_y</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">(</span><span class="n">y_pred_train_scaled</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+
+<span class="n">rmse_linear_train</span> <span class="o">=</span> <span class="n">root_mean_squared_error</span><span class="p">(</span><span class="n">y_train_orig</span><span class="p">,</span> <span class="n">y_pred_train</span><span class="p">)</span>
+<span class="n">r2_linear_train</span> <span class="o">=</span> <span class="n">r2_score</span><span class="p">(</span><span class="n">y_train_orig</span><span class="p">,</span> <span class="n">y_pred_train</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Linear Regression (Train) RMSE: </span><span class="si">{</span><span class="n">rmse_linear_train</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, R²: </span><span class="si">{</span><span class="n">r2_linear_train</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># --- Testing data predictions ---</span>
+<span class="n">y_pred_test_scaled</span> <span class="o">=</span> <span class="n">linear_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test_scaled</span><span class="p">)</span>
+<span class="n">y_pred_test</span> <span class="o">=</span> <span class="n">scaler_y</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">(</span><span class="n">y_pred_test_scaled</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+
+<span class="n">rmse_linear_test</span> <span class="o">=</span> <span class="n">root_mean_squared_error</span><span class="p">(</span><span class="n">y_test_orig</span><span class="p">,</span> <span class="n">y_pred_test</span><span class="p">)</span>
+<span class="n">r2_linear_test</span> <span class="o">=</span> <span class="n">r2_score</span><span class="p">(</span><span class="n">y_test_orig</span><span class="p">,</span> <span class="n">y_pred_test</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Linear Regression (Test)  RMSE: </span><span class="si">{</span><span class="n">rmse_linear_test</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, R²: </span><span class="si">{</span><span class="n">r2_linear_test</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Linear Regression (Train) RMSE: 387.10, R²: 0.77</span>
+<span class="c1"># Linear Regression (Test)  RMSE: 411.85, R²: 0.72</span>
+</pre></div>
+</div>
+<p>The trained Linear Regression model for predicting penguin body mass based on flipper length in the penguins dataset achieves comparable RMSE and R² scores on both the training and testing datasets, indicating a fairly good model.</p>
+<div class="admonition-regularized-regression-ridge-and-lasso exercise important admonition" id="exercise-0">
+<p class="admonition-title">Regularized Regression (Ridge and Lasso)</p>
+<p>To address overfitting and underfitting, regularized regression methods, such as <strong>Ridge</strong> and <strong>Lasso</strong> regression, extend linear regression by adding a penalty term to the standard cost function. This penalty discourages the model from relying too heavily on any single feature or from becoming overly complex by forcing coefficient values to be small.</p>
+<ul class="simple">
+<li><p><strong>Ridge Regression</strong> (L2 regularization) shrinks coefficients towards zero but never entirely eliminates them, which is highly effective for handling correlated features and improving stability. This is common in the penguins dataset when predictors like flipper length and bill length are correlated.</p></li>
+<li><p><strong>Lasso Regression</strong> (L1 regularization) can drive some coefficients to exactly zero, effectively performing automatic feature selection and creating a simpler, more interpretable model. For instance, Lasso might retain flipper length while discarding less predictive features, improving generalization.</p></li>
+</ul>
+<p>In this exercise (code examples are availalbe in the <a class="reference internal" href="../jupyter-notebooks/6-ML-Regression/"><span class="std std-doc">Jupyter Notebook</span></a>), we will</p>
+<ul class="simple">
+<li><p>Train the Penguins dataset using Ridge and Lasso regression models, and compare their fitted parameters, RMSE, and R² scores.</p></li>
+<li><p>Conduct a residual analysis to evaluate whether the regularized regression models achieve better performance than the standard linear regression model.</p></li>
+</ul>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-UmlkZ2UgUmVncmVzc2lvbg==" aria-selected="true" class="sphinx-tabs-tab group-tab" id="tab-0-UmlkZ2UgUmVncmVzc2lvbg==" name="UmlkZ2UgUmVncmVzc2lvbg==" role="tab" tabindex="0">Ridge Regression</button><button aria-controls="panel-0-TGFzc28gUmVncmVzc2lvbg==" aria-selected="false" class="sphinx-tabs-tab group-tab" id="tab-0-TGFzc28gUmVncmVzc2lvbg==" name="TGFzc28gUmVncmVzc2lvbg==" role="tab" tabindex="-1">Lasso Regression</button></div><div aria-labelledby="tab-0-UmlkZ2UgUmVncmVzc2lvbg==" class="sphinx-tabs-panel group-tab" id="panel-0-UmlkZ2UgUmVncmVzc2lvbg==" name="UmlkZ2UgUmVncmVzc2lvbg==" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ridge</span>
+
+<span class="n">ridge_model</span> <span class="o">=</span> <span class="n">Ridge</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">20.0</span><span class="p">)</span>
+<span class="n">ridge_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train_scaled</span><span class="p">,</span> <span class="n">y_train_scaled</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ridge_model</span><span class="o">.</span><span class="n">coef_</span><span class="p">,</span> <span class="n">ridge_model</span><span class="o">.</span><span class="n">intercept_</span><span class="p">)</span>
+
+<span class="n">y_pred_ridge_scaled</span> <span class="o">=</span> <span class="n">ridge_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test_scaled</span><span class="p">)</span>
+<span class="n">y_pred_ridge</span> <span class="o">=</span> <span class="n">scaler_y</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">(</span><span class="n">y_pred_ridge_scaled</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+
+<span class="n">rmse_ridge</span> <span class="o">=</span> <span class="n">root_mean_squared_error</span><span class="p">(</span><span class="n">y_test_orig</span><span class="p">,</span> <span class="n">y_pred_ridge</span><span class="p">)</span>
+<span class="n">r2_value_ridge</span> <span class="o">=</span> <span class="n">r2_score</span><span class="p">(</span><span class="n">y_test_orig</span><span class="p">,</span> <span class="n">y_pred_ridge</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Regularized Regression (Ridge) RMSE: </span><span class="si">{</span><span class="n">rmse_ridge</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, R²: </span><span class="si">{</span><span class="n">r2_value_ridge</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-TGFzc28gUmVncmVzc2lvbg==" class="sphinx-tabs-panel group-tab" hidden="true" id="panel-0-TGFzc28gUmVncmVzc2lvbg==" name="TGFzc28gUmVncmVzc2lvbg==" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">Lasso</span>
+
+<span class="n">lasso_model</span> <span class="o">=</span> <span class="n">Lasso</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+<span class="n">lasso_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train_scaled</span><span class="p">,</span> <span class="n">y_train_scaled</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">lasso_model</span><span class="o">.</span><span class="n">coef_</span><span class="p">,</span> <span class="n">lasso_model</span><span class="o">.</span><span class="n">intercept_</span><span class="p">)</span>
+
+<span class="n">y_pred_lasso_scaled</span> <span class="o">=</span> <span class="n">lasso_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test_scaled</span><span class="p">)</span>
+<span class="n">y_pred_lasso</span> <span class="o">=</span> <span class="n">scaler_y</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">(</span><span class="n">y_pred_lasso_scaled</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+
+<span class="n">rmse_lasso</span> <span class="o">=</span> <span class="n">root_mean_squared_error</span><span class="p">(</span><span class="n">y_test_orig</span><span class="p">,</span> <span class="n">y_pred_lasso</span><span class="p">)</span>
+<span class="n">r2_value_lasso</span> <span class="o">=</span> <span class="n">r2_score</span><span class="p">(</span><span class="n">y_test_orig</span><span class="p">,</span> <span class="n">y_pred_lasso</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Regularized Regression (Lasso) RMSE: </span><span class="si">{</span><span class="n">rmse_lasso</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, R²: </span><span class="si">{</span><span class="n">r2_value_lasso</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><figure class="align-center">
+<a class="reference internal image-reference" href="../_images/6-regression-predictive-curve-linear-ridge-lasso.png"><img alt="../_images/6-regression-predictive-curve-linear-ridge-lasso.png" src="../_images/6-regression-predictive-curve-linear-ridge-lasso.png" style="width: 80%;" />
+</a>
+</figure>
+</div>
+</div>
+</section>
+<section id="polynomial-regression">
+<h3>Polynomial Regression<a class="headerlink" href="#polynomial-regression" title="Link to this heading"></a></h3>
+<p>In the previous section, we assumed that penguin body mass is linearly proportional to flipper length, and after training, we have verified that this assumption holds reasonably well. However, for other applications, if two variables are explicitly not linearly related, and a simple linear model may fail to capture the underlying patterns. In such cases, we can resort to polynomial regression to capture non-linear relationship by including higher-degree terms of the predictor variable.</p>
+<p>In the context of the Penguins dataset, polynomial regression extends linear regression by modeling body mass as a polynomial function of flipper length with the formula as</p>
+<div class="math notranslate nohighlight">
+\[body\_mass = \beta_0 + \beta_1 × flipper\_length + \beta_2 × flipper\_length^2 + \beta_3 × flipper\_length^3 + ...\]</div>
+<p>This approach allows the model to fit a curved relationship, which might be relevant if, for example, body mass increases more rapidly with flipper length for larger penguins, as seen in species like Gentoo.</p>
+<p>The process of training a Polynomial Regression model is similar to Linear Regression. We first transform the original feature (flipper length) by adding polynomial terms (<em>e.g.</em>, $flipper_length^2$ and higher-degree terms), creating a feature matrix that the Polynomial Regression model uses to fit a non-linear curve while still employing Linear Regression techniques on the transformed features.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">PolynomialFeatures</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_pipeline</span>
+
+<span class="n">degree3</span><span class="o">=</span><span class="mi">3</span>
+<span class="n">poly3_model</span> <span class="o">=</span> <span class="n">make_pipeline</span><span class="p">(</span><span class="n">PolynomialFeatures</span><span class="p">(</span><span class="n">degree3</span><span class="p">),</span> <span class="n">LinearRegression</span><span class="p">())</span>
+<span class="n">poly3_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train_scaled</span><span class="p">,</span> <span class="n">y_train_scaled</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">poly3_model</span><span class="o">.</span><span class="n">named_steps</span><span class="p">[</span><span class="s1">&#39;linearregression&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">coef_</span><span class="p">,</span> <span class="n">poly3_model</span><span class="o">.</span><span class="n">named_steps</span><span class="p">[</span><span class="s1">&#39;linearregression&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">intercept_</span><span class="p">)</span>
+
+<span class="n">y_pred_poly3_scaled</span> <span class="o">=</span> <span class="n">poly3_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test_scaled</span><span class="p">)</span>
+<span class="n">y_pred_poly3</span> <span class="o">=</span> <span class="n">scaler_y</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">(</span><span class="n">y_pred_poly3_scaled</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+
+<span class="n">rmse_poly3</span> <span class="o">=</span> <span class="n">root_mean_squared_error</span><span class="p">(</span><span class="n">y_test_orig</span><span class="p">,</span> <span class="n">y_pred_poly3</span><span class="p">)</span>
+<span class="n">r2_value_poly3</span> <span class="o">=</span> <span class="n">r2_score</span><span class="p">(</span><span class="n">y_test_orig</span><span class="p">,</span> <span class="n">y_pred_poly3</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Polynomial Regression (degree=</span><span class="si">{</span><span class="n">degree3</span><span class="si">}</span><span class="s2">) RMSE: </span><span class="si">{</span><span class="n">rmse_poly3</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, R²: </span><span class="si">{</span><span class="n">r2_value_poly3</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The Polynomial Regression model is trained by minimizing the sum of squared and cubic residuals, and performance is evaluated using metrics like RMSE and R². Compared with Linear Regression, we see that a third-degree polynomial regression model provides a marginally better fit than the simple linear model.</p>
+<p>Below we present the predictive curves for Polynomial Regression models with degrees 3 and 5, alongside the curve for Linear Regression. In addition, we report the evaluation metrics (RMSE and R²) on the testing dataset to provide a quantitative comparison.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/6-regression-predictive-curve-linear-poly35.png"><img alt="../_images/6-regression-predictive-curve-linear-poly35.png" src="../_images/6-regression-predictive-curve-linear-poly35.png" style="width: 80%;" />
+</a>
+</figure>
+<table class="docutils align-center" id="id1">
+<caption><span class="caption-text">Performance metrics (RMSE and R²) on the testing dataset</span><a class="headerlink" href="#id1" title="Link to this table"></a></caption>
+<thead>
+<tr class="row-odd"><th class="head text-center"><p>Model</p></th>
+<th class="head text-center"><p>RMSE</p></th>
+<th class="head text-center"><p>R²</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-center"><p>Linear Regression</p></td>
+<td class="text-center"><p>411.85</p></td>
+<td class="text-center"><p>0.72</p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p>Ridge Regression</p></td>
+<td class="text-center"><p>414.18</p></td>
+<td class="text-center"><p>0.72</p></td>
+</tr>
+<tr class="row-even"><td class="text-center"><p>Lasso Regression</p></td>
+<td class="text-center"><p>437.19</p></td>
+<td class="text-center"><p>0.69</p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p>Polynomial Regression <br>(degree=3)</p></td>
+<td class="text-center"><p>407.47</p></td>
+<td class="text-center"><p>0.73</p></td>
+</tr>
+<tr class="row-even"><td class="text-center"><p>Polynomial Regression <br>(degree=5)</p></td>
+<td class="text-center"><p>415.55</p></td>
+<td class="text-center"><p>0.72</p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p>Support Vector Regression</p></td>
+<td class="text-center"><p>424.24</p></td>
+<td class="text-center"><p>0.70</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>It is crucial to approach this added complexity with caution. While higher-degree polynomials can achieve very close fits to the training data, they are also highly prone to overfitting. For example, a model with a very high degree (<em>e.g.</em>, degree = 10) may contort itself to pass through nearly every training point, capturing random noise rather than the true underlying biological relationship. As a result, such a model would likely perform poorly on unseen test data, sacrificing generalizability for apparent short-term accuracy.</p>
+</div>
+<p>Additionally, residual analysis can provide further information on the model performance.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/6-regression-linear-poly5-residual-analysis.png"><img alt="../_images/6-regression-linear-poly5-residual-analysis.png" src="../_images/6-regression-linear-poly5-residual-analysis.png" style="width: 100%;" />
+</a>
+</figure>
+<p>Compared with Linear Regression, the Polynomial Regression model with degree = 5 shows signs of overfitting, as evidenced by systematic deviations in the residuals and the asymmetric distribution of prediction errors across the dataset.</p>
+<p>Overall, Polynomial Regression serves as a simple yet powerful extension of Linear Regression. It enables us to capture non-linear relationships while still benefiting from the interpretability and computational efficiency of a linear framework applied to transformed features.
+The key challenge lies in selecting the appropriate polynomial degree. Too low a degree may underfit the data, missing important trends, while too high a degree risks memorizing noise and overfitting. To strike the right balance, rigorous evaluation techniques — such as cross-validation on the training set — are typically used to identify the optimal degree, followed by a final assessment on the testing set. By carefully tuning complexity, polynomial regression can deliver genuine improvements in predictive accuracy and provide a more faithful representation of the often non-linear patterns found in the natural world.</p>
+</section>
+<section id="support-vector-machine">
+<h3>Support Vector Machine<a class="headerlink" href="#support-vector-machine" title="Link to this heading"></a></h3>
+<p>In the previous episode, we introduced the SVM model, which is widely recognized for its effectiveness in classification tasks by finding an optimal hyperplane that maximizes the margin between classes. Here, we adapt the same principles to regression through <strong>Support Vector Regression</strong> (SVR). Unlike Linear Regression or Polynomial Regression, which minimize squared errors, SVR builds on the concepts of margins and support vectors, and aims to find a tube (or a channel) (ε-insensitive zone) of a specified width that captures as many data points as possible, while only the points lying outside this tube (the support vector) affect the model’s predictions.</p>
+<p>The core challenge SVR faces is that, by its fundamental nature, it seeks a linear relationship (a flat hyperplane). In many real-world problems, such as predicting a penguin’s body mass from its flipper length, the underlying relationship, while roughly linear, may contain subtle non-linear patterns that a straight line cannot fully capture.</p>
+<p>Rather than manually generating polynomial features, which can be computationally expensive and impractical in high-dimensional spaces, kernel functions are used to capture non-linear relationships by implicitly projecting (rather than explicitly transforming) the input data into higher-dimensional feature spaces.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Several kernel types are commonly used in SVR, each imparting different characteristics to the model:</p>
+<ul class="simple">
+<li><p><strong>Linear Kernel</strong>: The simplest kernel, which does not perform any transformation and assumes a linear relationship between features and the target variable. It is fast and interpretable but lacks flexibility for modeling complex patterns.</p></li>
+<li><p><strong>Polynomial Kernel</strong>: This kernel enables the model to fit polynomial curves of a specified degree $d$ with contronable flexibility. While more adaptable than a linear kernel, it can be sensitive to the chosen degree and may perform poorly when extrapolating beyond the training range.</p></li>
+<li><p><strong>Radial Basis Function (RBF) Kernel</strong>: The most widely used kernel for non-linear problems, capable of generating highly flexible and smooth curves. It is versatile and effective for capturing complex relationships in the data.</p></li>
+</ul>
+</div>
+<p>For the penguin regression task, we use the RBF kernel in the SVR model to capture potential non-linear relationships between flipper length and body mass that a simple linear model might not be able to detect.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.svm</span><span class="w"> </span><span class="kn">import</span> <span class="n">SVR</span>
+
+<span class="n">svr_model</span> <span class="o">=</span> <span class="n">SVR</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="s1">&#39;rbf&#39;</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="mf">100.0</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">svr_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train_scaled</span><span class="p">,</span> <span class="n">y_train_scaled</span><span class="p">)</span>
+
+<span class="n">y_pred_svr_scaled</span> <span class="o">=</span> <span class="n">svr_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test_scaled</span><span class="p">)</span>
+<span class="n">y_pred_svr</span> <span class="o">=</span> <span class="n">scaler_y</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">(</span><span class="n">y_pred_svr_scaled</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+
+<span class="n">rmse_svr</span> <span class="o">=</span> <span class="n">root_mean_squared_error</span><span class="p">(</span><span class="n">y_test_orig</span><span class="p">,</span> <span class="n">y_pred_svr</span><span class="p">)</span>
+<span class="n">r2_value_svr</span> <span class="o">=</span> <span class="n">r2_score</span><span class="p">(</span><span class="n">y_test_orig</span><span class="p">,</span> <span class="n">y_pred_svr</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Support Vector Regression RMSE: </span><span class="si">{</span><span class="n">rmse_svr</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, R²: </span><span class="si">{</span><span class="n">r2_value_svr</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/6-regression-predictive-curve-linear-poly3-svr.png"><img alt="../_images/6-regression-predictive-curve-linear-poly3-svr.png" src="../_images/6-regression-predictive-curve-linear-poly3-svr.png" style="width: 80%;" />
+</a>
+</figure>
+<p>For the Penguins dataset, SVR can potentially outperform Linear Regression if the relationship between flipper length and body mass is non-linear, as it can flexibly adapt to complex patterns without requiring explicit polynomial features. However, in this regression task, SVR with a (non-linear) RBF kernel underperforms compared to the Linear Regression model. There are two main reasons for this:</p>
+<ul class="simple">
+<li><p>The relationship between flipper length and body mass is fundamentally linear or only mildly non-linear, so the flexibility of SVR is not necessary.</p></li>
+<li><p>The hyperparameters (<code class="docutils literal notranslate"><span class="pre">gamma</span></code>, <code class="docutils literal notranslate"><span class="pre">C</span></code>, <code class="docutils literal notranslate"><span class="pre">epsilon</span></code> in <code class="docutils literal notranslate"><span class="pre">svr_model</span> <span class="pre">=</span> <span class="pre">SVR(kernel='rbf',</span> <span class="pre">gamma=0.1,</span> <span class="pre">C=100.0,</span> <span class="pre">epsilon=1.0)</span></code>) used for the SVR model may not be optimal. In this case, tuning the hyperparameters using techniques like grid search or cross-validation could improve performance.</p></li>
+</ul>
+<div class="admonition-tuning-hyperparameter exercise important admonition" id="exercise-1">
+<p class="admonition-title"><strong>Tuning hyperparameter</strong></p>
+<p>In this exercise (code examples are availalbe in the <a class="reference internal" href="../jupyter-notebooks/6-ML-Regression/"><span class="std std-doc">Jupyter Notebook</span></a>, we will use <strong>grid search</strong> combined with <strong>cross-validation</strong> to find the optimal hyperparameters for the SVR model (code example is available in the Jupyter Notebook). We will:</p>
+<ul class="simple">
+<li><p>Compare RMSE and R² values to evaluate predictive performance.</p></li>
+<li><p>Plot predictive curves to visually assess how well the model fits the data.</p></li>
+</ul>
+<div class="dropdown callout admonition" id="callout-1">
+<p class="admonition-title"><strong>Grid search</strong> and <strong>Cross validation</strong></p>
+<p>Grid search is a method used to find the best combination of hyperparameters for a ML model. It will search all possible combinations of the hyperparameter values you specify, trains the model for each combination, and evaluates it using a validation set. After testing all combinations, it picks the set of hyperparameters that gives the best performance.</p>
+<p>Cross-validation is a method to check how well a model will perform on unseen data.</p>
+<ul class="simple">
+<li><p>Instead of just splitting the data once into training and testing sets, cross-validation splits the data into several parts (folds).</p></li>
+<li><p>The model is trained on some folds and tested on the remaining fold. This process is repeated so that every fold gets a turn as the test set.</p></li>
+<li><p>The performance scores from all folds are averaged, giving a more reliable estimate of how the model will do in real situations.</p></li>
+<li><p>Here is a one example: The dataset is split into 5 parts. The model trains on 4 parts and tests on 1 part. This is repeated 5 times, each time with a different test part.</p></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="decision-tree">
+<h3>Decision Tree<a class="headerlink" href="#decision-tree" title="Link to this heading"></a></h3>
+<p>In addition to instance-based models such as KNN and margin-based models like SVR, we can also apply tree-based methods for the regression task to predict a penguin’s body mass from its flipper length. One of the most intuitive and interpretable approaches in this family is the <strong>Decision Tree Regressor</strong>.</p>
+<p>A Decision Tree Regressor is a non-linear model that partitions the feature space (flipper length) into distinct regions based on feature thresholds and assigns a constant value (the average body mass) to each region. For the penguin regression task, the Decision Tree Regressor recursively splits the dataset into groups of penguins with similar flipper lengths. At each split, the model selects the threshold that minimizes the variance of body mass within the resulting groups. This recursive process continues until stopping criteria are met, such as reaching a maximum tree depth or a minimum number of samples per leaf.</p>
+<p>Below is a code example demonstrating the Decision Tree Regressor (<code class="docutils literal notranslate"><span class="pre">max_depth</span> <span class="pre">=</span> <span class="pre">3</span></code>) applied to the penguins regression task.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.tree</span><span class="w"> </span><span class="kn">import</span> <span class="n">DecisionTreeRegressor</span>
+
+<span class="n">dt3_model</span> <span class="o">=</span> <span class="n">DecisionTreeRegressor</span><span class="p">(</span><span class="n">max_depth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span>
+<span class="n">dt3_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train_scaled</span><span class="p">,</span> <span class="n">y_train_scaled</span><span class="p">)</span>
+
+<span class="n">y_pred_dt3_scaled</span> <span class="o">=</span> <span class="n">dt3_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test_scaled</span><span class="p">)</span>
+<span class="n">y_pred_dt3</span> <span class="o">=</span> <span class="n">scaler_y</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">(</span><span class="n">y_pred_dt3_scaled</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+
+<span class="n">rmse_dt3</span> <span class="o">=</span> <span class="n">root_mean_squared_error</span><span class="p">(</span><span class="n">y_test_orig</span><span class="p">,</span> <span class="n">y_pred_dt3</span><span class="p">)</span>
+<span class="n">r2_value_dt3</span> <span class="o">=</span> <span class="n">r2_score</span><span class="p">(</span><span class="n">y_test_orig</span><span class="p">,</span> <span class="n">y_pred_dt3</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Decision Tree (depth=3) RMSE: </span><span class="si">{</span><span class="n">rmse_dt3</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, R²: </span><span class="si">{</span><span class="n">r2_value_dt3</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Predictions for a new penguin are straightforward. Once the tree is built, the model follows the decision path down the tree according to the penguin’s feature values until it reaches a leaf node. The predicted value is then the mean (or median) body mass of the training samples in that leaf. For example, if a leaf node contains 15 penguins with an average body mass of 3850 grams, any new penguin whose features lead it to this leaf will be predicted to have a mass of 3850 g.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/6-regression-predictive-curve-decision-tree-35.png"><img alt="../_images/6-regression-predictive-curve-decision-tree-35.png" src="../_images/6-regression-predictive-curve-decision-tree-35.png" style="width: 80%;" />
+</a>
+</figure>
+<p>When applying a Decision Tree Regressor to the penguin regression tesk, the tree depth plays a crucial role in shaping the fitted curve. With a relatively shallow tree, such as depth = 3, the model makes only a few splits on flipper length, resulting in broad, step-like regions where body mass is predicted as the average within each group. This provides a coarse approximation of the relationship, capturing the general trend but missing finer variations.</p>
+<p>Increasing the tree depth to 5 allows for more splits, creating narrower regions and a fitted curve that follows the data more closely. While this improves flexibility and reduces bias, it also increases the risk of capturing noise in the training set, leading to overfitting. Comparing fitted curves at different depths illustrates <strong>the classic trade-off in decision trees: shallow trees may underfit, while deeper trees may fit the training data too closely</strong>.</p>
+<div class="admonition-random-forest-and-gradient-boosting-regressions exercise important admonition" id="exercise-2">
+<p class="admonition-title">Random Forest and Gradient Boosting Regressions</p>
+<p>We have discussed the limitations of Decision Tree algorithm, which can be mitigated using powerful ensemble methods such as Random Forest and Gradient Boosting. In this exercise (code examples are availalbe in the <a class="reference internal" href="../jupyter-notebooks/6-ML-Regression/"><span class="std std-doc">Jupyter Notebook</span></a>), we will:</p>
+<ul class="simple">
+<li><p>Apply Random Forest and Gradient Boosting Regressors to the penguin regression task using initial (arbitrary) hyperparameters.</p></li>
+<li><p>Optimize hyperparameters via grid search and cross-validation to improve predictive performance.</p></li>
+<li><p>Plot predictive curves to visually evaluate how well each model fits the data.</p></li>
+</ul>
+</div>
+</section>
+<section id="multi-layer-perceptron">
+<h3>Multi-Layer Perceptron<a class="headerlink" href="#multi-layer-perceptron" title="Link to this heading"></a></h3>
+<p>For this penguins task, we will explore implementations using three popular frameworks: the user-friendly scikit-learn, the high-level deep learning library Keras, and the more granular, research-oriented PyTorch.</p>
+<p>In Scikit-learn, the <code class="docutils literal notranslate"><span class="pre">MLPRegressor</span></code> class offers a convenient interface for training small- to medium-sized neural networks, requiring minimal configuration while still providing flexibility for most regression tasks.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.neural_network</span><span class="w"> </span><span class="kn">import</span> <span class="n">MLPRegressor</span>
+
+<span class="n">mlp_model</span> <span class="o">=</span> <span class="n">MLPRegressor</span><span class="p">(</span><span class="n">hidden_layer_sizes</span><span class="o">=</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">,</span> 
+                         <span class="n">solver</span><span class="o">=</span><span class="s1">&#39;adam&#39;</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span>
+<span class="n">mlp_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train_scaled</span><span class="p">,</span> <span class="n">y_train_scaled</span><span class="p">)</span>
+
+<span class="n">y_pred_mlp_scaled</span> <span class="o">=</span> <span class="n">mlp_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test_scaled</span><span class="p">)</span>
+<span class="n">y_pred_mlp</span> <span class="o">=</span> <span class="n">scaler_y</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">(</span><span class="n">y_pred_mlp_scaled</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+
+<span class="n">rmse_mlp</span> <span class="o">=</span> <span class="n">root_mean_squared_error</span><span class="p">(</span><span class="n">y_test_orig</span><span class="p">,</span> <span class="n">y_pred_mlp</span><span class="p">)</span>
+<span class="n">r2_value_mlp</span> <span class="o">=</span> <span class="n">r2_score</span><span class="p">(</span><span class="n">y_test_orig</span><span class="p">,</span> <span class="n">y_pred_mlp</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Multi-Layer Perceptron RMSE: </span><span class="si">{</span><span class="n">rmse_mlp</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, R²: </span><span class="si">{</span><span class="n">r2_value_mlp</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/6-regression-predictive-curve-linear-mlp.png"><img alt="../_images/6-regression-predictive-curve-linear-mlp.png" src="../_images/6-regression-predictive-curve-linear-mlp.png" style="width: 80%;" />
+</a>
+</figure>
+<p>For greater control and scalability, frameworks like Keras (built on TensorFlow) and PyTorch allow us to design custom neural network architectures. We can specify the number of hidden layers, the number of neurons per layer, activation functions (<em>e.g.</em>, ReLU or tanh), and optimization algorithms (<em>e.g.</em>, stochastic gradient descent or Adam). These frameworks also offer tools for monitoring training, adjusting learning rates, and preventing overfitting through techniques such as regularization or dropout.</p>
+<div class="admonition-dnns-using-keras-tensorflow-and-pytorch exercise important admonition" id="exercise-3">
+<p class="admonition-title">DNNs using Keras (TensorFlow) and PyTorch</p>
+<p>Code examples are availalbe in the <a class="reference internal" href="../jupyter-notebooks/6-ML-Regression/"><span class="std std-doc">Jupyter Notebook</span></a>:</p>
+<ul class="simple">
+<li><p>Construct DNNs using Keras and PyTorch.</p></li>
+<li><p>Apply DNNs to the penguin regression task using given hyperparameters.</p></li>
+<li><p>Optimize hyperparameters listed below to improve predictive performance</p>
+<ul>
+<li><p>architecture hyperparameters</p>
+<ul>
+<li><p>number of layers</p></li>
+<li><p>number of neurons per layer</p></li>
+<li><p>activation functions (<em>e.g.</em>, <code class="docutils literal notranslate"><span class="pre">ReLU</span></code>, <code class="docutils literal notranslate"><span class="pre">tanh</span></code>, <code class="docutils literal notranslate"><span class="pre">sigmoid</span></code>)</p></li>
+</ul>
+</li>
+<li><p>training hyperparameters</p>
+<ul>
+<li><p>optimizers (<em>e.g.</em>, SGD, Adam, RMSprop)</p></li>
+<li><p>learning rate</p></li>
+<li><p>batch size</p></li>
+<li><p>number of epochs</p></li>
+</ul>
+</li>
+<li><p>regularization hyperparameters</p>
+<ul>
+<li><p>dropout rate</p></li>
+<li><p>early stopping parameters</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Plot predictive curves for visualization</p></li>
+</ul>
+</div>
+</section>
+</section>
+<section id="comparison-of-trained-models">
+<h2>Comparison of Trained Models<a class="headerlink" href="#comparison-of-trained-models" title="Link to this heading"></a></h2>
+<figure class="align-default">
+<img alt="../_images/6-rmse-r2-scores_alla.png" src="../_images/6-rmse-r2-scores_alla.png" />
+</figure>
+<p><strong>Summary of regression models</strong></p>
+<ul class="simple">
+<li><p>Best performance: Polynomial Regression (degree=3) gave the lowest RMSE (407.47) and the highest R² (0.73), slightly outperforming Linear Regression.</p></li>
+<li><p>Strong performers: Linear Regression, Ridge, Polynomial Regression (degree=5), Decision Tree (depth=3), MLP, and Deep Neural Networks (Keras, PyTorch) showed similar results (RMSE ≈ 412–415, R² ≈ 0.71–0.72).</p></li>
+<li><p>Moderate performers: Random Forest (depth=5), Decision Tree (depth=5), and SVR (optimized) performed decently (R² ≈ 0.70–0.72) but not better than simpler models.</p></li>
+<li><p>Weaker performers: Plain SVR, Lasso, Gradient Boosting, and KNN trailed behind with higher RMSEs (&gt;430) and lower R² values (≈0.68–0.69).</p></li>
+</ul>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Hyperparameter_optimization">Hyperparameter optimization</a></p></li>
+<li><p><a class="reference external" href="https://drbeane.github.io/python_dsci/pages/grid_search.html">Grid search</a></p></li>
+<li><p><a class="reference external" href="https://thatdatatho.com/detailed-introduction-cross-validation-machine-learning/">Introduction to Cross-Validation in Machine Learning</a></p></li>
+</ul>
+</div>
+<div class="admonition-keypoints keypoints admonition" id="keypoints-0">
+<p class="admonition-title">Keypoints</p>
+<ul class="simple">
+<li><p>We explored regression as a supervised learning task for predicting penguins body mass from their flipper length.</p></li>
+<li><p>Starting with simple models like Linear Regression, we gradually introduced more advanced approaches, including Polynomial Regression, Support Vector Regression, tree-based models, and neural networks.</p></li>
+<li><p>All models were evaluated using matrics including RMSE and R² scores, and visualized with predictive curves.</p></li>
+<li><p>Simple models (Linear and Polynomial Regression) performed as well as or better than complex models (SVR, trees, ensembles, neural network-based models).</p></li>
+<li><p>This indicates that the relationship between flipper length and body mass is mostly linear, with mild non-linear patterns.</p></li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../05-supervised-ML-classification/" class="btn btn-neutral float-left" title="Supervised Learning (I): Classification" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../07-unsupervised-ML-clustering/" class="btn btn-neutral float-right" title="Unsupervised Learning (I): Clustering" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, The contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
