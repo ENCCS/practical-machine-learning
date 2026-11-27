@@ -38,6 +38,7 @@ By the end of the course, the participants will understand how the ML models are
 06-supervised-ML-regression
 07-unsupervised-ML-clustering
 08-unsupervised-ML-dimensionality-reduction
+09-unsupervised-ML-anomaly-detection
 :::
 
 
