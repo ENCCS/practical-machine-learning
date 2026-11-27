@@ -1,0 +1,664 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data Preparation for Machine Learning &mdash; Practical Machine Learning  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_lesson.css?v=e9df6548" />
+      <link rel="stylesheet" type="text/css" href="../_static/term_role_formatting.css?v=4194e21c" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_rtd_theme_ext_color_contrast.css?v=8e8ea19f" />
+      <link rel="stylesheet" type="text/css" href="../_static/overrides.css?v=c88db32d" />
+
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=187304be"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=35a8b989"></script>
+      <script src="../_static/minipres.js?v=a0d29692"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex/" />
+    <link rel="search" title="Search" href="../search/" />
+    <link rel="next" title="Supervised Learning (I): Classification" href="../05-supervised-ML-classification/" />
+    <link rel="prev" title="Scientific Data for Machine Learning" href="../03-scientific-data-for-ML/" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../" class="icon icon-home">
+            Practical Machine Learning
+              <img src="../_static/ENCCS.jpg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search/" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Software setup</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../00-software-setup/">Setting Up Programming Environment</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Lesson episodes</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../01-intro-to-ML/">Introduction to Machine Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../02-fundamentals-of-ML/">Fundamentals of Machine Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../03-scientific-data-for-ML/">Scientific Data for Machine Learning</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Data Preparation for Machine Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#what-is-data-preparation">What is Data Preparation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#collecting-data-from-multiple-sources">Collecting Data from Multiple Sources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-penguins-dataset">The Penguins Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#importing-dataset">Importing Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#handling-missing-values">Handling Missing Values</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#numerical-features">Numerical features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#categorical-features">Categorical features</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#handling-outliers">Handling Outliers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#encoding-categorical-variables">Encoding Categorical Variables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#one-hot-encoding">One-hot encoding</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#label-encoding">Label encoding</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-get-dummies-function-in-pandas">The <code class="docutils literal notranslate"><span class="pre">get_dummies()</span></code> function in Pandas</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#feature-engineering">Feature Engineering</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../05-supervised-ML-classification/">Supervised Learning (I): Classification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../06-supervised-ML-regression/">Supervised Learning (II): Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../07-unsupervised-ML-clustering/">Unsupervised Learning (I): Clustering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../08-unsupervised-ML-dimensionality-reduction/">Unsupervised Learning (II): Dimensionality Reduction</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quick-reference/">Quick Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guide/">Instructor’s guide</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://enccs.se/lessons/">All lessons</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://enccs.se/">ENCCS</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../">Practical Machine Learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Data Preparation for Machine Learning</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/ENCCS/practical-machine-learning/blob/main/content/04-data-preparation-for-ML.md" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="data-preparation-for-machine-learning">
+<h1>Data Preparation for Machine Learning<a class="headerlink" href="#data-preparation-for-machine-learning" title="Link to this heading"></a></h1>
+<div class="admonition-objectives objectives admonition" id="objectives-0">
+<p class="admonition-title">Objectives</p>
+<ul class="simple">
+<li><p>Provide an overview of data preparation.</p></li>
+<li><p>Load the Penguins dataset.</p></li>
+<li><p>Use pandas and seaborn to analyze and visualize the data.</p></li>
+<li><p>Identify and manage missing values and outliers in the dataset.</p></li>
+<li><p>Encode categorical variables into numerical values suitable for machine learning models.</p></li>
+</ul>
+</div>
+<div class="admonition-instructor-note instructor-note admonition" id="instructor-note-0">
+<p class="admonition-title">Instructor note</p>
+<ul class="simple">
+<li><p>30 min teaching</p></li>
+<li><p>20 min exercising</p></li>
+</ul>
+</div>
+<p>In <a class="reference internal" href="../02-fundamentals-of-ML/"><span class="std std-doc">Episode 2: Fundamentals of Machine Learning</span></a>, it is clearly shown that data preparation and processing often consume a significant portion of the ML workflow — often more time than the actual model training, evaluation, and optimization.
+Cleaning, transforming, and structuring raw data into a usable format ensures that algorithms can efficiently extract valuable insights.
+Additionally, the choice of data formats, such as CSV for simplicity or HDF5 for large-scale datasets, can significantly impact data storage, accessibility, and computational efficiency during both model training and deployment.</p>
+<p>In this episode, we will provide an overview of data preparation and introduce available public datasets. Using the Penguins dataset as an example, we will offer demonstrations and hands-on exercises to develop a comprehensive understanding of data preparation including handling missing values and outliers, encoding categorical variables, and other essential preprocessing techniques for ML workflows.</p>
+<section id="what-is-data-preparation">
+<h2>What is Data Preparation<a class="headerlink" href="#what-is-data-preparation" title="Link to this heading"></a></h2>
+<p>Data preparation refers to the process of cleaning, structuring, and transforming raw data into a structured, high-quality format ready for statistical analysis and ML. It’s one of the most critical steps in the ML workflow because high-quality data leads to better model performance. Key procedures include:</p>
+<ul class="simple">
+<li><p>collecting data from multiple sources,</p></li>
+<li><p>handling missing values (imputation or removal),</p></li>
+<li><p>detecting and treating outliers,</p></li>
+<li><p>encoding categorical variables,</p></li>
+<li><p>normalizing or scaling features,</p></li>
+<li><p>feature selection and feature engineering.</p></li>
+</ul>
+</section>
+<section id="collecting-data-from-multiple-sources">
+<h2>Collecting Data from Multiple Sources<a class="headerlink" href="#collecting-data-from-multiple-sources" title="Link to this heading"></a></h2>
+<p>Data preparation begins with collecting raw data from a wide variety of sources, including databases, sensors, APIs, web scraping, surveys, and existing public datasets.</p>
+<p>During the data collection process, it is important to ensure consistency and compatibility across all sources. Different sources may have different formats, units, naming conventions, or levels of quality. Careful integration, cleaning, and normalization are required to create a unified dataset suitable for analysis or modeling. Proper documentation of sources and collection methods is also essential to maintain reproducibility and data governance.</p>
+<p>Public datasets provide an excellent resource for learning, experimentation, and benchmarking. Some widely used datasets across different domains include:</p>
+<ul class="simple">
+<li><p>Tabular datasets: Iris, <strong>Penguins</strong>, Titanic, Boston Housing, Wine, <em>etc.</em></p></li>
+<li><p>Image datasets: MNIST, CIFAR-10, CIFAR-100, COCO, ImageNet.</p></li>
+<li><p>Text datasets: IMDB Reviews, 20 Newsgroups, Sentiment140.</p></li>
+<li><p>Audio datasets: LibriSpeech, UrbanSound8K, ESC-50.</p></li>
+<li><p>Video datasets: UCF101, Kinetics, HMDB51.</p></li>
+</ul>
+<p>These datasets are available on platforms like Kaggle, UCI Machine Learning Repository, TensorFlow Datasets, and Hugging Face Datasets, providing accessible resources for practice and innovation.</p>
+<p>It should be noted that most of the data available by default is too raw to perform statistical analysis. Proper preprocessing is essential before the data can be used to identify meaningful patterns or to train models for prediction. In the following sections, we use the Penguins dataset as an example to demonstrate essential data preprocessing steps. These include handling missing values, detecting and treating outliers, encoding categorical variables, and performing other necessary transformations to prepare the dataset for ML tasks. Proper preprocessing ensures data quality, reduces bias, and improves the performance and reliability of the models we build.</p>
+</section>
+<section id="the-penguins-dataset">
+<h2>The Penguins Dataset<a class="headerlink" href="#the-penguins-dataset" title="Link to this heading"></a></h2>
+<p>The <a class="reference external" href="https://zenodo.org/records/3960218">Palmer Penguins dataset</a> is a widely used open dataset in data science and ML education. This dataset contains information on three penguin species that inhabit islands near the Palmer Archipelago in Antarctica: Adelie, Chinstrap, and Gentoo. Each row in the dataset corresponds to a single penguin and records both physical measurements and categorical attributes. The key numerical features include flipper length (mm), culmen length and depth (bill measurements, in mm), and body mass (g). Alongside these, categorical variables such as species, island, and sex are provided.</p>
+<figure class="align-center" id="id1">
+<a class="reference internal image-reference" href="../_images/4-penguins-categories.png"><img alt="../_images/4-penguins-categories.png" src="../_images/4-penguins-categories.png" style="width: 80%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">These data were collected from 2007 - 2009 by Dr. Kristen Gorman with the <a class="reference external" href="https://lternet.edu/site/palmer-antarctica-lter/">Palmer Station Long Term Ecological Research Program</a>, part of the <a class="reference external" href="https://lternet.edu/">US Long Term Ecological Research Network</a>. The data were imported directly from the <a class="reference external" href="https://edirepository.org/">Environmental Data Initiative (EDI)</a> Data Portal, and are available for use by CC0 license (“No Rights Reserved”) in accordance with the <a class="reference external" href="https://lternet.edu/data-access-policy/">Palmer Station Data Policy</a>.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="importing-dataset">
+<h2>Importing Dataset<a class="headerlink" href="#importing-dataset" title="Link to this heading"></a></h2>
+<p>Seaborn provides the Penguins dataset through its built-in data-loading functions. We can access it using <code class="docutils literal notranslate"><span class="pre">sns.load_dataset('penguin')</span></code> and then have a quick look at the data (code examples are availalbe in the <a class="reference internal" href="../jupyter-notebooks/4-Data-Preprocessing/"><span class="std std-doc">Jupyter Notebook</span></a>):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+
+<span class="n">penguins</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">load_dataset</span><span class="p">(</span><span class="s1">&#39;penguins&#39;</span><span class="p">)</span>
+<span class="n">penguins</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you have your own dataset stored in a CSV file, you can easily load it into Python using Pandas with the <code class="docutils literal notranslate"><span class="pre">read_csv()</span></code> function. This is one of the most common ways to bring tabular data into a DataFrame for further analysis and processing.</p>
+<p>Beyond CSV files, Pandas also supports a wide variety of other file formats, making it a powerful and flexible tool for data handling. For example, you can use <code class="docutils literal notranslate"><span class="pre">read_excel()</span></code> to import data from Microsoft Excel spreadsheets, <code class="docutils literal notranslate"><span class="pre">read_hdf()</span></code> to work with HDF5 binary stores, and <code class="docutils literal notranslate"><span class="pre">read_json()</span></code> to load data from JSON files. Each of these formats also has a corresponding method for saving data back to disk, such as <code class="docutils literal notranslate"><span class="pre">to_csv()</span></code>, <code class="docutils literal notranslate"><span class="pre">to_excel()</span></code>, <code class="docutils literal notranslate"><span class="pre">to_hdf()</span></code>, and <code class="docutils literal notranslate"><span class="pre">to_json()</span></code>.</p>
+</div>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td></td>
+<td><p>species</p></td>
+<td><p>island</p></td>
+<td><p>bill_length <br>(mm)</p></td>
+<td><p>bill_depth <br>(mm)</p></td>
+<td><p>flipper <br>length <br>(mm)</p></td>
+<td><p>body_mass <br>(g)</p></td>
+<td><p>sex</p></td>
+</tr>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>Adelie</p></td>
+<td><p>Torgersen</p></td>
+<td><p>39.1</p></td>
+<td><p>18.7</p></td>
+<td><p>181.0</p></td>
+<td><p>3750.0</p></td>
+<td><p>Male</p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>Adelie</p></td>
+<td><p>Torgersen</p></td>
+<td><p>39.5</p></td>
+<td><p>17.4</p></td>
+<td><p>186.0</p></td>
+<td><p>3800.0</p></td>
+<td><p>Female</p></td>
+</tr>
+<tr class="row-even"><td><p>2</p></td>
+<td><p>Adelie</p></td>
+<td><p>Torgersen</p></td>
+<td><p>40.3</p></td>
+<td><p>18.0</p></td>
+<td><p>195.0</p></td>
+<td><p>3250.0</p></td>
+<td><p>Female</p></td>
+</tr>
+<tr class="row-odd"><td><p>3</p></td>
+<td><p>Adelie</p></td>
+<td><p>Torgersen</p></td>
+<td><p>NaN</p></td>
+<td><p>NaN</p></td>
+<td><p>NaN</p></td>
+<td><p>NaN</p></td>
+<td><p>NaN</p></td>
+</tr>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>Adelie</p></td>
+<td><p>Torgersen</p></td>
+<td><p>36.7</p></td>
+<td><p>19.3</p></td>
+<td><p>193.0</p></td>
+<td><p>3450.0</p></td>
+<td><p>Female</p></td>
+</tr>
+<tr class="row-odd"><td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+</tr>
+<tr class="row-even"><td><p>339</p></td>
+<td><p>Gentoo</p></td>
+<td><p>Biscoe</p></td>
+<td><p>NaN</p></td>
+<td><p>NaN</p></td>
+<td><p>NaN</p></td>
+<td><p>NaN</p></td>
+<td><p>NaN</p></td>
+</tr>
+<tr class="row-odd"><td><p>340</p></td>
+<td><p>Gentoo</p></td>
+<td><p>Biscoe</p></td>
+<td><p>46.8</p></td>
+<td><p>14.3</p></td>
+<td><p>215.0</p></td>
+<td><p>4850.0</p></td>
+<td><p>Female</p></td>
+</tr>
+<tr class="row-even"><td><p>341</p></td>
+<td><p>Gentoo</p></td>
+<td><p>Biscoe</p></td>
+<td><p>50.4</p></td>
+<td><p>15.7</p></td>
+<td><p>222.0</p></td>
+<td><p>5750.0</p></td>
+<td><p>Male</p></td>
+</tr>
+<tr class="row-odd"><td><p>342</p></td>
+<td><p>Gentoo</p></td>
+<td><p>Biscoe</p></td>
+<td><p>45.2</p></td>
+<td><p>14.8</p></td>
+<td><p>212.0</p></td>
+<td><p>5200.0</p></td>
+<td><p>Female</p></td>
+</tr>
+<tr class="row-even"><td><p>343</p></td>
+<td><p>Gentoo</p></td>
+<td><p>Biscoe</p></td>
+<td><p>49.9</p></td>
+<td><p>16.1</p></td>
+<td><p>213.0</p></td>
+<td><p>5400.0</p></td>
+<td><p>Male</p></td>
+</tr>
+</tbody>
+</table>
+<p>There are seven columns include:</p>
+<ul class="simple">
+<li><p><em>species</em>: penguin species (Adelie, Chinstrap, Gentoo)</p></li>
+<li><p><em>island</em>: island where the penguin was found (Biscoe, Dream, Torgersen)</p></li>
+<li><p><em>bill_length_mm</em>: length of the bill</p></li>
+<li><p><em>bill_depth_mm</em>: depth of the bill</p></li>
+<li><p><em>flipper_length_mm</em>: length of the flipper</p></li>
+<li><p><em>body_mass_g</em>: body mass in grams</p></li>
+<li><p><em>sex</em>: male or female</p></li>
+</ul>
+<p>Looking only at the raw numbers in the <code class="docutils literal notranslate"><span class="pre">penguins</span></code> DataFrame, or even examining the statistical summaries provided by <code class="docutils literal notranslate"><span class="pre">penguins.info()</span></code> and <code class="docutils literal notranslate"><span class="pre">penguins.describe()</span></code>, often does not give us a clear intuition about the patterns and relationships in the data. To truly understand the dataset, we generally prefer to visualize the data, since graphical representations can reveal trends, groupings, and anomalies that may remain hidden in numerical summaries alone.</p>
+<p>One nice visualization for datasets with relatively few attributes is the <strong>Pair Plot</strong>, which can be created using <code class="docutils literal notranslate"><span class="pre">sns.pairplot(...)</span></code>. It shows a scatterplot of each attribute plotted against each of the other attributes. By using the <code class="docutils literal notranslate"><span class="pre">hue='species'</span></code> setting for the pairplot the graphs on the diagonal are layered kernel density estimate plots for the different values of the <code class="docutils literal notranslate"><span class="pre">species</span></code> column.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">pairplot</span><span class="p">(</span><span class="n">penguins</span><span class="p">[[</span><span class="s2">&quot;species&quot;</span><span class="p">,</span> <span class="s2">&quot;bill_length_mm&quot;</span><span class="p">,</span> <span class="s2">&quot;bill_depth_mm&quot;</span><span class="p">,</span> <span class="s2">&quot;flipper_length_mm&quot;</span><span class="p">,</span>
+	<span class="s2">&quot;body_mass_g&quot;</span><span class="p">]],</span> <span class="n">hue</span><span class="o">=</span><span class="s2">&quot;species&quot;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">2.0</span><span class="p">)</span>
+</pre></div>
+</div>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/4-penguins-pairplot.png"><img alt="../_images/4-penguins-pairplot.png" src="../_images/4-penguins-pairplot.png" style="width: 100%;" />
+</a>
+</figure>
+<div class="admonition-discussion discussion important admonition" id="discussion-0">
+<p class="admonition-title">Discussion</p>
+<p>Take a look at the pairplot we created. Consider the following questions:</p>
+<ul class="simple">
+<li><p>Is there any class that is easily distinguishable from the others?</p></li>
+<li><p>Which combination of attributes shows the best separation for all 3 class labels at once?</p></li>
+<li><p>For pairplot with <code class="docutils literal notranslate"><span class="pre">hue=&quot;sex&quot;</span></code>, which combination of features distinguishes the two sexes best?</p></li>
+<li><p>What about the one with <code class="docutils literal notranslate"><span class="pre">hue=&quot;island&quot;</span></code>?</p></li>
+</ul>
+</div>
+</section>
+<section id="handling-missing-values">
+<h2>Handling Missing Values<a class="headerlink" href="#handling-missing-values" title="Link to this heading"></a></h2>
+<p>Upon loading the Penguins dataset into a pandas DataFrame, the initial examination reveals the presence of <code class="docutils literal notranslate"><span class="pre">NaN</span></code> (Not a Number) values within several rows (highlighted in the Jupyter notebook). These placeholders explicitly indicate missing or unavailable data for certain measurements, such as bill length or the sex of particular penguins.</p>
+<p>Recognizing these missing values is an important first step, as they must be properly handled before performing any data analysis.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">penguins_test</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">penguins</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span> <span class="n">penguins</span><span class="o">.</span><span class="n">tail</span><span class="p">(</span><span class="mi">5</span><span class="p">)])</span>
+<span class="n">penguins_test</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">highlight_null</span><span class="p">(</span><span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;red&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<section id="numerical-features">
+<h3>Numerical features<a class="headerlink" href="#numerical-features" title="Link to this heading"></a></h3>
+<p>For numerical features such as bill length, bill depth, flipper length, and body mass, several strategies can be applied. A straightforward approach is to <strong>remove any rows with missing values</strong>, but this is often wasteful and reduces the sample size.</p>
+<p>A more effective method is imputation: replacing missing numerical values with a suitable estimate. Common choices include the <code class="docutils literal notranslate"><span class="pre">mean</span></code> or <code class="docutils literal notranslate"><span class="pre">median</span></code> of the feature, depending on the distribution.
+Before applying imputation to handle missing numerical values, it is important to first identify where the NaN values occur in the dataset. We can</p>
+<ul class="simple">
+<li><p>run <code class="docutils literal notranslate"><span class="pre">penguins_test.style.highlight_null(color</span> <span class="pre">=</span> <span class="pre">'red')</span></code>, where NaN values are hightlighed in the output,</p></li>
+<li><p>run <code class="docutils literal notranslate"><span class="pre">print(penguins_test.info(),</span> <span class="pre">'\n')</span></code>, which provide the number of non-null entries in each column,</p>
+<ul>
+<li><p>By comparing the number of non-null entries with the total number of rows, we can quickly identify which features have missing values and how severe the issue is. For example, if the column sex has fewer non-null values than the total number of penguins, we know that sex information is missing for some individuals.</p></li>
+</ul>
+</li>
+<li><p>run <code class="docutils literal notranslate"><span class="pre">print(penguins_test.isnull().mean())</span></code>, which computes the fraction of missing values in each column, giving us a normalized view of missingness across the dataset.</p>
+<ul>
+<li><p>unlike <code class="docutils literal notranslate"><span class="pre">.info()</span></code>, which only shows counts, this method highlights the relative proportion of missing values, which is particularly helpful when working with large datasets.</p></li>
+<li><p>For instance, the <code class="docutils literal notranslate"><span class="pre">.isnull().mean()</span></code> reports that 0.2 (20%) of the entries in <code class="docutils literal notranslate"><span class="pre">body_mass_g</span></code> are missing, we can decide whether to impute those values or simply drop the rows without significantly reducing the dataset size.</p></li>
+</ul>
+</li>
+</ul>
+<p>The next step is to calculate the <code class="docutils literal notranslate"><span class="pre">mean</span></code> and <code class="docutils literal notranslate"><span class="pre">median</span></code> values for the numerical features. To illustrate this process, we can take the <code class="docutils literal notranslate"><span class="pre">body_mass_g</span></code> feature as an example.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">body_mass_g_mean</span> <span class="o">=</span> <span class="n">penguins_test</span><span class="o">.</span><span class="n">body_mass_g</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">body_mass_g_median</span> <span class="o">=</span> <span class="n">penguins_test</span><span class="o">.</span><span class="n">body_mass_g</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  mean value of body_mass_g is </span><span class="si">{</span><span class="n">body_mass_g_mean</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;median value of body_mass_g is </span><span class="si">{</span><span class="n">body_mass_g_median</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1">#   mean value of body_mass_g is 4431.25</span>
+<span class="c1"># median value of body_mass_g is 4325.00</span>
+</pre></div>
+</div>
+<p>Rather than directly replacing the missing values, we concatenate new columns containing the <code class="docutils literal notranslate"><span class="pre">mean</span></code> and <code class="docutils literal notranslate"><span class="pre">median</span></code> values for the <code class="docutils literal notranslate"><span class="pre">body_mass_g</span></code> feature to the end of the Penguins dataset, and than visualize the distribution of this feature.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">penguins_test</span><span class="p">[</span><span class="s1">&#39;BMG_mean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">penguins_test</span><span class="o">.</span><span class="n">body_mass_g</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">body_mass_g_mean</span><span class="p">)</span>
+<span class="n">penguins_test</span><span class="p">[</span><span class="s1">&#39;BMG_median&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">penguins_test</span><span class="o">.</span><span class="n">body_mass_g</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">body_mass_g_median</span><span class="p">)</span>
+</pre></div>
+</div>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/4-distribution--body-mass-with-mutations.png"><img alt="../_images/4-distribution--body-mass-with-mutations.png" src="../_images/4-distribution--body-mass-with-mutations.png" style="width: 80%;" />
+</a>
+</figure>
+<div class="admonition-exercise exercise important admonition" id="exercise-0">
+<p class="admonition-title">Exercise</p>
+<p>How to mutate the missing values with <code class="docutils literal notranslate"><span class="pre">mean</span></code> or <code class="docutils literal notranslate"><span class="pre">median</span></code> values in place for all numerical values (code examples are availalbe in the <a class="reference internal" href="../jupyter-notebooks/4-Data-Preprocessing/"><span class="std std-doc">Jupyter Notebook</span></a>).</p>
+<ul class="simple">
+<li><p>for one numerical feature like <code class="docutils literal notranslate"><span class="pre">bill_length_mm</span></code>?</p></li>
+<li><p>for all numerical features in the Penguins dataset?</p></li>
+</ul>
+</div>
+<div class="admonition-solution solution important dropdown admonition" id="solution-0">
+<p class="admonition-title">Solution</p>
+<ul>
+<li><ol class="arabic simple">
+<li><p>using the following script</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">penguins_test2</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">penguins_test2</span><span class="p">[</span><span class="s2">&quot;bill_length_mm&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">(),</span> <span class="s2">&quot;bill_length_mm&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">penguins_test2</span><span class="p">[</span><span class="s2">&quot;bill_length_mm&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+</div>
+</li>
+<li><p>2 using the following code</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># first, select only the numerical columns</span>
+<span class="n">numerical_cols</span> <span class="o">=</span> <span class="n">penguins_test2</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;number&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">columns</span>
+
+<span class="c1"># second, find which of these numerical columns have any missing values </span>
+<span class="n">numerical_cols_with_nulls</span> <span class="o">=</span> <span class="n">numerical_cols</span><span class="p">[</span><span class="n">penguins_test2</span><span class="p">[</span><span class="n">numerical_cols</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">any</span><span class="p">()]</span>
+
+<span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">numerical_cols_with_nulls</span><span class="p">:</span>
+	<span class="c1"># calculate the mean for the specific column</span>
+	<span class="n">col_mean</span> <span class="o">=</span> <span class="n">penguins_test2</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+	<span class="c1"># use `.loc` to replace NaNs only in that specific column with its own mean</span>
+	<span class="n">penguins_test2</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">penguins_test2</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">(),</span> <span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">col_mean</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<p>In certain scenarios, imputing missing data with values at the <strong>end of distribution</strong> (EoD) of a variable can be a considered strategy. This approach offers the advantage of computational speed and can theoretically capture the significance of missing entries. Typically, the EoD is calculated as an extreme value such as <code class="docutils literal notranslate"><span class="pre">mean</span> <span class="pre">+</span> <span class="pre">3*std</span></code>, where the <code class="docutils literal notranslate"><span class="pre">mean</span></code> and <code class="docutils literal notranslate"><span class="pre">std</span></code> of the feature can be obtained using the <code class="docutils literal notranslate"><span class="pre">.describe()</span></code> method.</p>
+<p>However, as demonstrated in the Penguins dataset tutorial, this type of imputation often generates unrealistic values and distorts the original distribution, particularly for features like <code class="docutils literal notranslate"><span class="pre">body_mass_g</span></code>. Consequently, it can lead to biased analyses and should be used with caution.</p>
+</section>
+<section id="categorical-features">
+<h3>Categorical features<a class="headerlink" href="#categorical-features" title="Link to this heading"></a></h3>
+<p>For categorical features such as sex, the approach differs.</p>
+<ul>
+<li><p>One simple method is to replace missing categories with the most frequent value (<code class="docutils literal notranslate"><span class="pre">mode</span></code>), which assumes the missing value follows the majority distribution.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">penguins_test</span><span class="o">.</span><span class="n">sex</span><span class="o">.</span><span class="n">mode</span><span class="p">()</span>
+
+<span class="n">penguins_test</span><span class="o">.</span><span class="n">fillna</span><span class="p">({</span><span class="s1">&#39;sex&#39;</span><span class="p">:</span> <span class="n">penguins_test</span><span class="p">[</span><span class="s1">&#39;sex&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mode</span><span class="p">()[</span><span class="mi">0</span><span class="p">]},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p>Alternatively, missing values can be treated as a separate category, labeled for example as “Unknown” or “Missing” which allows models to learn if missingness itself carries information.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">penguins_test</span><span class="o">.</span><span class="n">fillna</span><span class="p">({</span><span class="s1">&#39;sex&#39;</span><span class="p">:</span> <span class="s2">&quot;Missing&quot;</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p>Another option is to apply model-based imputation, where missing categorical values are predicted from other features using classification algorithms.</p></li>
+</ul>
+<p>For all ML tasks we will perform in the following episodes, we adopt a straightforward approach of removing any rows that contain missing values (<code class="docutils literal notranslate"><span class="pre">penguins_test.dropna()</span></code>). This ensures that the dataset is complete and avoids potential errors or biases caused by NaN entries. Although more sophisticated imputation methods exist, dropping rows is a simple and effective strategy when the proportion of missing data is relatively small.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For the other dataset, the strategy for handling missing values is not one-size-fits-all; it depends heavily on whether the missing data is numerical or categorical and the underlying mechanism causing the data to be missing. Ignoring these missing entries, such as by simply dropping the affected rows, may introduce significant bias, reduce statistical power, and ultimately lead to inaccurate or misleading conclusions.
+After any imputation, it is essential to perform sanity checks to ensure the imputed values are plausible and to document the methodology transparently. Properly handling missing data in this way transforms an incomplete dataset into a robust and reliable foundation for generating accurate insights and building powerful predictive models.</p>
+</div>
+</section>
+</section>
+<section id="handling-outliers">
+<h2>Handling Outliers<a class="headerlink" href="#handling-outliers" title="Link to this heading"></a></h2>
+<p>Outliers are values that are too far from the rest of observations in columns. For instance, if the body mass of most of penguins in the dataset varies between 3000-6000 g, an observation of 7500 g will be considered as an outlier since such an observation occurs rarely.</p>
+<p>We obtain the EoD value of the <code class="docutils literal notranslate"><span class="pre">body_mass_g</span></code> feature and then check if this value is the outlier for this feature.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">penguins</span><span class="p">[</span><span class="s1">&#39;body_mass_g&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">penguins_test</span><span class="p">[</span><span class="s1">&#39;body_mass_g&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+
+<span class="c1"># EoD value = 7129.0199920504665</span>
+</pre></div>
+</div>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/4-body-mass-outlier.png"><img alt="../_images/4-body-mass-outlier.png" src="../_images/4-body-mass-outlier.png" style="width: 75%;" />
+</a>
+</figure>
+<p>There are several approaches to identify outliers, and one of the most commonly used methods is the <strong>Interquartile Range (IQR)</strong> method. The IQR measures the spread of the middle 50% of the data and is calculated by subtracting the first quartile (25th percentile, Q1) from the third quartile (75th percentile, Q3). Once the IQR is obtained, we can determine the boundaries for detecting outliers. The lower limit is defined as Q1 minus 1.5 times the IQR, and the upper limit is defined as Q3 plus 1.5 times the IQR.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;25% quantile = </span><span class="si">{</span><span class="n">penguins_test_BMG_outlier</span><span class="p">[</span><span class="s2">&quot;body_mass_g&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="mf">0.25</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;75% quantile = </span><span class="si">{</span><span class="n">penguins_test_BMG_outlier</span><span class="p">[</span><span class="s2">&quot;body_mass_g&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="mf">0.75</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">IQR</span> <span class="o">=</span> <span class="n">penguins_test_BMG_outlier</span><span class="p">[</span><span class="s2">&quot;body_mass_g&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="mf">0.75</span><span class="p">)</span> <span class="o">-</span> <span class="n">penguins_test_BMG_outlier</span><span class="p">[</span><span class="s2">&quot;body_mass_g&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="mf">0.25</span><span class="p">)</span>
+<span class="n">lower_bmg_limit</span> <span class="o">=</span> <span class="n">penguins_test_BMG_outlier</span><span class="p">[</span><span class="s2">&quot;body_mass_g&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="mf">0.25</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="mf">1.5</span> <span class="o">*</span> <span class="n">IQR</span><span class="p">)</span>
+<span class="n">upper_bmg_limit</span> <span class="o">=</span> <span class="n">penguins_test_BMG_outlier</span><span class="p">[</span><span class="s2">&quot;body_mass_g&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="mf">0.75</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mf">1.5</span> <span class="o">*</span> <span class="n">IQR</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;lower limt of IQR = </span><span class="si">{</span><span class="n">lower_bmg_limit</span><span class="si">}</span><span class="s2"> and upper limit of IQR = </span><span class="si">{</span><span class="n">upper_bmg_limit</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># 25% quantile = 3550.00</span>
+<span class="c1"># 75% quantile = 4781.25</span>
+<span class="c1"># lower limt of IQR = 1703.125 and upper limit of IQR = 6628.125</span>
+</pre></div>
+</div>
+<p>Any data points that fall below the lower limit or above the upper limit are considered outliers, and these points are subsequently removed from the dataset.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">penguins_test_BMG_outlier</span><span class="p">[</span><span class="n">penguins_test_BMG_outlier</span><span class="p">[</span><span class="s2">&quot;body_mass_g&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">upper_bmg_limit</span><span class="p">]</span>
+
+<span class="n">penguins_test_BMG_outlier</span><span class="p">[</span><span class="n">penguins_test_BMG_outlier</span><span class="p">[</span><span class="s2">&quot;body_mass_g&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">lower_bmg_limit</span><span class="p">]</span>
+
+<span class="n">penguins_test_BMG_outlier_remove_IQR</span> <span class="o">=</span> <span class="n">penguins_test_BMG_outlier</span><span class="p">[</span><span class="n">penguins_test_BMG_outlier</span><span class="p">[</span><span class="s2">&quot;BMG_eod&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">upper_bmg_limit</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>There are four main techniques for handling outliers in a dataset:</p>
+<ul class="simple">
+<li><p>Remove outliers entirely — This approach simply deletes the rows containing outlier values, which can be effective if the outliers are errors or rare events that are not relevant to the analysis.</p></li>
+<li><p>Treat outliers as missing values — Outliers can be replaced with NaN and then handled using imputation methods described in previous sections, such as replacing them with the mean, median, or mode.</p></li>
+<li><p>Apply discretization or binning — By grouping numerical values into bins, outliers are included in the tail bins along with other extreme values, which reduces their impact while preserving the overall structure of the data.</p></li>
+<li><p>Cap or censor outliers — Extreme values can be limited to a maximum or minimum threshold, often derived from statistical techniques such as the IQR or standard deviation limits. This approach reduces the influence of outliers without completely removing them from the dataset.</p></li>
+</ul>
+</div>
+<div class="admonition-the-meanstandard-deviation-approach exercise important admonition" id="exercise-1">
+<p class="admonition-title"><strong>The mean–standard deviation approach</strong></p>
+<p>Instead of using the IQR method, the upper and lower thresholds for detecting outliers can also be calculated with the mean-std deviation approach.</p>
+<p>In this exercise (code examples are availalbe in the <a class="reference internal" href="../jupyter-notebooks/4-Data-Preprocessing/"><span class="std std-doc">Jupyter Notebook</span></a>), you will</p>
+<ul>
+<li><p>Compute the <code class="docutils literal notranslate"><span class="pre">mean</span></code> and <code class="docutils literal notranslate"><span class="pre">std</span></code> of the <code class="docutils literal notranslate"><span class="pre">body_mass_g</span></code> feature.</p></li>
+<li><p>Calculate the upper and lower limits for outlier detection using the formulas.</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}lower\_limit = mean - 3.0 \times std\\upper\_limit = mean + 3.0 \times std\end{aligned}\end{align} \]</div>
+</li>
+<li><p>Identify the outliers and replace them with either the <code class="docutils literal notranslate"><span class="pre">mean</span></code> or the <code class="docutils literal notranslate"><span class="pre">median</span></code> values of the <code class="docutils literal notranslate"><span class="pre">body_mass_g</span></code> feature.</p></li>
+</ul>
+</div>
+<div class="admonition-solution solution important dropdown admonition" id="solution-1">
+<p class="admonition-title">Solution</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">mean</span> <span class="pre">=</span> <span class="pre">penguins_test_BMG_outlier[&quot;body_mass_g&quot;].mean()</span></code> and <code class="docutils literal notranslate"><span class="pre">std</span> <span class="pre">=</span> <span class="pre">penguins_test_BMG_outlier[&quot;body_mass_g&quot;].std()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lower_bmg_limit</span> <span class="pre">=</span> <span class="pre">mean</span> <span class="pre">-</span> <span class="pre">(3.0</span> <span class="pre">*</span> <span class="pre">std)</span></code> and <code class="docutils literal notranslate"><span class="pre">upper_bmg_limit</span> <span class="pre">=</span> <span class="pre">mean</span> <span class="pre">+</span> <span class="pre">(3.0</span> <span class="pre">*</span> <span class="pre">std)</span></code></p></li>
+<li><p>determination of outliers</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">penguins_test_BMG_outlier[penguins_test_BMG_outlier[&quot;body_mass_g&quot;]</span> <span class="pre">&gt;</span> <span class="pre">upper_bmg_limit]</span></code> and <code class="docutils literal notranslate"><span class="pre">penguins_test_BMG_outlier[penguins_test_BMG_outlier[&quot;body_mass_g&quot;]</span> <span class="pre">&gt;</span> <span class="pre">upper_bmg_limit]</span></code></p></li>
+</ul>
+</li>
+<li><p>imputation outliers with <code class="docutils literal notranslate"><span class="pre">mean</span></code> or <code class="docutils literal notranslate"><span class="pre">median</span></code></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">penguins_test_BMG_outlier.loc[penguins_test_BMG_outlier[&quot;body_mass_g&quot;]</span> <span class="pre">&lt;</span> <span class="pre">lower_bmg_limit,</span> <span class="pre">&quot;body_mass_g&quot;]</span> <span class="pre">=</span> <span class="pre">mean</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">penguins_test_BMG_outlier.loc[penguins_test_BMG_outlier[&quot;body_mass_g&quot;]</span> <span class="pre">&lt;</span> <span class="pre">lower_bmg_limit,</span> <span class="pre">&quot;body_mass_g&quot;]</span> <span class="pre">=</span> <span class="pre">penguins_test_BMG_outlier[&quot;body_mass_g&quot;].median()</span></code></p></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="encoding-categorical-variables">
+<h2>Encoding Categorical Variables<a class="headerlink" href="#encoding-categorical-variables" title="Link to this heading"></a></h2>
+<p>In the previous sections, we adopted a straightforward approach to handling missing values by simply removing any rows that contained NaN values, whether they were in numerical or categorical features. While this step gives us a cleaner dataset, it is not sufficient on its own to proceed with ML tasks.</p>
+<p>The reason is that most ML algorithms are designed to work only with numerical data. They cannot directly process textual or symbolic categories such as species, island, or sex in the Penguins dataset. To make these categorical variables usable in modeling, we need to encode categorical variables into a numerical format while preserving their information.</p>
+<p>There are two widely used encoding techniques: <strong>One-hot encoding (OHE)</strong> and <strong>Label Encoding</strong>.</p>
+<section id="one-hot-encoding">
+<h3>One-hot encoding<a class="headerlink" href="#one-hot-encoding" title="Link to this heading"></a></h3>
+<p>The OHE method creates a new binary column for each category in a feature. For example, the species feature with values {Female, Male, and NaN} would be transformed into three new columns, each indicating the presence (1) or absence (0) of that category for a given row.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">OneHotEncoder</span>
+
+<span class="n">penguins_sex</span> <span class="o">=</span> <span class="n">penguins</span><span class="p">[[</span><span class="s2">&quot;species&quot;</span><span class="p">,</span> <span class="s2">&quot;island&quot;</span><span class="p">,</span> <span class="s2">&quot;sex&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="n">encoder</span> <span class="o">=</span> <span class="n">OneHotEncoder</span><span class="p">(</span><span class="n">sparse_output</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># `sparse_output=False` to get a dense array</span>
+<span class="n">encoded</span> <span class="o">=</span> <span class="n">encoder</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">penguins_sex</span><span class="p">[[</span><span class="s1">&#39;sex&#39;</span><span class="p">]])</span>
+
+<span class="n">encoded</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">encoded</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Female&quot;</span><span class="p">,</span> <span class="s2">&quot;Male&quot;</span><span class="p">,</span> <span class="s2">&quot;NaN&quot;</span><span class="p">])</span>
+
+<span class="n">penguins_sex_onehotencoding</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">penguins_sex</span><span class="p">,</span> <span class="n">encoded</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">penguins_sex_onehotencoding</span>
+</pre></div>
+</div>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/4-penguins-sex-ohe-encoding.png"><img alt="../_images/4-penguins-sex-ohe-encoding.png" src="../_images/4-penguins-sex-ohe-encoding.png" style="width: 75%;" />
+</a>
+</figure>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>OHE works well when the number of categories is small and when categories are unordered. However, it can lead to very large datasets if a feature contains many unique categories (high cardinality).</p>
+</div>
+</section>
+<section id="label-encoding">
+<h3>Label encoding<a class="headerlink" href="#label-encoding" title="Link to this heading"></a></h3>
+<p>Label encoding transforms a categorical feature into a single numerical column by assigning a unique integer to each category in a feature. For example, the sex feature with values {Female, Male, NaN} could be encoded as Female = 0, Male = 1, and missing values handled separately or imputed beforehand (in our case, NaN is encoded as  NaN = 2).</p>
+<p>Unlike one-hot encoding, which creates multiple columns, label encoding produces only one column, making it more memory-efficient. However, it introduces an artificial ordinal relationship between categories (<em>e.g.</em>, implying Dream &gt; Biscoe), which may not be meaningful and can affect algorithms that assume numeric order matters, such as linear regression or distance-based methods.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">LabelEncoder</span>
+
+<span class="n">encoder</span> <span class="o">=</span> <span class="n">LabelEncoder</span><span class="p">()</span>
+<span class="n">encoded</span> <span class="o">=</span> <span class="n">encoder</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">penguins_sex</span><span class="p">[</span><span class="s1">&#39;sex&#39;</span><span class="p">])</span>
+<span class="n">encoded</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">encoded</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;sex_LE&quot;</span><span class="p">])</span>
+
+<span class="n">penguins_sex_labelencoding</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">penguins_sex</span><span class="p">,</span> <span class="n">encoded</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Beyond these two common methods, there are several other encoding strategies, especially useful for more complex datasets:</p>
+<ul class="simple">
+<li><p><strong>Ordinal Encoding</strong>: A variation of label encoding designed specifically for variables that have a natural and meaningful order (<em>e.g.</em>, Small = 0, Medium = 1, Large = 2).</p></li>
+<li><p><strong>Binary Encoding</strong>: Converts categories into binary code, achieving a good compromise between one-hot and label encoding for high-cardinality data.</p></li>
+<li><p><strong>Target Encoding</strong> (Mean Encoding): Replaces each category with the average value of the target variable for that category. It is powerful but prone to overfitting if not carefully implemented.</p></li>
+<li><p><strong>Frequency Encoding</strong>: Replaces categories with their frequency of occurrence in the dataset. This can be useful for dealing with high-cardinality features.</p></li>
+</ul>
+<p>The choice of encoding method is a consequential modeling decision. It should be guided by the type of categorical data (nominal <em>vs.</em> ordinal), the number of unique categories, the type of ML algorithm being used. A proper encoding ensures that categorical features are accurately represented in numerical form, allowing algorithms to learn patterns effectively without introducing bias or noise.</p>
+</section>
+<section id="the-get-dummies-function-in-pandas">
+<h3>The <code class="docutils literal notranslate"><span class="pre">get_dummies()</span></code> function in Pandas<a class="headerlink" href="#the-get-dummies-function-in-pandas" title="Link to this heading"></a></h3>
+<p>In addition to OHE and LE, we can also use the <code class="docutils literal notranslate"><span class="pre">.get_dummies()</span></code> in Pandas to handle categorical variables by converting them into a one-hot encoded (dummy variable) format.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dummy_encoded</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">get_dummies</span><span class="p">(</span><span class="n">penguins_sex</span><span class="p">[</span><span class="s1">&#39;sex&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">)</span>
+<span class="n">penguins_sex_dummyencoding</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">penguins_sex</span><span class="p">,</span> <span class="n">dummy_encoded</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This function ignores <code class="docutils literal notranslate"><span class="pre">NaN</span></code> values by default (it simply leaves them out).</p>
+</div>
+</section>
+</section>
+<section id="feature-engineering">
+<h2>Feature Engineering<a class="headerlink" href="#feature-engineering" title="Link to this heading"></a></h2>
+<p>Feature engineering is a part of the broader data processing pipeline in ML workflows. It involves using domain knowledge to select, modify, or create new features — variables or attributes — from existing data to help algorithms better understand patterns and relationships.</p>
+<p>Feature engineering is crucial because the quality of features directly impacts a model’s predictive power. Well-crafted features can simplify complex patterns, reduce overfitting, and improve model interpretability, leading to better generalization and performance on unseen data. By tailoring features to the problem at hand, feature engineering bridges the gap between raw data and actionable insights, often making the difference between a mediocre and a high-performing model.</p>
+<p>Feature engineering is closely related to data preprocessing, but they serve different purposes.</p>
+<ul class="simple">
+<li><p>Data processing (or data preprocessing) is about cleaning and preparing data — handling missing values, removing duplicates, correcting data types, and ensuring consistency. This step makes the data <strong>usable</strong>.</p></li>
+<li><p>Feature engineering, on the other hand, comes after basic processing and focuses on improving the predictive power of dataset.</p></li>
+<li><p>In essence, <strong>data preprocessing ensures data quality</strong>, while <strong>feature engineering enhances data value</strong> for ML models.</p></li>
+<li><p>Both are essential steps in building effective and accurate predictive systems.</p></li>
+</ul>
+<div class="admonition-keypoints keypoints admonition" id="keypoints-0">
+<p class="admonition-title">Keypoints</p>
+<ul class="simple">
+<li><p>Data Preparation is a critical, foundational step in the machine learning workflow.</p></li>
+<li><p>Introduction to the Palmer Penguins dataset, and demonstration of loading the dataset into a pandas DataFrame for analysis.</p></li>
+<li><p>Statistical analysis and Visualization of the Penguins dataset using Pandas and Seaborn.</p></li>
+<li><p>Identification and handling missing numerical values and outliers.</p></li>
+<li><p>Convertion of categorical features into numerical formats.</p></li>
+<li><p>Feature engineering is the process of creating, transforming, or selecting the right features from raw data to improve the performance of machine learning models.</p></li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../03-scientific-data-for-ML/" class="btn btn-neutral float-left" title="Scientific Data for Machine Learning" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../05-supervised-ML-classification/" class="btn btn-neutral float-right" title="Supervised Learning (I): Classification" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, The contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
